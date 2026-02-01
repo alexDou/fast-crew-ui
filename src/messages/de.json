@@ -1,0 +1,116 @@
+{
+  "Dashboard": {
+    "title": "Dichter-Crew",
+    "description": "Mit diesem Online-Tool kann man ein Gedicht generieren indem man einen Bild hochladt",
+    "projectBy": "Mustervorlage von",
+    "tunerButton": "Bild zum Gedicht"
+  },
+  "Auth": {
+    "signin": "Anmelden",
+    "signup": "Registrieren",
+    "logout": "Abmelden"
+  },
+  "UserList": {
+    "title": "Dichter-Crew",
+    "description": "Benutzerliste",
+    "error": "Fehler",
+    "loading": "Wird geladen...",
+    "id": "ID",
+    "name": "Ad",
+    "email": "E-posta",
+    "searchPlaceholder": "Benutzern finden...",
+    "noResults": "Nichts gefunden."
+  },
+  "AuthForm": {
+    "nameLabel": "Ihre Name",
+    "namePlaceholder": "Karl Mustermann",
+    "emailLabel": "Emailadresse",
+    "emailPlaceholder": "karl@mustermann.de",
+    "usernameLabel": "Benutzername",
+    "usernamePlaceholder": "kmustermann",
+    "passwordLabel": "Passwort",
+    "passwordPlaceholder": "••••••••",
+    "confirmPasswordLabel": "Passwort bestätigen",
+    "confirmPasswordPlaceholder": "••••••••",
+    "forgotPassword": "Passwort vergessen",
+    "submit": "Abgeben",
+    "registration": {
+      "success": { 
+        "title": "Das Konto wurde erfolgreich erstellt!",
+        "message": "Loggen Sie sich mit Ihren Daten ein"
+      },
+      "error": {
+        "title": "Die Anmeldung fehlgeschlagen",
+        "message": "Ein unerwarteter Fehler ist aufgetreten"
+      }
+    },
+    "signin": {
+      "success": { 
+        "title": "Wilkommen zurück!",
+        "message": "Wurde erfolreich angemeldet"
+      },
+      "error": {
+        "title": "Login fehlgeschlagen",
+        "message": "Einer Fehler aufgetreten ist. Momentan können wir Sie leider nicht einloggen. Bitte, versuchen Sie es an einem spätesten Zeitpunkt noch mal"
+      }
+    }
+  },
+  "AuthSchema": {
+    "nameMin": "Name muss midestens 3 Zeichen sein",
+    "nameRegex": "Verwenden Sie bitte nur Zeichen und Leerzeichen",
+    "emailInvalid": "Emailadresse ist ungültig",
+    "usernameMin": "Die Benutzername muss mindestens 3 Zeichen lang sein",
+    "usernameRegex": "Wir akzeptieren nur Buchstaben, Zahlen und Unterstriche",
+    "passwordMin": "Der Passwort muss mindestens 6 Zeichen lang sein",
+    "passwordRegex": "Der Passwort muss nur alphanumeric Zeichen mit Unterstrich und Minus enthalten",
+    "passwordMatch": "Passworte stimmen nicht überein"
+  },
+  "User": {
+    "profile": "Profil",
+    "networkError": "Die Route ist leider fehlgeschlagen",
+    "networkErrorMessage": "Wir haben einen Netzwerkfehler. Bitte versuchen Sie es mal erneut"
+  },
+  "Tuner": {
+    "title": "Tuner",
+    "error": {
+      "fileType": "Bitte, laden Sie ein Bild hoch",
+      "fileMime": "Wir akzeptieren nur Bilder von gif, jpeg, png, oder webp",
+      "fileSize": "Maximale Bildgroße ist 1Mb",
+      "enhanceMax": "Bleiben Sie bitte innerhalb von 100 Buchstaben",
+      "actionErrorTitle": "Netzwerkfehler",
+      "actionErrorMessage": "Wir haben ein Problem beim Verarbeiten Ihres Bildes erkannt",
+      "fileNetworkError": "Einer Fehler bei der Verarbeitung",
+      "fileNetworkErrorMessage": "Die Verarbeitung Ihres Bildes fehlgeschlagen ist. Bitte versuchen Sie es mal erneut",
+      "errorFromAPI": "Fehler bei der Verarbeitung Ihres Bildes",
+      "errorFromAPIMessage": "Wir lösen das Problem, und ermutigen Sie, später erneut zu versuchen"
+    },
+    "form": {
+      "success": {
+        "title": "Die Verarbeitung wurde gestartet!",
+        "message": "Wir verarbeiten Ihre Eingaben und kommen mit den Ergebnissen bald zurück"
+      },
+      "file": {
+        "label": "Klicken Sie hier, um ein Bild hochzuladen",
+        "prompt": "GIF, PNG, JPG or WEBP (MAX. 1Mb)"
+      },
+      "enhance": {
+        "label": "Erweitern:",
+        "placeholder": "Das Photo wurde.., Das Kind heißt.., Das ist ein Sommer 2026.."
+      },
+      "submit": "Inhalt Abgeben"
+    },
+    "result": {
+      "processing": {
+        "title": "Wir bearbeiten Ihre Eingaben..",
+        "message": "Bitte, schliesen Sie nicht diese Seite während der Bearbeitung. Das muss nicht lange dauern"
+      },
+      "success": {
+        "title": "Bearbeitung wurde abgeschlossen!",
+        "message": "Wir haben erfolgreich einige nette Gedichte für Sie generiert"
+      },
+      "otherPoems": "Andere Gedichte",
+      "alternative": "Alternative",
+      "criticChoice": "Kritikerwahl"
+    }
+  }
+}

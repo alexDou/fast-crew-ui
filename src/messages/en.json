@@ -1,0 +1,116 @@
+{
+  "Dashboard": {
+    "title": "Poets crew",
+    "description": "With this tool you can generate a poem out of an uploaded image content.",
+    "projectBy": "Template by",
+    "tunerButton": "Picture to a Poem"
+  },
+  "Auth": {
+    "signin": "Login",
+    "signup": "Register",
+    "logout": "Logout"
+  },
+  "UserList": {
+    "title": "User List",
+    "description": "A list of users",
+    "error": "Error",
+    "loading": "Loading...",
+    "id": "ID",
+    "name": "Name",
+    "email": "Email",
+    "searchPlaceholder": "Search users...",
+    "noResults": "No results."
+  },
+  "AuthForm": {
+    "nameLabel": "Your name",
+    "namePlaceholder": "John Doe",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "john@doe.com",
+    "usernameLabel": "Choose a username",
+    "usernamePlaceholder": "johndoe",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "confirmPasswordLabel": "Confirm Password",
+    "confirmPasswordPlaceholder": "••••••••",
+    "forgotPassword": "Forgot your password",
+    "submit": "Sign In",
+    "registration": {
+      "success": { 
+        "title": "Account created!",
+        "message": "Please sign in with your credentials"
+      },
+      "error": {
+        "title": "Registration failed",
+        "message": "An unexpected error occurred"
+      }
+    },
+    "signin": {
+      "success": { 
+        "title": "Welcome back!",
+        "message": "Logged in sucessfully"
+      },
+      "error": {
+        "title": "Login failed",
+        "message": "An error occurred, we cannot log you in at this moment. Please try again after a while"
+      }
+    }
+  },
+  "AuthSchema": {
+    "nameMin": "Name must be at least 3 characters",
+    "nameRegex": "Only letters and spaces are allowed",
+    "emailInvalid": "Invalid email address",
+    "usernameMin": "Username must be at least 3 characters",
+    "usernameRegex": "Only letters, numbers and underscores are allowed",
+    "passwordMin": "Password must be at least 6 characters",
+    "passwordRegex": "Password is alphanumeric here with underscore and dashes allowed",
+    "passwordMatch": "Passwords do not match"
+  },
+  "User": {
+    "profile": "Profile",
+    "networkError": "Error loading user data",
+    "networkErrorMessage": "We are experiencing a network error. Please try again later"
+  },
+  "Tuner": {
+    "title": "Tuner",
+    "error": {
+      "fileType": "Upload a file, please",
+      "fileMime": "We accept image file of gif, jpeg, png, webp mime types",
+      "fileSize": "Maximum file size is 1Mb",
+      "enhanceMax": "Maximum 100 characters",
+      "actionErrorTitle": "Network error",
+      "actionErrorMessage": "We are experiencing a problem processing your file",
+      "fileNetworkError": "Error processing file",
+      "fileNetworkErrorMessage": "We are experiencing a file processing error. Please try again later",
+      "errorFromAPI": "Error processing your file",
+      "errorFromAPIMessage": "We are resolving the issue, and encourage you to check back later"
+    },
+    "form": {
+      "success": {
+        "title": "Processing has been started!",
+        "message": "We are processing your image and get back with a result shortly"
+      },
+      "file": {
+        "label": "Click to upload or drag and drop",
+        "prompt": "GIF, PNG, JPG or WEBP (MAX. 1Mb)"
+      },
+      "enhance": {
+        "label": "Enhance:",
+        "placeholder": "The photo was taken in.., The child name is.., This is a summer 2026.."
+      },
+      "submit": "Submit the content"
+    },
+    "result": {
+      "processing": {
+        "title": "We are processing your file..",
+        "message": "Please, do not close on navigate away from this page. That should not take long"
+      },
+      "success": {
+        "title": "Processing has been completed!",
+        "message": "We have successfully generated some nice poems for you"
+      },
+      "otherPoems": "Other poems",
+      "alternative": "Alternative",
+      "criticChoice": "Critic's choice"
+    }
+  }
+}
