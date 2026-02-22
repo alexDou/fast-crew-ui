@@ -82,7 +82,9 @@
       "fileNetworkError": "Einer Fehler bei der Verarbeitung",
       "fileNetworkErrorMessage": "Die Verarbeitung Ihres Bildes fehlgeschlagen ist. Bitte versuchen Sie es mal erneut",
       "errorFromAPI": "Fehler bei der Verarbeitung Ihres Bildes",
-      "errorFromAPIMessage": "Wir lösen das Problem, und ermutigen Sie, später erneut zu versuchen"
+      "errorFromAPIMessage": "Wir lösen das Problem, und ermutigen Sie, später erneut zu versuchen",
+      "retryExhaustedTitle": "Verarbeitung nicht möglich",
+      "retryExhaustedMessage": "Wir können Ihre Anfrage momentan nicht verarbeiten. Bitte versuchen Sie es später erneut"
     },
     "form": {
       "success": {

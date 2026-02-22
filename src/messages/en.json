@@ -82,7 +82,9 @@
       "fileNetworkError": "Error processing file",
       "fileNetworkErrorMessage": "We are experiencing a file processing error. Please try again later",
       "errorFromAPI": "Error processing your file",
-      "errorFromAPIMessage": "We are resolving the issue, and encourage you to check back later"
+      "errorFromAPIMessage": "We are resolving the issue, and encourage you to check back later",
+      "retryExhaustedTitle": "Unable to process",
+      "retryExhaustedMessage": "We are unable to process your request at this time. Please, try again later"
     },
     "form": {
       "success": {

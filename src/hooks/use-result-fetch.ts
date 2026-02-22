@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useQuery } from "@tanstack/react-query";
 import ky from "ky";
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 
 import { BFF_ENDPOINTS } from "@/constants/api";
 import { QUERY_KEYS } from "@/constants/query-keys";
@@ -19,15 +21,28 @@ interface UseResultFetchProps {
 }
 
 export function useResultFetch({ sourceId, status }: UseResultFetchProps) {
+  const t = useTranslations("Tuner");
   const [activePoemId, setActivePoemId] = useState<number | null>(null);
 
-  const { data: poems = [], isLoading } = useQuery<Poem[]>({
+  const {
+    data: poems = [],
+    isLoading,
+    isError
+  } = useQuery<Poem[]>({
     queryKey: [QUERY_KEYS.POEMS, sourceId],
     queryFn: () => ky.get(BFF_ENDPOINTS.tunerPoems(sourceId)).json<Poem[]>(),
     enabled: status === PROCESSING_STATUS.SUCCESS,
     retry: 4,
     staleTime: Infinity
   });
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(t("error.retryExhaustedTitle"), {
+        description: t("error.retryExhaustedMessage")
+      });
+    }
+  }, [isError, t]);
 
   // Set initial active poem when poems are loaded
   if (poems.length > 0 && activePoemId === null) {
@@ -42,6 +57,7 @@ export function useResultFetch({ sourceId, status }: UseResultFetchProps) {
     poems,
     activePoem,
     setActivePoemId,
-    isLoading
+    isLoading,
+    isError
   };
 }

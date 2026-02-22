@@ -13,8 +13,16 @@ interface TunerResultPropsType {
 export function TunerResult({ sourceId }: TunerResultPropsType) {
   const t = useTranslations("Tuner");
 
-  const { status, isError: statusError } = useProcessingStatusFetch(sourceId);
-  const { poems, activePoem, setActivePoemId } = useResultFetch({ sourceId, status });
+  const { status, isRetryExhausted } = useProcessingStatusFetch(sourceId);
+  const {
+    poems,
+    activePoem,
+    setActivePoemId,
+    isError: resultError
+  } = useResultFetch({
+    sourceId,
+    status
+  });
 
   if (status === PROCESSING_STATUS.PROCESSING) {
     return (
@@ -25,7 +33,18 @@ export function TunerResult({ sourceId }: TunerResultPropsType) {
     );
   }
 
-  if (statusError || status === PROCESSING_STATUS.ERROR) {
+  if (isRetryExhausted || resultError) {
+    return (
+      <div className="container flex flex-col items-center justify-center py-16">
+        <h2 className="font-bold text-red-500 text-xl">{t("error.retryExhaustedTitle")}</h2>
+        <p className="mt-4 text-muted-foreground text-red-800">
+          {t("error.retryExhaustedMessage")}
+        </p>
+      </div>
+    );
+  }
+
+  if (status === PROCESSING_STATUS.ERROR) {
     return (
       <div className="container flex flex-col items-center justify-center py-16">
         <h2 className="font-bold text-red-500 text-xl">{t("error.errorFromAPI")}</h2>
