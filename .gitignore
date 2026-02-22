@@ -37,3 +37,9 @@ yarn-error.log*
 next-env.d.ts
 
 .eslintcache
+
+# agent config
+.tasks/
+AGENTS.md
+CLAUDE.md
+.agents/
