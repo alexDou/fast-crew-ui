@@ -1,8 +1,9 @@
 import { useState } from "react";
 
 import { useQuery } from "@tanstack/react-query";
+import ky from "ky";
 
-import { BFF_ENDPOINTS, ERROR_MESSAGES } from "@/constants/api";
+import { BFF_ENDPOINTS } from "@/constants/api";
 import { QUERY_KEYS } from "@/constants/query-keys";
 import { PROCESSING_STATUS, type ProcessingStatusType } from "@/constants/status";
 
@@ -22,15 +23,7 @@ export function useResultFetch({ sourceId, status }: UseResultFetchProps) {
 
   const { data: poems = [], isLoading } = useQuery<Poem[]>({
     queryKey: [QUERY_KEYS.POEMS, sourceId],
-    queryFn: async () => {
-      const response = await fetch(BFF_ENDPOINTS.tunerPoems(sourceId));
-
-      if (!response.ok) {
-        throw new Error(ERROR_MESSAGES.FETCH_POEMS_FAILED);
-      }
-
-      return response.json();
-    },
+    queryFn: () => ky.get(BFF_ENDPOINTS.tunerPoems(sourceId)).json<Poem[]>(),
     enabled: status === PROCESSING_STATUS.SUCCESS,
     retry: 4,
     staleTime: Infinity
