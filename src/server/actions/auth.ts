@@ -3,7 +3,10 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+import ky, { HTTPError } from "ky";
+
 import { API_ENDPOINTS, ERROR_MESSAGES } from "@/constants/api";
+
 import { routesBook } from "@/lib/routes-book";
 
 import type { APIUser } from "@/server/api/auth";
@@ -94,20 +97,16 @@ export async function getCurrentUser(): Promise<APIUser | null> {
       return redirect(routesBook.signin);
     }
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.USER_ME}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      cache: "no-store"
-    });
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        return redirect(routesBook.signin);
-      }
-      return null;
-    }
-
-    return await response.json();
+    return await ky
+      .get(`${process.env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.USER_ME}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        cache: "no-store"
+      })
+      .json<APIUser>();
   } catch (error) {
+    if (error instanceof HTTPError && error.response.status === 401) {
+      return redirect(routesBook.signin);
+    }
     console.error("Get current user error:", error);
     return null;
   }

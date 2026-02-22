@@ -1,3 +1,5 @@
+import ky, { HTTPError } from "ky";
+
 import { API_ENDPOINTS, ERROR_MESSAGES } from "@/constants/api";
 import { env } from "@/env";
 
@@ -20,15 +22,13 @@ export async function loginToAPI(username: string, password: string): Promise<st
     formData.append("username", username);
     formData.append("password", password);
 
-    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.LOGIN}`, {
-      method: "POST",
-      body: formData,
-      credentials: "include"
-    });
+    const tokens = await ky
+      .post(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.LOGIN}`, {
+        body: formData,
+        credentials: "include"
+      })
+      .json<APITokens>();
 
-    if (!response.ok) return null;
-
-    const tokens: APITokens = await response.json();
     return tokens.access_token;
   } catch (error) {
     console.error("Login error:", error);
@@ -43,19 +43,16 @@ export async function registerToAPI(data: {
   password: string;
 }): Promise<APIUser | null> {
   try {
-    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.USER}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.detail || ERROR_MESSAGES.REGISTRATION_FAILED);
-    }
-
-    return await response.json();
+    return await ky
+      .post(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.USER}`, {
+        json: data
+      })
+      .json<APIUser>();
   } catch (error) {
+    if (error instanceof HTTPError) {
+      const errorBody = await error.response.json<{ detail?: string }>();
+      throw new Error(errorBody.detail || ERROR_MESSAGES.REGISTRATION_FAILED);
+    }
     console.error("Registration error:", error);
     throw error;
   }
@@ -63,12 +60,11 @@ export async function registerToAPI(data: {
 
 export async function getUserFromAPI(accessToken: string): Promise<APIUser | null> {
   try {
-    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.USER_ME}`, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-
-    if (!response.ok) return null;
-    return await response.json();
+    return await ky
+      .get(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.USER_ME}`, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      })
+      .json<APIUser>();
   } catch (error) {
     console.error("Fetch user error:", error);
     return null;
@@ -77,14 +73,12 @@ export async function getUserFromAPI(accessToken: string): Promise<APIUser | nul
 
 export async function refreshTokenFromAPI(): Promise<string | null> {
   try {
-    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.REFRESH}`, {
-      method: "POST",
-      credentials: "include"
-    });
+    const tokens = await ky
+      .post(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.REFRESH}`, {
+        credentials: "include"
+      })
+      .json<APITokens>();
 
-    if (!response.ok) return null;
-
-    const tokens: APITokens = await response.json();
     return tokens.access_token;
   } catch (error) {
     console.error("Token refresh error:", error);
@@ -94,13 +88,12 @@ export async function refreshTokenFromAPI(): Promise<string | null> {
 
 export async function logoutFromAPI(accessToken: string): Promise<boolean> {
   try {
-    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.LOGOUT}`, {
-      method: "POST",
+    await ky.post(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.LOGOUT}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
       credentials: "include"
     });
 
-    return response.ok;
+    return true;
   } catch (error) {
     console.error("Logout error:", error);
     return false;
