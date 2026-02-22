@@ -1,3 +1,4 @@
+import { API_ENDPOINTS, ERROR_MESSAGES } from "@/constants/api";
 import { env } from "@/env";
 
 interface APITokens {
@@ -19,7 +20,7 @@ export async function loginToAPI(username: string, password: string): Promise<st
     formData.append("username", username);
     formData.append("password", password);
 
-    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/v1/login`, {
+    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.LOGIN}`, {
       method: "POST",
       body: formData,
       credentials: "include"
@@ -42,7 +43,7 @@ export async function registerToAPI(data: {
   password: string;
 }): Promise<APIUser | null> {
   try {
-    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/v1/user`, {
+    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.USER}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
@@ -50,7 +51,7 @@ export async function registerToAPI(data: {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.detail || "Registration failed");
+      throw new Error(error.detail || ERROR_MESSAGES.REGISTRATION_FAILED);
     }
 
     return await response.json();
@@ -62,7 +63,7 @@ export async function registerToAPI(data: {
 
 export async function getUserFromAPI(accessToken: string): Promise<APIUser | null> {
   try {
-    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/v1/user/me`, {
+    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.USER_ME}`, {
       headers: { Authorization: `Bearer ${accessToken}` }
     });
 
@@ -76,7 +77,7 @@ export async function getUserFromAPI(accessToken: string): Promise<APIUser | nul
 
 export async function refreshTokenFromAPI(): Promise<string | null> {
   try {
-    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/v1/refresh`, {
+    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.REFRESH}`, {
       method: "POST",
       credentials: "include"
     });
@@ -93,7 +94,7 @@ export async function refreshTokenFromAPI(): Promise<string | null> {
 
 export async function logoutFromAPI(accessToken: string): Promise<boolean> {
   try {
-    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/v1/logout`, {
+    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.LOGOUT}`, {
       method: "POST",
       headers: { Authorization: `Bearer ${accessToken}` },
       credentials: "include"

@@ -3,6 +3,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { API_ENDPOINTS, ERROR_MESSAGES } from "@/constants/api";
 import { routesBook } from "@/lib/routes-book";
 
 import type { APIUser } from "@/server/api/auth";
@@ -20,7 +21,7 @@ export async function loginAction(username: string, password: string): Promise<A
     if (!accessToken) {
       return {
         success: false,
-        error: "Invalid username or password"
+        error: ERROR_MESSAGES.INVALID_CREDENTIALS
       };
     }
 
@@ -40,7 +41,7 @@ export async function loginAction(username: string, password: string): Promise<A
     console.error("Login action error:", error);
     return {
       success: false,
-      error: "An error occurred during login"
+      error: ERROR_MESSAGES.LOGIN_ERROR
     };
   }
 }
@@ -62,7 +63,7 @@ export async function registerAction(data: {
     console.error("Register action error:", error);
     return {
       success: false,
-      error: error.message || "An error occurred during registration"
+      error: error.message || ERROR_MESSAGES.REGISTRATION_ERROR
     };
   }
 }
@@ -93,7 +94,7 @@ export async function getCurrentUser(): Promise<APIUser | null> {
       return redirect(routesBook.signin);
     }
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/me`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.USER_ME}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
       cache: "no-store"
     });

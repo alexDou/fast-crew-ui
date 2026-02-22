@@ -1,11 +1,12 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 
+import { API_TIMEOUT, ERROR_MESSAGES } from "@/constants/api";
 import { env } from "@/env";
 
 // FIXME: Set your API base URL and global headers
 export const api = axios.create({
   baseURL: env.NEXT_PUBLIC_API_URL,
-  timeout: 10_000,
+  timeout: API_TIMEOUT,
   headers: {
     Accept: "application/json"
   }
@@ -23,7 +24,7 @@ api.interceptors.response.use(
   (err) => {
     if (axios.isAxiosError(err)) return Promise.reject(err);
 
-    return Promise.reject(new AxiosError("Bilinmeyen hata"));
+    return Promise.reject(new AxiosError(ERROR_MESSAGES.UNKNOWN));
   }
 );
 

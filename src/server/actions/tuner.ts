@@ -3,6 +3,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { API_ENDPOINTS, ERROR_MESSAGES } from "@/constants/api";
 import { routesBook } from "@/lib/routes-book";
 
 export interface UploadActionResult {
@@ -32,7 +33,7 @@ export async function uploadAction(data: {
       return redirect(routesBook.signin);
     }
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/poem-source`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.POEM_SOURCE}`, {
       method: "POST",
       body: formData,
       headers: {
@@ -44,7 +45,7 @@ export async function uploadAction(data: {
       const error = await response.json();
       return {
         success: false,
-        error: error.detail || "Upload failed"
+        error: error.detail || ERROR_MESSAGES.UPLOAD_FAILED
       };
     }
 
@@ -62,7 +63,7 @@ export async function uploadAction(data: {
     console.error("Upload action error:", error);
     return {
       success: false,
-      error: "An error occurred during upload"
+      error: ERROR_MESSAGES.UPLOAD_ERROR
     };
   }
 }

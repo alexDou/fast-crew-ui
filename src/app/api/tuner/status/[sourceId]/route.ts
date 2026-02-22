@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 
+import { API_ENDPOINTS, ERROR_MESSAGES } from "@/constants/api";
 import { routesBook } from "@/lib/routes-book";
 
 let response: Response | null = null;
@@ -18,7 +19,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ sourceId: 
     }
 
     response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/v1/poem-source/${sourceId}/ready`,
+      `${process.env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.poemSourceStatus(sourceId)}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`
@@ -27,7 +28,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ sourceId: 
     );
 
     if (!response.ok) {
-      return NextResponse.json({ error: "Failed to check status" }, { status: response.status });
+      return NextResponse.json({ error: ERROR_MESSAGES.CHECK_STATUS_FAILED }, { status: response.status });
     }
 
     const data = await response.json();
@@ -35,7 +36,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ sourceId: 
   } catch (err) {
     console.error("Status check error:", err);
     return NextResponse.json(
-      { error: response?.statusText || "Internal erver error" },
+      { error: response?.statusText || ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
       { status: response?.status || 500 }
     );
   }

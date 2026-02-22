@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { BFF_ENDPOINTS, ERROR_MESSAGES } from "@/constants/api";
 import { QUERY_KEYS } from "@/constants/query-keys";
 import { PROCESSING_STATUS, type ProcessingStatusType } from "@/constants/status";
 
@@ -13,10 +14,10 @@ export function useProcessingStatusFetch(sourceId: number) {
   const { data, isLoading, isError } = useQuery<StatusResponse>({
     queryKey: [QUERY_KEYS.POEM_SOURCE_STATUS, sourceId],
     queryFn: async () => {
-      const response = await fetch(`/api/tuner/status/${sourceId}`);
+      const response = await fetch(BFF_ENDPOINTS.tunerStatus(sourceId));
 
       if (!response.ok) {
-        throw new Error("Failed to fetch status");
+        throw new Error(ERROR_MESSAGES.FETCH_STATUS_FAILED);
       }
 
       return response.json();
