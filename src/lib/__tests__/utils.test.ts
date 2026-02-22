@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import { cn } from "@/lib/utils";
+import { cn, sleep } from "@/lib/utils";
 
 describe("cn()", () => {
   it("merges class names", () => {
@@ -21,5 +21,27 @@ describe("cn()", () => {
 
   it("returns empty string with no inputs", () => {
     expect(cn()).toBe("");
+  });
+});
+
+describe("sleep()", () => {
+  it("resolves after the specified delay", async () => {
+    vi.useFakeTimers();
+    let resolved = false;
+    sleep(100).then(() => {
+      resolved = true;
+    });
+
+    expect(resolved).toBe(false);
+
+    await vi.advanceTimersByTimeAsync(100);
+    expect(resolved).toBe(true);
+
+    vi.useRealTimers();
+  });
+
+  it("returns a promise", () => {
+    const result = sleep(0);
+    expect(result).toBeInstanceOf(Promise);
   });
 });
