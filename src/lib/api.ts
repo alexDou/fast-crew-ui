@@ -1,41 +1,40 @@
-import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import ky, { type Options } from "ky";
 
-import { API_TIMEOUT, ERROR_MESSAGES } from "@/constants/api";
+import { API_TIMEOUT } from "@/constants/api";
 import { env } from "@/env";
 
+function normalizeUrl(url: string): string {
+  return url.startsWith("/") ? url.slice(1) : url;
+}
+
 // FIXME: Set your API base URL and global headers
-export const api = axios.create({
-  baseURL: env.NEXT_PUBLIC_API_URL,
+export const api = ky.create({
+  prefixUrl: env.NEXT_PUBLIC_API_URL,
   timeout: API_TIMEOUT,
   headers: {
     Accept: "application/json"
+  },
+  hooks: {
+    beforeRequest: [
+      // FIXME: Inject your auth token/header if required
+      // ({ request }) => {
+      //   const token = getToken();
+      //   if (token) request.headers.set("Authorization", `Bearer ${token}`);
+      // }
+    ]
   }
 });
 
-api.interceptors.request.use((config) => {
-  // FIXME: Inject your auth token/header if required
-  // const token = getToken();
-  // if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
-});
+type Cfg = Options;
 
-api.interceptors.response.use(
-  (res) => res,
-  (err) => {
-    if (axios.isAxiosError(err)) return Promise.reject(err);
-
-    return Promise.reject(new AxiosError(ERROR_MESSAGES.UNKNOWN));
-  }
-);
-
-type Cfg = AxiosRequestConfig & { signal?: AbortSignal };
-
-export const get = async <T>(url: string, config?: Cfg) => (await api.get<T>(url, config)).data;
+export const get = async <T>(url: string, config?: Cfg) =>
+  api.get(normalizeUrl(url), config).json<T>();
 
 export const post = async <T, B = unknown>(url: string, body?: B, config?: Cfg) =>
-  (await api.post<T>(url, body, config)).data;
+  api.post(normalizeUrl(url), { ...config, json: body }).json<T>();
 
 export const put = async <T, B = unknown>(url: string, body?: B, config?: Cfg) =>
-  (await api.put<T>(url, body, config)).data;
+  api.put(normalizeUrl(url), { ...config, json: body }).json<T>();
 
-export const del = async <T>(url: string, config?: Cfg) => (await api.delete<T>(url, config)).data;
+export const del = async <T>(url: string, config?: Cfg) =>
+  api.delete(normalizeUrl(url), config).json<T>();
