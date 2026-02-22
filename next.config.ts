@@ -11,8 +11,8 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
-  compiler:{
-    removeConsole: false,
+  compiler: {
+    removeConsole: false
   },
   htmlLimitedBots: /.*/,
   turbopack: {

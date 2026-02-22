@@ -1,6 +1,5 @@
 import { ErrorReport } from "@/components/error-report";
 import { TunerForm } from "@/components/tuner";
-
 import { getCurrentUser } from "@/server/actions/auth";
 
 export default async function TunerPage() {

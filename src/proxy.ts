@@ -1,8 +1,10 @@
-import createMiddleware from "next-intl/middleware";
-import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
+
+import createMiddleware from "next-intl/middleware";
 
 import { DEFAULT_LOCALE } from "@/constants/i18n";
+
 import { routing } from "@/i18n/routing";
 import { routesPrivate, routesPublic } from "@/lib/routes-book";
 
@@ -16,11 +18,11 @@ export default async function proxy(request: NextRequest) {
   const cookieStore = await cookies();
 
   const rewriteUrl = request.url;
-  const [, , ...rest] = new URL(rewriteUrl).pathname.split('/');
+  const [, , ...rest] = new URL(rewriteUrl).pathname.split("/");
   const localeCookie = cookieStore.get("NEXT_LOCALE")?.value;
   const locale = localeCookie || DEFAULT_LOCALE;
 
-  const pathWithoutLocale = `/${rest.join('/')}`;
+  const pathWithoutLocale = `/${rest.join("/")}`;
 
   const isProtectedRoute = protectedRoutes.includes(pathWithoutLocale);
   const isPublicRoute = publicRoutes.includes(pathWithoutLocale);

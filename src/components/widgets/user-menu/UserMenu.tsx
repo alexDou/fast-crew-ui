@@ -1,13 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
 
 import { LogOutIcon, UserIcon } from "lucide-react";
-
-import { logoutAction } from "@/server/actions/auth";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/ui";
+import { logoutAction } from "@/server/actions/auth";
 
 export function UserMenu() {
   const router = useRouter();

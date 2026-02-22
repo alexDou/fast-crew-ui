@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import { useQuery } from "@tanstack/react-query";
 
 interface Poem {
@@ -19,16 +20,16 @@ export function useResultFetch({ sourceId, status }: UseResultFetchProps) {
     queryKey: ["poems", sourceId],
     queryFn: async () => {
       const response = await fetch(`/api/tuner/poems/${sourceId}`);
-      
+
       if (!response.ok) {
         throw new Error("Failed to fetch poems");
       }
-      
+
       return response.json();
     },
-    enabled: status === "success", // Only fetch when processing is complete
-    retry: 2,
-    staleTime: Infinity // Poems won't change, so cache forever
+    enabled: status === "success",
+    retry: 4,
+    staleTime: Infinity
   });
 
   // Set initial active poem when poems are loaded

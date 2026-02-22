@@ -13,10 +13,7 @@ export interface APIUser {
   tier_id: number | null;
 }
 
-export async function loginToAPI(
-  username: string,
-  password: string
-): Promise<string | null> {
+export async function loginToAPI(username: string, password: string): Promise<string | null> {
   try {
     const formData = new FormData();
     formData.append("username", username);

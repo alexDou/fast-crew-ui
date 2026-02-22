@@ -3,9 +3,10 @@
 import { useRouter } from "next/navigation";
 
 import { HomeIcon } from "lucide-react";
-import { Button } from "@/ui";
 
 import { routesBook } from "@/lib/routes-book";
+
+import { Button } from "@/ui";
 
 export const PrivateNav = () => {
   const router = useRouter();

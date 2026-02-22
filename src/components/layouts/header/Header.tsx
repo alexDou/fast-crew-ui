@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 
-import { LocaleSwitcher, ThemeSwitcher, PrivateNav, UserMenu } from "@/widgets";
+import { LocaleSwitcher, PrivateNav, ThemeSwitcher, UserMenu } from "@/widgets";
 
 export const Header = async () => {
   const cookieStore = await cookies();

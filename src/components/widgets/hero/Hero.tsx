@@ -17,7 +17,7 @@ export function Hero({ title, description, githubUrl, githubLabel }: HeroType) {
     <div className="mt-20 flex flex-col items-center justify-center gap-6">
       <Balancer
         as="h1"
-        className="text-center text-2xl font-bold text-black lg:text-5xl dark:text-white"
+        className="text-center font-bold text-2xl text-black lg:text-5xl dark:text-white"
       >
         {title}
       </Balancer>

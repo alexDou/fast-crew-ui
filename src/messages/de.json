@@ -35,7 +35,7 @@
     "forgotPassword": "Passwort vergessen",
     "submit": "Abgeben",
     "registration": {
-      "success": { 
+      "success": {
         "title": "Das Konto wurde erfolgreich erstellt!",
         "message": "Loggen Sie sich mit Ihren Daten ein"
       },
@@ -45,7 +45,7 @@
       }
     },
     "signin": {
-      "success": { 
+      "success": {
         "title": "Wilkommen zurück!",
         "message": "Wurde erfolreich angemeldet"
       },

@@ -32,16 +32,13 @@ export async function uploadAction(data: {
       return redirect(routesBook.signin);
     }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/v1/poem-source`,
-      {
-        method: "POST",
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/poem-source`, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
       }
-    );
+    });
 
     if (!response.ok) {
       const error = await response.json();

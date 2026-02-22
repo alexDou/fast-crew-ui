@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
 
 import { routesBook } from "@/lib/routes-book";
 
@@ -34,6 +34,9 @@ export async function GET(_: Request, { params }: { params: Promise<{ sourceId: 
     return NextResponse.json(data);
   } catch (err) {
     console.error("Status check error:", err);
-    return NextResponse.json({ error: response?.statusText || "Internal erver error" }, { status: response?.status || 500});
+    return NextResponse.json(
+      { error: response?.statusText || "Internal erver error" },
+      { status: response?.status || 500 }
+    );
   }
 }

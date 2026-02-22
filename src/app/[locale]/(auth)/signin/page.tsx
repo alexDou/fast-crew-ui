@@ -1,17 +1,17 @@
-import { SigninForm } from "@/widgets";
+import { useTranslations } from "next-intl";
 import { Balancer } from "react-wrap-balancer";
 
-import { useTranslations } from "next-intl";
+import { SigninForm } from "@/widgets";
 
 export default function Home() {
   const t = useTranslations();
-  
+
   return (
     <div className="container py-16">
       <section className="flex flex-col items-center justify-center pb-10">
         <Balancer
           as="h1"
-          className="text-center text-2xl font-bold text-black lg:text-5xl dark:text-white"
+          className="text-center font-bold text-2xl text-black lg:text-5xl dark:text-white"
         >
           {t("Dashboard.title")}
         </Balancer>
@@ -19,7 +19,7 @@ export default function Home() {
       <section className="flex flex-col items-center justify-center">
         <Balancer
           as="h3"
-          className="text-center text-xl font-bold text-black lg:text-2xl dark:text-white"
+          className="text-center font-bold text-black text-xl lg:text-2xl dark:text-white"
         >
           {t("Auth.signin")}
         </Balancer>

@@ -1,13 +1,11 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-
-import { createSignupSchema, type SignupFormValuesType } from "./singup.schema";
-import { registerAction } from "@/server/actions/auth";
 
 import {
   Button,
@@ -19,6 +17,9 @@ import {
   FormMessage,
   Input
 } from "@/ui";
+import { registerAction } from "@/server/actions/auth";
+
+import { createSignupSchema, type SignupFormValuesType } from "./singup.schema";
 
 export function RegisterForm() {
   const tForm = useTranslations("AuthForm");
@@ -30,7 +31,6 @@ export function RegisterForm() {
     defaultValues: { name: "", email: "", username: "", password: "", confirmPassword: "" }
   });
   const { control, handleSubmit } = form;
-
 
   const onSubmit = handleSubmit(async ({ name, email, username, password }) => {
     try {
@@ -50,8 +50,8 @@ export function RegisterForm() {
       toast.error("Registration failed", {
         description: "An unexpected error occurred"
       });
-      if (process.env.NEXT_PUBLIC_NODE_ENV) { 
-        console.error(error); 
+      if (process.env.NEXT_PUBLIC_NODE_ENV) {
+        console.error(error);
       }
     }
   });
@@ -59,7 +59,7 @@ export function RegisterForm() {
   return (
     <section className="mt-16 w-full lg:w-1/3">
       <Form {...form}>
-        <form onSubmit={onSubmit} className="w-full space-y-5 ">
+        <form onSubmit={onSubmit} className="w-full space-y-5">
           <FormField
             control={control}
             name="name"
@@ -67,11 +67,7 @@ export function RegisterForm() {
               <FormItem>
                 <FormLabel>{tForm("nameLabel")}</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder={tForm("namePlaceholder")}
-                    autoComplete="name"
-                    {...field}
-                  />
+                  <Input placeholder={tForm("namePlaceholder")} autoComplete="name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -85,11 +81,7 @@ export function RegisterForm() {
               <FormItem>
                 <FormLabel>{tForm("emailLabel")}</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder={tForm("emailPlaceholder")}
-                    autoComplete="email"
-                    {...field}
-                  />
+                  <Input placeholder={tForm("emailPlaceholder")} autoComplete="email" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

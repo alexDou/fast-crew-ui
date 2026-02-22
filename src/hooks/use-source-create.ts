@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
@@ -36,8 +37,8 @@ export function useSourceCreate() {
       toast.error(t("error.actionErrorTitle"), {
         description: t("error.actionErrorMessage")
       });
-      if (process.env.NEXT_PUBLIC_NODE_ENV === "development") { 
-        console.error(error) 
+      if (process.env.NEXT_PUBLIC_NODE_ENV === "development") {
+        console.error(error);
       }
     }
   };

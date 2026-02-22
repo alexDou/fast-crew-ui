@@ -1,7 +1,8 @@
-import type { SiteConfigType } from "@/types/site-config.type";
-import { DEFAULT_LOCALE } from "@/constants/i18n";
-import { env } from "@/env";
 import { de } from "date-fns/locale";
+
+import { DEFAULT_LOCALE } from "@/constants/i18n";
+import type { SiteConfigType } from "@/types/site-config.type";
+import { env } from "@/env";
 
 // FIXME: Update site branding, default locale, theme color, social links, languages and OG image
 export const siteConfig: SiteConfigType = {

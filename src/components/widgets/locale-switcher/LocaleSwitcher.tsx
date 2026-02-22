@@ -3,7 +3,7 @@
 import { Globe } from "lucide-react";
 import { useLocale } from "next-intl";
 
-import { LocaleCode, LOCALES } from "@/constants/i18n";
+import { LOCALES, LocaleCode } from "@/constants/i18n";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { getLocaleLabel } from "@/lib/locale";

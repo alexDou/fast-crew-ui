@@ -3,10 +3,10 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { routesBook } from "@/lib/routes-book";
+
 import type { APIUser } from "@/server/api/auth";
 import { loginToAPI, logoutFromAPI, registerToAPI } from "@/server/api/auth";
-
-import { routesBook } from "@/lib/routes-book";
 
 export interface AuthActionResult {
   success: boolean;

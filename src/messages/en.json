@@ -35,7 +35,7 @@
     "forgotPassword": "Forgot your password",
     "submit": "Sign In",
     "registration": {
-      "success": { 
+      "success": {
         "title": "Account created!",
         "message": "Please sign in with your credentials"
       },
@@ -45,7 +45,7 @@
       }
     },
     "signin": {
-      "success": { 
+      "success": {
         "title": "Welcome back!",
         "message": "Logged in sucessfully"
       },
