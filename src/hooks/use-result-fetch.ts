@@ -2,6 +2,8 @@ import { useState } from "react";
 
 import { useQuery } from "@tanstack/react-query";
 
+import { PROCESSING_STATUS, type ProcessingStatusType } from "@/constants/status";
+
 interface Poem {
   id: number;
   poem: string;
@@ -10,7 +12,7 @@ interface Poem {
 
 interface UseResultFetchProps {
   sourceId: number;
-  status: "processing" | "success" | "error";
+  status: ProcessingStatusType;
 }
 
 export function useResultFetch({ sourceId, status }: UseResultFetchProps) {
@@ -27,7 +29,7 @@ export function useResultFetch({ sourceId, status }: UseResultFetchProps) {
 
       return response.json();
     },
-    enabled: status === "success",
+    enabled: status === PROCESSING_STATUS.SUCCESS,
     retry: 4,
     staleTime: Infinity
   });

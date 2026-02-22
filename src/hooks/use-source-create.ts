@@ -3,23 +3,23 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
+import { PROCESSING_STATUS, type ProcessingStatusType } from "@/constants/status";
+
 import { uploadAction } from "@/server/actions/tuner";
 
-type ProcessingStatus = "idle" | "processing" | "error";
-
 export function useSourceCreate() {
-  const [processing, setProcessing] = useState<ProcessingStatus>("idle");
+  const [processing, setProcessing] = useState<ProcessingStatusType>(PROCESSING_STATUS.IDLE);
   const [sourceId, setSourceId] = useState<number | null>(null);
   const t = useTranslations("Tuner");
 
   const sourceCreate = async (data: { file: File; enhance?: string }) => {
-    setProcessing("processing");
+    setProcessing(PROCESSING_STATUS.PROCESSING);
 
     try {
       const result = await uploadAction(data);
 
       if (!result.success || !result.data) {
-        setProcessing("error");
+        setProcessing(PROCESSING_STATUS.ERROR);
         setSourceId(null);
         toast.error(t("error.actionErrorTitle"), {
           description: t("error.actionErrorMessage")
@@ -32,7 +32,7 @@ export function useSourceCreate() {
         description: t("form.success.message")
       });
     } catch (error) {
-      setProcessing("error");
+      setProcessing(PROCESSING_STATUS.ERROR);
       setSourceId(null);
       toast.error(t("error.actionErrorTitle"), {
         description: t("error.actionErrorMessage")

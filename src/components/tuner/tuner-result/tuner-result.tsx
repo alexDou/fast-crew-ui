@@ -2,6 +2,8 @@
 
 import { useTranslations } from "next-intl";
 
+import { PROCESSING_STATUS } from "@/constants/status";
+
 import { useProcessingStatusFetch, useResultFetch } from "@/hooks";
 
 interface TunerResultPropsType {
@@ -14,7 +16,7 @@ export function TunerResult({ sourceId }: TunerResultPropsType) {
   const { status, isError: statusError } = useProcessingStatusFetch(sourceId);
   const { poems, activePoem, setActivePoemId } = useResultFetch({ sourceId, status });
 
-  if (status === "processing") {
+  if (status === PROCESSING_STATUS.PROCESSING) {
     return (
       <div className="container flex flex-col items-center justify-center py-16">
         <h2 className="font-bold text-xl">{t("result.processing.title")}</h2>
@@ -23,7 +25,7 @@ export function TunerResult({ sourceId }: TunerResultPropsType) {
     );
   }
 
-  if (statusError || status === "error") {
+  if (statusError || status === PROCESSING_STATUS.ERROR) {
     return (
       <div className="container flex flex-col items-center justify-center py-16">
         <h2 className="font-bold text-red-500 text-xl">{t("error.errorFromAPI")}</h2>

@@ -9,6 +9,8 @@ import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { Balancer } from "react-wrap-balancer";
 
+import { PROCESSING_STATUS } from "@/constants/status";
+
 import { useSourceCreate } from "@/hooks";
 
 import { ErrorReport } from "@/components/error-report";
@@ -55,7 +57,7 @@ export function TunerForm() {
           />
         ) : null}
       </section>
-      {processing === "idle" && (
+      {processing === PROCESSING_STATUS.IDLE && (
         <section className="t-16 lg:w-1/3">
           <Form {...form}>
             <form onSubmit={onSubmit} className="w-full space-y-5">
@@ -121,8 +123,10 @@ export function TunerForm() {
           </Form>
         </section>
       )}
-      {processing === "processing" && sourceId && <TunerResult sourceId={sourceId} />}
-      {processing === "error" && <ErrorReport errorKey="file.network" />}
+      {processing === PROCESSING_STATUS.PROCESSING && sourceId && (
+        <TunerResult sourceId={sourceId} />
+      )}
+      {processing === PROCESSING_STATUS.ERROR && <ErrorReport errorKey="file.network" />}
     </div>
   );
 }
