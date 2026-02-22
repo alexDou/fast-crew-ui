@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { QUERY_KEYS } from "@/constants/query-keys";
 import { PROCESSING_STATUS, type ProcessingStatusType } from "@/constants/status";
 
 interface StatusResponse {
@@ -10,7 +11,7 @@ interface StatusResponse {
 
 export function useProcessingStatusFetch(sourceId: number) {
   const { data, isLoading, isError } = useQuery<StatusResponse>({
-    queryKey: ["poem-source-status", sourceId],
+    queryKey: [QUERY_KEYS.POEM_SOURCE_STATUS, sourceId],
     queryFn: async () => {
       const response = await fetch(`/api/tuner/status/${sourceId}`);
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { useQuery } from "@tanstack/react-query";
 
+import { QUERY_KEYS } from "@/constants/query-keys";
 import { PROCESSING_STATUS, type ProcessingStatusType } from "@/constants/status";
 
 interface Poem {
@@ -19,7 +20,7 @@ export function useResultFetch({ sourceId, status }: UseResultFetchProps) {
   const [activePoemId, setActivePoemId] = useState<number | null>(null);
 
   const { data: poems = [], isLoading } = useQuery<Poem[]>({
-    queryKey: ["poems", sourceId],
+    queryKey: [QUERY_KEYS.POEMS, sourceId],
     queryFn: async () => {
       const response = await fetch(`/api/tuner/poems/${sourceId}`);
 
