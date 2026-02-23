@@ -78,6 +78,19 @@
     "errorTitle": "Something went wrong",
     "errorMessage": "We could not load your poems. Please try again later"
   },
+  "PoemDetail": {
+    "title": "Your Poems",
+    "backToList": "Back to poems",
+    "errorTitle": "Something went wrong",
+    "errorMessage": "We could not load this poem. Please try again later",
+    "notFoundTitle": "No poems found",
+    "notFoundMessage": "There are no poems for this request"
+  },
+  "PoemDisplay": {
+    "otherPoems": "Other poems",
+    "alternative": "Alternative",
+    "criticChoice": "Critic's choice"
+  },
   "Tuner": {
     "title": "Tuner",
     "error": {

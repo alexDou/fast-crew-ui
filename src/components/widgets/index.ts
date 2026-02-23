@@ -3,6 +3,7 @@ export * from "../signin-form";
 export * from "./dashboard";
 export * from "./hero";
 export * from "./locale-switcher";
+export * from "./poem-display";
 export * from "./private-nav";
 export * from "./theme-switcher";
 export * from "./user-list";

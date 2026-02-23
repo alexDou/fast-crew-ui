@@ -9,11 +9,7 @@ import { BFF_ENDPOINTS } from "@/constants/api";
 import { QUERY_KEYS } from "@/constants/query-keys";
 import { PROCESSING_STATUS, type ProcessingStatusType } from "@/constants/status";
 
-interface Poem {
-  id: number;
-  poem: string;
-  critic_choice: boolean;
-}
+import type { PoemType } from "@/types";
 
 interface UseResultFetchProps {
   sourceId: number;
@@ -28,9 +24,9 @@ export function useResultFetch({ sourceId, status }: UseResultFetchProps) {
     data: poems = [],
     isLoading,
     isError
-  } = useQuery<Poem[]>({
+  } = useQuery<PoemType[]>({
     queryKey: [QUERY_KEYS.POEMS, sourceId],
-    queryFn: () => ky.get(BFF_ENDPOINTS.tunerPoems(sourceId)).json<Poem[]>(),
+    queryFn: () => ky.get(BFF_ENDPOINTS.tunerPoems(sourceId)).json<PoemType[]>(),
     enabled: status === PROCESSING_STATUS.SUCCESS,
     retry: 4,
     staleTime: Infinity

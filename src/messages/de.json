@@ -78,6 +78,19 @@
     "errorTitle": "Etwas ist schiefgelaufen",
     "errorMessage": "Wir konnten Ihre Gedichte nicht laden. Bitte versuchen Sie es später erneut"
   },
+  "PoemDetail": {
+    "title": "Ihre Gedichte",
+    "backToList": "Zurück zur Liste",
+    "errorTitle": "Etwas ist schiefgelaufen",
+    "errorMessage": "Wir konnten dieses Gedicht nicht laden. Bitte versuchen Sie es später erneut",
+    "notFoundTitle": "Keine Gedichte gefunden",
+    "notFoundMessage": "Es gibt keine Gedichte für diese Anfrage"
+  },
+  "PoemDisplay": {
+    "otherPoems": "Andere Gedichte",
+    "alternative": "Alternative",
+    "criticChoice": "Kritikerwahl"
+  },
   "Tuner": {
     "title": "Tuner",
     "error": {

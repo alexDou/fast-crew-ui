@@ -1,0 +1,40 @@
+nohup: ignoring input
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /home/aldou/yarn.lock as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * /home/aldou/codes/ai/ui/yarn.lock
+
+▲ Next.js 16.1.6 (Rspack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.255.63:3000
+- Environments: .env
+
+✓ Starting...
+⚠ `next-rspack` is currently experimental. It's not an official Next.js plugin, and is supported by the Rspack team in partnership with Next.js. Help improve Next.js and Rspack by providing feedback at https://github.com/vercel/next.js/discussions/77800
+✓ Ready in 9.5s
+
+
+Retrying 1/3...
+
+
+Retrying 1/3...
+
+
+Retrying 2/3...
+
+
+Retrying 2/3...
+⨯ Error: Couldn't find next-intl config file. Please follow the instructions at https://next-intl.dev/docs/getting-started/app-router
+    at RootLayout (src/app/[locale]/layout.tsx:57:37)
+  55 |   setRequestLocale(locale);
+  56 |
+> 57 |   const messages = await getMessages();
+     |                                     ^
+  58 |
+  59 |   return (
+  60 |     <html lang={locale} suppressHydrationWarning> {
+  digest: '3465292614'
+}
+ GET /en 500 in 5.5s (compile: 2.9s, proxy.ts: 66ms, render: 2.4s)
