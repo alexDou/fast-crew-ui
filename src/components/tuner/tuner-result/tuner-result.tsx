@@ -6,6 +6,8 @@ import { PROCESSING_STATUS } from "@/constants/status";
 
 import { useProcessingStatusFetch, useResultFetch } from "@/hooks";
 
+import { PoemDisplay } from "@/widgets";
+
 interface TunerResultPropsType {
   sourceId: number;
 }
@@ -14,12 +16,7 @@ export function TunerResult({ sourceId }: TunerResultPropsType) {
   const t = useTranslations("Tuner");
 
   const { status, isRetryExhausted } = useProcessingStatusFetch(sourceId);
-  const {
-    poems,
-    activePoem,
-    setActivePoemId,
-    isError: resultError
-  } = useResultFetch({
+  const { poems, isError: resultError } = useResultFetch({
     sourceId,
     status
   });
@@ -56,35 +53,7 @@ export function TunerResult({ sourceId }: TunerResultPropsType) {
   return (
     <div className="container flex flex-col items-center justify-center py-16">
       <h2 className="mb-6 font-bold text-2xl">{t("result.success.title")}</h2>
-
-      {activePoem && (
-        <div className="mb-8 rounded-base bg-neutral-secondary-medium p-6">
-          <pre className="whitespace-pre-wrap font-serif text-lg">{activePoem.poem}</pre>
-        </div>
-      )}
-
-      {poems.length > 1 && (
-        <div className="mt-6">
-          <h3 className="mb-4 font-semibold text-lg">{t("result.otherPoems")}</h3>
-          <div className="flex gap-2">
-            {poems.map((poem, idx) => (
-              <button
-                key={poem.id}
-                onClick={() => setActivePoemId(poem.id)}
-                className={`rounded-base px-4 py-2 ${
-                  activePoem?.id === poem.id
-                    ? "bg-primary text-white"
-                    : "bg-neutral-secondary-medium hover:bg-neutral-tertiary-medium"
-                }`}
-              >
-                {poem.critic_choice
-                  ? t("result.criticChoice")
-                  : `${t("result.alternative")} ${idx + 1}`}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      <PoemDisplay poems={poems} />
     </div>
   );
 }
