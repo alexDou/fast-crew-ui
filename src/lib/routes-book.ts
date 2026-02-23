@@ -3,7 +3,9 @@ export const routesBook = {
   signin: "/signin",
   signup: "/signup",
   dashboard: "/dashboard",
-  tuner: "tuner"
+  tuner: "tuner",
+  poems: "/poems",
+  poemDetail: (id: number | string) => `/poems/${id}`
 } as const;
 
 export const routesPublic = {
@@ -14,7 +16,8 @@ export const routesPublic = {
 
 export const routesPrivate = {
   main: "/dashboard",
-  tuner: "/tuner"
+  tuner: "/tuner",
+  poems: "/poems"
 } as const;
 
 export type RoutesPublicValuesType = (typeof routesPublic)[keyof typeof routesPublic];

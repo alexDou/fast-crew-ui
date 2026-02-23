@@ -3,7 +3,8 @@
     "title": "Dichter-Crew",
     "description": "Mit diesem Online-Tool kann man ein Gedicht generieren indem man einen Bild hochladt",
     "projectBy": "Mustervorlage von",
-    "tunerButton": "Bild zum Gedicht"
+    "tunerButton": "Bild zum Gedicht",
+    "poemsButton": "Meine Gedichte"
   },
   "Auth": {
     "signin": "Anmelden",
@@ -69,6 +70,13 @@
     "profile": "Profil",
     "networkError": "Die Route ist leider fehlgeschlagen",
     "networkErrorMessage": "Wir haben einen Netzwerkfehler. Bitte versuchen Sie es mal erneut"
+  },
+  "Poems": {
+    "title": "Meine Gedichte",
+    "empty": "Noch keine Gedichte",
+    "emptyAction": "Erstellen Sie Ihr erstes Gedicht",
+    "errorTitle": "Etwas ist schiefgelaufen",
+    "errorMessage": "Wir konnten Ihre Gedichte nicht laden. Bitte versuchen Sie es später erneut"
   },
   "Tuner": {
     "title": "Tuner",

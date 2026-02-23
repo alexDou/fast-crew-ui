@@ -3,7 +3,8 @@
     "title": "Poets crew",
     "description": "With this tool you can generate a poem out of an uploaded image content.",
     "projectBy": "Template by",
-    "tunerButton": "Picture to a Poem"
+    "tunerButton": "Picture to a Poem",
+    "poemsButton": "My Poems"
   },
   "Auth": {
     "signin": "Login",
@@ -69,6 +70,13 @@
     "profile": "Profile",
     "networkError": "Error loading user data",
     "networkErrorMessage": "We are experiencing a network error. Please try again later"
+  },
+  "Poems": {
+    "title": "My Poems",
+    "empty": "No poems yet",
+    "emptyAction": "Create your first poem",
+    "errorTitle": "Something went wrong",
+    "errorMessage": "We could not load your poems. Please try again later"
   },
   "Tuner": {
     "title": "Tuner",

@@ -9,11 +9,17 @@ describe("routesBook", () => {
     expect(routesBook.signup).toBe("/signup");
     expect(routesBook.dashboard).toBe("/dashboard");
     expect(routesBook.tuner).toBe("tuner");
+    expect(routesBook.poems).toBe("/poems");
+  });
+
+  it("generates correct poem detail path", () => {
+    expect(routesBook.poemDetail(42)).toBe("/poems/42");
+    expect(routesBook.poemDetail("abc")).toBe("/poems/abc");
   });
 
   it("is readonly (const assertion)", () => {
     const keys = Object.keys(routesBook);
-    expect(keys).toEqual(["main", "signin", "signup", "dashboard", "tuner"]);
+    expect(keys).toEqual(["main", "signin", "signup", "dashboard", "tuner", "poems", "poemDetail"]);
   });
 });
 
@@ -36,7 +42,8 @@ describe("routesPrivate", () => {
   it("contains only private routes", () => {
     expect(routesPrivate).toEqual({
       main: "/dashboard",
-      tuner: "/tuner"
+      tuner: "/tuner",
+      poems: "/poems"
     });
   });
 

@@ -19,6 +19,7 @@ export function Dashboard({ user }: DashboardProps) {
   const router = useRouter();
 
   const handleMoveToTuner = () => router.push(routesBook.tuner);
+  const handleMoveToPoems = () => router.push(routesBook.poems);
 
   return (
     <section className="container py-16">
@@ -34,9 +35,12 @@ export function Dashboard({ user }: DashboardProps) {
           Welcome, {user.name} (@{user.username})
         </Balancer>
       </div>
-      <div className="flex items-center justify-center pb-10">
+      <div className="flex items-center justify-center gap-4 pb-10">
         <Button size="lg" onClick={handleMoveToTuner}>
           {t("tunerButton")}
+        </Button>
+        <Button size="lg" variant="outline" onClick={handleMoveToPoems}>
+          {t("poemsButton")}
         </Button>
       </div>
     </section>
