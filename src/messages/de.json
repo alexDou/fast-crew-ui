@@ -105,7 +105,8 @@
       "errorFromAPI": "Fehler bei der Verarbeitung Ihres Bildes",
       "errorFromAPIMessage": "Wir lösen das Problem, und ermutigen Sie, später erneut zu versuchen",
       "retryExhaustedTitle": "Verarbeitung nicht möglich",
-      "retryExhaustedMessage": "Wir können Ihre Anfrage momentan nicht verarbeiten. Bitte versuchen Sie es später erneut"
+      "retryExhaustedMessage": "Wir können Ihre Anfrage momentan nicht verarbeiten. Bitte versuchen Sie es später erneut",
+      "tryAgain": "Erneut versuchen"
     },
     "form": {
       "success": {

@@ -32,7 +32,7 @@ export function TunerForm() {
   const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(null);
   const t = useTranslations("Tuner");
 
-  const { sourceCreate, processing, sourceId } = useSourceCreate();
+  const { sourceCreate, processing, sourceId, resetProcessing } = useSourceCreate();
 
   const form = useForm<TunerFormValuesType>({
     resolver: zodResolver(tunerFormSchema(t)),
@@ -124,9 +124,16 @@ export function TunerForm() {
         </section>
       )}
       {processing === PROCESSING_STATUS.PROCESSING && sourceId && (
-        <TunerResult sourceId={sourceId} />
+        <TunerResult sourceId={sourceId} onReset={resetProcessing} />
       )}
-      {processing === PROCESSING_STATUS.ERROR && <ErrorReport errorKey="file.network" />}
+      {processing === PROCESSING_STATUS.ERROR && (
+        <>
+          <ErrorReport errorKey="file.network" />
+          <Button variant="outline" className="mt-4" onClick={resetProcessing}>
+            {t("error.tryAgain")}
+          </Button>
+        </>
+      )}
     </div>
   );
 }

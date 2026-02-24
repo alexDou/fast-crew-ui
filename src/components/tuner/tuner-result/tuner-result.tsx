@@ -1,25 +1,38 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
 import { useTranslations } from "next-intl";
 
 import { PROCESSING_STATUS } from "@/constants/status";
 
 import { useProcessingStatusFetch, useResultFetch } from "@/hooks";
 
-import { PoemDisplay } from "@/widgets";
+import { routesBook } from "@/lib/routes-book";
+
+import { Button } from "@/ui";
 
 interface TunerResultPropsType {
   sourceId: number;
+  onReset: () => void;
 }
 
-export function TunerResult({ sourceId }: TunerResultPropsType) {
+export function TunerResult({ sourceId, onReset }: TunerResultPropsType) {
   const t = useTranslations("Tuner");
+  const router = useRouter();
 
   const { status, isRetryExhausted } = useProcessingStatusFetch(sourceId);
-  const { poems, isError: resultError } = useResultFetch({
+  const { isError: resultError } = useResultFetch({
     sourceId,
     status
   });
+
+  useEffect(() => {
+    if (status === PROCESSING_STATUS.SUCCESS) {
+      router.push(routesBook.poemDetail(sourceId));
+    }
+  }, [status, sourceId, router]);
 
   if (status === PROCESSING_STATUS.PROCESSING) {
     return (
@@ -37,6 +50,9 @@ export function TunerResult({ sourceId }: TunerResultPropsType) {
         <p className="mt-4 text-muted-foreground text-red-800">
           {t("error.retryExhaustedMessage")}
         </p>
+        <Button variant="outline" className="mt-6" onClick={onReset}>
+          {t("error.tryAgain")}
+        </Button>
       </div>
     );
   }
@@ -46,14 +62,12 @@ export function TunerResult({ sourceId }: TunerResultPropsType) {
       <div className="container flex flex-col items-center justify-center py-16">
         <h2 className="font-bold text-red-500 text-xl">{t("error.errorFromAPI")}</h2>
         <p className="mt-4 text-muted-foreground text-red-800">{t("error.errorFromAPIMessage")}</p>
+        <Button variant="outline" className="mt-6" onClick={onReset}>
+          {t("error.tryAgain")}
+        </Button>
       </div>
     );
   }
 
-  return (
-    <div className="container flex flex-col items-center justify-center py-16">
-      <h2 className="mb-6 font-bold text-2xl">{t("result.success.title")}</h2>
-      <PoemDisplay poems={poems} />
-    </div>
-  );
+  return null;
 }
