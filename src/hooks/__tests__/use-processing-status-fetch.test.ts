@@ -31,6 +31,7 @@ import React from "react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
+import ky from "ky";
 
 import { useProcessingStatusFetch } from "@/hooks/use-processing-status-fetch";
 
@@ -110,6 +111,21 @@ describe("useProcessingStatusFetch", () => {
     expect(mockToastError).toHaveBeenCalledWith("error.retryExhaustedTitle", {
       description: "error.retryExhaustedMessage"
     });
+  });
+
+  it("retries 3 times before giving up", async () => {
+    mockJsonFn.mockRejectedValue(new Error("Server error"));
+
+    const { result } = renderHook(() => useProcessingStatusFetch(1), {
+      wrapper: createWrapper()
+    });
+
+    await waitFor(() => {
+      expect(result.current.isRetryExhausted).toBe(true);
+    });
+
+    // 1 initial attempt + 3 retries = 4 total calls
+    expect(ky.get).toHaveBeenCalledTimes(4);
   });
 
   it("does not show toast on successful response", async () => {
