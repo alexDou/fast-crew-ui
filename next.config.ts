@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 import bundleAnalyzer from "@next/bundle-analyzer";
 import createNextIntlPlugin from "next-intl/plugin";
-import type { RuleSetRule } from "webpack";
+import withRspack from "next-rspack";
 
 const withNextIntl = createNextIntlPlugin();
 const withBundleAnalyzer = bundleAnalyzer({
@@ -29,9 +29,15 @@ const nextConfig: NextConfig = {
     }
   },
   webpack(config) {
-    const rules = config.module.rules as RuleSetRule[];
+    const rules = config.module.rules as Array<{
+      test?: RegExp;
+      exclude?: RegExp;
+      issuer?: RegExp;
+      use?: string[];
+      [key: string]: unknown;
+    }>;
     const fileLoaderRule = rules.find(
-      (rule): rule is RuleSetRule =>
+      (rule) =>
         !!rule && typeof rule === "object" && rule.test instanceof RegExp && rule.test.test(".svg")
     );
     if (fileLoaderRule) fileLoaderRule.exclude = /\.svg$/i;
@@ -40,4 +46,4 @@ const nextConfig: NextConfig = {
   }
 };
 
-export default withBundleAnalyzer(withNextIntl(nextConfig));
+export default withRspack(withBundleAnalyzer(withNextIntl(nextConfig)));
