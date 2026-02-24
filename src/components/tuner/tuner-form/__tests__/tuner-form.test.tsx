@@ -1,4 +1,10 @@
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("@hookform/resolvers/zod", () => ({
+  zodResolver: () => async (values: Record<string, unknown>) => ({ values, errors: {} })
+}));
 
 vi.mock("next-intl", () => ({
   useTranslations: () => (key: string) => key
@@ -8,6 +14,10 @@ vi.mock("next/image", () => ({
   default: ({ src, alt, ...props }: { src: string; alt: string; [key: string]: unknown }) => (
     <img src={src} alt={alt} {...props} />
   )
+}));
+
+vi.mock("react-wrap-balancer", () => ({
+  Balancer: ({ children }: { children: React.ReactNode }) => <span>{children}</span>
 }));
 
 const { mockSourceCreate, mockProcessing, mockSourceId, mockResetProcessing } = vi.hoisted(() => ({
@@ -58,22 +68,70 @@ vi.mock("@/ui", () => ({
   ),
   Form: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   FormControl: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  FormField: () => <div data-testid="form-field" />,
+  FormField: ({
+    render,
+    name
+  }: {
+    render: (args: {
+      field: {
+        onChange: (v: unknown) => void;
+        value: unknown;
+        name: string;
+        onBlur: () => void;
+        ref: (el: unknown) => void;
+      };
+    }) => React.ReactNode;
+    name: string;
+    control: unknown;
+  }) =>
+    render({
+      field: {
+        onChange: vi.fn(),
+        value: undefined,
+        name,
+        onBlur: vi.fn(),
+        ref: vi.fn()
+      }
+    }),
   FormItem: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  FormLabel: ({ children }: { children: React.ReactNode }) => <label>{children}</label>,
+  FormLabel: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
+    <label {...props}>{children}</label>
+  ),
   FormMessage: () => <span />,
-  Input: () => <input />
+  Input: (props: Record<string, unknown>) => <input {...props} />
 }));
 
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-
 import { TunerForm } from "../tuner-form";
+
+const mockFileReaderInstance = {
+  readAsDataURL: vi.fn(),
+  result: "data:image/jpeg;base64,test",
+  onloadend: null as (() => void) | null
+};
+
+class MockFileReader {
+  readAsDataURL = mockFileReaderInstance.readAsDataURL;
+  result = mockFileReaderInstance.result;
+  onloadend: (() => void) | null = null;
+
+  constructor() {
+    mockFileReaderInstance.onloadend = null;
+    // Proxy onloadend so we can trigger it from tests
+    Object.defineProperty(this, "onloadend", {
+      set: (fn: (() => void) | null) => {
+        mockFileReaderInstance.onloadend = fn;
+      },
+      get: () => mockFileReaderInstance.onloadend
+    });
+  }
+}
 
 beforeEach(() => {
   vi.clearAllMocks();
   mockProcessing.current = "idle";
   mockSourceId.current = null;
+  mockFileReaderInstance.onloadend = null;
+  vi.stubGlobal("FileReader", MockFileReader);
 });
 
 describe("TunerForm", () => {
@@ -124,5 +182,37 @@ describe("TunerForm", () => {
     await user.click(screen.getByText("error.tryAgain"));
 
     expect(mockResetProcessing).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows image preview after file selection", async () => {
+    const { container } = render(<TunerForm />);
+
+    const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+    const file = new File(["test"], "test.jpg", { type: "image/jpeg" });
+
+    await act(async () => {
+      fireEvent.change(fileInput, { target: { files: [file] } });
+    });
+
+    await act(async () => {
+      mockFileReaderInstance.onloadend?.();
+    });
+
+    const previewImg = container.querySelector('img[alt="Preview"]');
+    expect(previewImg).toBeInTheDocument();
+    expect(previewImg).toHaveAttribute("src", "data:image/jpeg;base64,test");
+  });
+
+  it("calls sourceCreate on form submission", async () => {
+    mockSourceCreate.mockResolvedValue(undefined);
+
+    render(<TunerForm />);
+
+    const user = userEvent.setup();
+    await user.click(screen.getByText("form.submit"));
+
+    await waitFor(() => {
+      expect(mockSourceCreate).toHaveBeenCalledTimes(1);
+    });
   });
 });
