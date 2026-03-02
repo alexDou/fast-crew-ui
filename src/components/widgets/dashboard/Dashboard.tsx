@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 
 import { useTranslations } from "next-intl";
 import { Balancer } from "react-wrap-balancer";
@@ -39,7 +39,7 @@ export function Dashboard({ user }: DashboardProps) {
         <Button size="lg" onClick={handleMoveToTuner}>
           {t("tunerButton")}
         </Button>
-        <Button size="lg" variant="outline" onClick={handleMoveToPoems}>
+        <Button size="lg" onClick={handleMoveToPoems}>
           {t("poemsButton")}
         </Button>
       </div>

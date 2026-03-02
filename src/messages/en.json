@@ -105,7 +105,8 @@
       "errorFromAPI": "Error processing your file",
       "errorFromAPIMessage": "We are resolving the issue, and encourage you to check back later",
       "retryExhaustedTitle": "Unable to process",
-      "retryExhaustedMessage": "We are unable to process your request at this time. Please, try again later"
+      "retryExhaustedMessage": "We are unable to process your request at this time. Please, try again later",
+      "tryAgain": "Try again"
     },
     "form": {
       "success": {

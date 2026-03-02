@@ -3,7 +3,7 @@ export const routesBook = {
   signin: "/signin",
   signup: "/signup",
   dashboard: "/dashboard",
-  tuner: "tuner",
+  tuner: "/tuner",
   poems: "/poems",
   poemDetail: (id: number | string) => `/poems/${id}`
 } as const;

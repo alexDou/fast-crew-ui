@@ -43,9 +43,15 @@ export function useSourceCreate() {
     }
   };
 
+  const resetProcessing = () => {
+    setProcessing(PROCESSING_STATUS.IDLE);
+    setSourceId(null);
+  };
+
   return {
     sourceCreate,
     processing,
-    sourceId
+    sourceId,
+    resetProcessing
   };
 }

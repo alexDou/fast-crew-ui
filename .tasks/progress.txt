@@ -1,0 +1,272 @@
+# Ralph Progress Log
+Started: Sun Feb 22 17:08:06 CET 2026
+---
+
+## Codebase Patterns
+- Path aliases in tsconfig.json must be mirrored in vitest.config.ts resolve.alias for tests to work
+- Use `yarn test:run` for CI (single run), `yarn test` for watch mode
+- Playwright browsers installed via `npx playwright install`; Kali Linux needs `sudo npx playwright install-deps` for system libs
+- Biome is the formatter (not Prettier). Use `biome format --write` and `biome check --write --unsafe` for formatting + import sorting + class sorting
+- API constants: `API_ENDPOINTS` for fast-api paths, `BFF_ENDPOINTS` for Next.js proxy routes, `ERROR_MESSAGES` for error strings — all in `@/constants/api`
+- ky `prefixUrl` ignores URLs starting with `/` — use a `normalizeUrl()` helper to strip leading slashes for backward compatibility with existing path constants
+- CSS files with Tailwind directives require `css.parser.tailwindDirectives: true` in biome.json
+- ESLint flat config: eslint-config-next already registers jsx-a11y plugin — don't redefine it in custom config objects
+- For same-origin BFF routes (paths starting with `/`), use plain `ky` import — not the `api` instance from `@/lib/api.ts` which has `prefixUrl` for the external API
+- Use `vi.hoisted()` to define mock variables referenced inside `vi.mock()` factories — vi.mock is hoisted above imports
+- Mock `@/env` in any test importing modules that depend on env validation: `vi.mock("@/env", () => ({ env: { NEXT_PUBLIC_API_URL: "https://api.example.com" } }))`
+- @testing-library/dom must be installed as devDep (peer of @testing-library/react)
+- For hook tests with TanStack Query: use `retryDelay: 0` and `gcTime: 0` in test QueryClient; wrapper via `React.createElement(QueryClientProvider, ...)`
+- Mock next-intl: `vi.mock("next-intl", () => ({ useTranslations: () => (key: string) => key }))`
+- vitest.config.ts alias resolution uses array format `[{ find, replacement }]` with `@` catch-all LAST — object format lets `@` intercept `@/ui`, `@/hooks`, etc.
+- For server component pages: use `getTranslations()` / `getFormatter()` from `next-intl/server`
+- Mock `@/ui` in page tests to avoid resolving the full shadcn barrel dependency chain
+---
+
+## 2026-02-22 18:04 - US-001
+Thread: https://ampcode.com/threads/T-019c864d-61b0-76ea-90a3-d66b7c8d7db3
+- Installed and configured Vitest with jsdom environment, path aliases, and coverage
+- Installed and configured Playwright with chromium project targeting localhost:3000
+- Created sample unit test for cn() utility (5 tests passing)
+- Created e2e smoke test for landing page
+- Added package.json scripts: test, test:run, test:coverage, test:e2e
+- Files changed: vitest.config.ts, vitest.setup.ts, playwright.config.ts, e2e/smoke.spec.ts, src/lib/__tests__/utils.test.ts, package.json, yarn.lock
+- **Learnings for future iterations:**
+  - vitest.config.ts needs @vitejs/plugin-react for JSX/TSX support in tests
+  - vitest.setup.ts imports `@testing-library/jest-dom/vitest` (not just `@testing-library/jest-dom`)
+  - Playwright on Kali uses fallback ubuntu24.04-x64 builds — functional but shows warnings
+---
+
+## 2026-02-22 18:10 - US-002
+Thread: https://ampcode.com/threads/T-019c864f-96e3-713f-be1d-caeaae9e80a0
+- Installed @biomejs/biome, ran `biome init` then `biome migrate prettier --write`
+- Configured biome.json: formatter (double quotes, no trailing commas, 100 line width), import sorting groups matching .prettierrc order, useSortedClasses nursery rule with [clsx, cn, cva]
+- Enabled `css.parser.tailwindDirectives: true` to fix Tailwind @apply/@theme parsing errors
+- Disabled Biome linter rules (except nursery/useSortedClasses) since ESLint is kept
+- Removed prettier, @ianvs/prettier-plugin-sort-imports, prettier-plugin-tailwindcss packages
+- Deleted .prettierrc and .prettierignore
+- Updated package.json scripts: format/format:check/lint:fix/lint:ci now use biome; added check script
+- Updated lint-staged to use `biome format --write` instead of `prettier --write`
+- Ran `biome format --write .` and `biome check --write --unsafe .` across entire codebase
+- Fixed pre-existing ESLint flat config error: removed duplicate jsx-a11y/anchor-is-valid rule (already provided by eslint-config-next)
+- Files changed: biome.json (new), .prettierrc (deleted), .prettierignore (deleted), eslint.config.mjs, package.json, yarn.lock, 48 source files reformatted
+- **Learnings for future iterations:**
+  - Must run `biome init` before `biome migrate prettier` — biome.json must exist first
+  - Biome migration sets `semicolons: "asNeeded"` even when Prettier default was `true` (semicolons always) — verify and fix
+  - Tailwind CSS directives (@apply, @theme, @utility) need `css.parser.tailwindDirectives: true` or format will fail on CSS files
+  - eslint-config-next already includes jsx-a11y plugin — redefining it in custom config causes "Cannot redefine plugin" error
+  - Biome useSortedClasses is nursery/unsafe — must use `--unsafe` flag with `biome check --write`
+  - Biome import groups use `:BLANK_LINE:`, `:PACKAGE:`, `:ALIAS:`, `:PATH:` predefined groups — groups are matched in order, first match wins
+---
+
+## 2026-02-22 18:13 - US-003
+Thread: https://ampcode.com/threads/T-019c8655-672a-718d-95e1-d1b7b0d200b8
+- Created src/constants/status.ts with PROCESSING_STATUS const object and ProcessingStatusType union type
+- Replaced all hardcoded status string literals in 5 files: use-source-create.ts, use-processing-status-fetch.ts, use-result-fetch.ts, tuner-result.tsx, tuner-form.tsx
+- No barrel export in src/constants/ — follows existing pattern of direct file imports (e.g., `@/constants/status`)
+- Files changed: src/constants/status.ts (new), src/hooks/use-source-create.ts, src/hooks/use-processing-status-fetch.ts, src/hooks/use-result-fetch.ts, src/components/tuner/tuner-result/tuner-result.tsx, src/components/tuner/tuner-form/tuner-form.tsx
+- **Learnings for future iterations:**
+  - Constants directory has no barrel index.ts — imports use direct paths like `@/constants/status`
+  - The local ProcessingStatus type in use-source-create.ts only had "idle" | "processing" | "error" (no "success") — the shared type includes all four values
+  - Import ordering convention: constants imports go between third-party and local module imports, separated by blank lines
+---
+
+## 2026-02-22 18:15 - US-004
+Thread: https://ampcode.com/threads/T-019c8657-feb3-7523-9e2a-25f2da21f74e
+- Created src/constants/query-keys.ts with QUERY_KEYS const object (USERS, POEM_SOURCE_STATUS, POEMS)
+- Replaced hardcoded query key strings in 3 hooks: useUsers.ts, use-processing-status-fetch.ts, use-result-fetch.ts
+- No barrel export in src/constants/ — follows existing pattern of direct file imports
+- Files changed: src/constants/query-keys.ts (new), src/hooks/useUsers.ts, src/hooks/use-processing-status-fetch.ts, src/hooks/use-result-fetch.ts
+- **Learnings for future iterations:**
+  - Only 3 hooks use TanStack Query keys in the codebase currently
+  - Query keys follow pattern: `[QUERY_KEYS.KEY]` or `[QUERY_KEYS.KEY, id]` for parameterized queries
+  - Constants imports from @/constants/query-keys sit alongside @/constants/status imports
+  ---
+
+  ## 2026-02-22 18:17 - US-005
+  Thread: https://ampcode.com/threads/T-019c8659-7cab-744c-af06-62b9c9474cf5
+  - Created src/constants/api.ts with API_ENDPOINTS (static + dynamic paths), BFF_ENDPOINTS (client-side BFF routes), API_TIMEOUT, and ERROR_MESSAGES constants
+  - Replaced hardcoded API paths in 8 files: server/actions/tuner.ts, server/actions/auth.ts, server/api/auth.ts, hooks/use-processing-status-fetch.ts, hooks/use-result-fetch.ts, app/api/tuner/poems/[sourceId]/route.ts, app/api/tuner/status/[sourceId]/route.ts, lib/api.ts
+  - Replaced hardcoded error messages in all files with ERROR_MESSAGES constants
+  - Translated Turkish "Bilinmeyen hata" to English "Unknown error"
+  - Fixed typo "Internal erver error" → "Internal server error" (was in both BFF route handlers)
+  - No barrel export in src/constants/ — follows existing pattern of direct file imports
+  - Files changed: src/constants/api.ts (new), src/lib/api.ts, src/server/actions/tuner.ts, src/server/actions/auth.ts, src/server/api/auth.ts, src/hooks/use-processing-status-fetch.ts, src/hooks/use-result-fetch.ts, src/app/api/tuner/poems/[sourceId]/route.ts, src/app/api/tuner/status/[sourceId]/route.ts
+  - **Learnings for future iterations:**
+  - Dynamic API paths (with IDs) use camelCase functions (e.g., `API_ENDPOINTS.poems(id)`), static paths use UPPER_CASE keys
+  - BFF_ENDPOINTS are separate from API_ENDPOINTS — BFF routes are local Next.js routes (/api/tuner/...), API_ENDPOINTS are fast-api paths (/api/v1/...)
+  - server/actions use `process.env.NEXT_PUBLIC_API_URL` directly, server/api uses `env.NEXT_PUBLIC_API_URL` from @/env — both patterns coexist
+  - Both BFF route handlers had a typo "Internal erver error" — now fixed via constant
+  ---
+
+## 2026-02-22 18:21 - US-006
+Thread: https://ampcode.com/threads/T-019c865c-3383-7046-a4eb-fd483ed082b9
+- Replaced Axios HTTP client with ky in src/lib/api.ts
+- Migrated axios.create() to ky.create() with prefixUrl, timeout, Accept header
+- Migrated request interceptor to ky beforeRequest hook (kept as commented FIXME placeholder)
+- Removed response error interceptor (ky natively throws HTTPError for non-2xx, making the axios error-wrapping interceptor unnecessary)
+- Rewrote get(), post(), put(), del() helpers using ky's .json<T>() for typed response parsing
+- Added normalizeUrl() helper to strip leading `/` from paths (ky's prefixUrl ignores URLs starting with `/`)
+- Removed axios, @types/axios dependencies; installed ky
+- Removed ERROR_MESSAGES import (no longer needed — ky handles error wrapping natively)
+- Files changed: src/lib/api.ts, package.json, yarn.lock
+- **Learnings for future iterations:**
+  - ky's `prefixUrl` silently ignores URLs starting with `/` (treats them as origin-relative) — always strip leading slashes
+  - ky's `beforeError` hook only receives HTTPError instances, not arbitrary errors — different from axios interceptors
+  - ky already throws HTTPError for non-2xx responses, so the axios pattern of wrapping unknown errors in AxiosError is unnecessary
+  - The `Cfg` type alias changed from `AxiosRequestConfig & { signal? }` to ky's `Options` (which already includes `signal`)
+  - Only `useUsers.ts` currently imports from `@/lib/api` — other files use fetch() directly (migrated in US-007/US-008)
+---
+
+## 2026-02-22 18:23 - US-007
+Thread: https://ampcode.com/threads/T-019c865f-60c7-71ff-af0c-e72c4ded5263
+- Replaced fetch() with ky.get().json<T>() in use-processing-status-fetch.ts and use-result-fetch.ts
+- Removed manual `!response.ok` checks — ky natively throws HTTPError for non-2xx responses, which TanStack Query catches as query errors
+- Removed ERROR_MESSAGES imports (no longer needed for manual error throwing)
+- Files changed: src/hooks/use-processing-status-fetch.ts, src/hooks/use-result-fetch.ts
+- **Learnings for future iterations:**
+  - For same-origin BFF routes (starting with `/`), use plain `ky` import — not the `api` instance from `@/lib/api.ts` which has `prefixUrl` set to the external API
+  - ky with URLs starting with `/` works as origin-relative (standard browser behavior) — no `normalizeUrl()` needed
+  - ky's native HTTPError throw on non-2xx replaces the fetch pattern of `if (!response.ok) throw new Error(...)` — TanStack Query treats thrown errors as query failures automatically
+---
+
+## 2026-02-22 22:20 - US-008
+Thread: https://ampcode.com/threads/T-019c8732-8db4-7780-a982-7b20bb9b81da
+- Replaced fetch() with ky in src/server/actions/tuner.ts (uploadAction)
+- Replaced fetch() with ky in src/server/actions/auth.ts (getCurrentUser)
+- Replaced fetch() with ky in src/server/api/auth.ts (loginToAPI, registerToAPI, getUserFromAPI, refreshTokenFromAPI, logoutFromAPI)
+- Replaced fetch() with ky in both BFF route handlers (poems and status)
+- Removed module-level `let response` variable from BFF routes (was a concurrency bug — ky's HTTPError provides response access)
+- Files changed: src/server/actions/tuner.ts, src/server/actions/auth.ts, src/server/api/auth.ts, src/app/api/tuner/poems/[sourceId]/route.ts, src/app/api/tuner/status/[sourceId]/route.ts
+- **Learnings for future iterations:**
+  - ky works in Node.js server-side (server actions, route handlers) since Node 18+ has global fetch
+  - For server-side ky calls to external APIs, use plain `ky` import with full URL — not the `api` instance from `@/lib/api.ts`
+  - ky's HTTPError provides `error.response.status` and `error.response.json()` — replaces the old pattern of storing `response` in an outer variable for catch block access
+  - `credentials: "include"` passes through to ky's options (extends RequestInit)
+  - For FormData uploads, use `body: formData` (not `json:`) — ky auto-sets the correct Content-Type
+  - `error.response.json<T>()` provides typed JSON parsing on HTTPError responses
+---
+
+## 2026-02-22 22:36 - US-009
+Thread: https://ampcode.com/threads/T-019c8732-8db4-7780-a982-7b20bb9b81da
+- Added sleep() tests to existing utils.test.ts (2 tests: timer resolution, returns promise)
+- Created routes-book.test.ts (6 tests: routesBook values, routesPublic/routesPrivate contents and exclusions)
+- Created api.test.ts (13 tests: get/post/put/del helpers, normalizeUrl via leading slash stripping, config passthrough, error propagation)
+- Mocked ky module and @/env using vi.hoisted() + vi.mock() pattern
+- Files changed: src/lib/__tests__/utils.test.ts, src/lib/__tests__/routes-book.test.ts (new), src/lib/__tests__/api.test.ts (new)
+- **Learnings for future iterations:**
+  - Use `vi.hoisted()` to define mock variables referenced inside `vi.mock()` factories — vi.mock is hoisted above imports, so regular variables aren't available
+  - Mock `@/env` in any test that imports modules depending on env validation (createEnv throws without real env vars)
+  - ky mock pattern: mock `ky.create()` to return an object with get/post/put/delete methods, each returning `{ json: mockFn }`
+  - `vi.useFakeTimers()` / `vi.advanceTimersByTimeAsync()` for testing timer-based functions like sleep()
+---
+
+## 2026-02-22 22:46 - US-015
+Thread: https://ampcode.com/threads/T-019c8732-8db4-7780-a982-7b20bb9b81da
+- Refactored use-processing-status-fetch.ts: added useEffect to show toast.error() on retry exhaustion, stops polling when query in error state, returns `isRetryExhausted` flag, sets status to ERROR when isError
+- Refactored use-result-fetch.ts: added useEffect to show toast.error() on retry exhaustion, exposed `isError` in return value
+- Updated TunerResult to differentiate between retry-exhausted errors (network) and API-reported errors, handling result fetch errors
+- Added translation keys: `error.retryExhaustedTitle` and `error.retryExhaustedMessage` in en.json and de.json
+- Installed @testing-library/dom (was missing, required by @testing-library/react)
+- Created tests for both hooks: 5 tests for processing-status-fetch, 7 tests for result-fetch (12 total)
+- Files changed: src/hooks/use-processing-status-fetch.ts, src/hooks/use-result-fetch.ts, src/components/tuner/tuner-result/tuner-result.tsx, src/messages/en.json, src/messages/de.json, src/hooks/__tests__/use-processing-status-fetch.test.ts (new), src/hooks/__tests__/use-result-fetch.test.ts (new), package.json, yarn.lock
+- **Learnings for future iterations:**
+  - TanStack Query `refetchInterval` continues firing even in error state — must check `query.state.status === "error"` to stop polling after retry exhaustion
+  - Use `useEffect([isError])` to show toast after all retries are exhausted — not inside queryFn (which fires on every attempt)
+  - @testing-library/dom is a peer dep of @testing-library/react — must be installed separately
+  - For hook tests with TanStack Query: use `retryDelay: 0` and `gcTime: 0` in test QueryClient to speed up retries
+  - Mock `next-intl` as `useTranslations: () => (key: string) => key` — returns the key itself for assertion
+  - `React.createElement(QueryClientProvider, { client }, children)` for wrapper when avoiding JSX in .ts test files
+  ---
+
+  ## 2026-02-23 19:18 - US-018
+  Thread: https://ampcode.com/threads/T-019c8baf-e21b-7369-bfe3-df3b7e19929c
+  - Created server-side API service `src/server/api/poem-sources.ts` with `getPoemSources()` function using ky
+  - Created poems list page `src/app/[locale]/poems/page.tsx` — Server Component calling getPoemSources() directly
+  - Page displays thumbnail (80x80, object-cover), date formatted via `getFormatter()`, date is a Link to `/poems/{id}`
+  - Handles empty state ("No poems yet" + link to tuner) and error state (user-friendly message)
+  - Registered `poems` route in `src/lib/routes-book.ts` (routesBook, routesPrivate) plus `poemDetail(id)` helper
+  - Added "My Poems" button to Dashboard widget with `variant="outline"`
+  - Added translations to en.json and de.json: `Poems.*` namespace + `Dashboard.poemsButton`
+  - Created unit tests: 3 tests for poem-sources service, 5 tests for poems page, updated routes-book tests
+  - Fixed vitest.config.ts alias resolution: changed from object to array format with `@` catch-all last (was matching `@/ui` before `@/ui` alias)
+  - Files changed: src/server/api/poem-sources.ts (new), src/app/[locale]/poems/page.tsx (new), src/app/[locale]/poems/__tests__/page.test.tsx (new), src/server/api/__tests__/poem-sources.test.ts (new), src/lib/routes-book.ts, src/lib/__tests__/routes-book.test.ts, src/components/widgets/dashboard/Dashboard.tsx, src/messages/en.json, src/messages/de.json, vitest.config.ts
+  - **Learnings for future iterations:**
+  - vitest.config.ts alias resolution: object-format aliases match in insertion order — the `@` catch-all MUST be last or it intercepts `@/ui`, `@/hooks`, etc. Use array format `[{ find, replacement }]` with catch-all at the end
+  - For server components in next-intl: use `getTranslations()` and `getFormatter()` from `next-intl/server` (not `useTranslations`)
+  - `<img alt="">` is treated as presentational (ARIA `role=presentation`) — use `container.querySelector("img")` in tests, not `getByRole("img")`
+  - Mock `@/ui` in page tests to avoid resolving the full shadcn barrel (deep dependency chain)
+  - Server-side API services follow the pattern in `src/server/api/auth.ts`: read cookie, check auth, call ky with full URL, return typed response
+  ---
+
+## 2026-02-23 19:25 - US-019
+Thread: https://ampcode.com/threads/T-019c8bbb-2870-74d0-bf7a-7de44ede038d
+- Created `PoemType` in `src/types/poem.type.ts` and exported from types barrel
+- Extracted shared poem display logic from TunerResult into reusable `PoemDisplay` widget component at `src/components/widgets/poem-display/`
+- PoemDisplay manages active poem state internally, defaults to critic's choice, shows poem selector buttons
+- Updated TunerResult to use PoemDisplay instead of inline poem rendering
+- Updated `use-result-fetch.ts` to use shared `PoemType` instead of local `Poem` interface
+- Created `getPoemsBySourceId()` server function in `src/server/api/poem-sources.ts`
+- Created poem detail page at `src/app/[locale]/poems/[id]/page.tsx` — Server Component with error, not-found, and success states
+- Added translations to en.json and de.json: `PoemDetail.*` and `PoemDisplay.*` namespaces
+- Created 6 unit tests for PoemDisplay component, 5 unit tests for poem detail page (all passing)
+- Files changed: src/types/poem.type.ts (new), src/types/index.ts, src/components/widgets/poem-display/ (new), src/components/widgets/index.ts, src/components/tuner/tuner-result/tuner-result.tsx, src/hooks/use-result-fetch.ts, src/server/api/poem-sources.ts, src/app/[locale]/poems/[id]/page.tsx (new), src/messages/en.json, src/messages/de.json
+- **Learnings for future iterations:**
+  - The BFF poems route returns `{ data: [...] }` wrapper — server-side `getPoemsBySourceId` must unwrap with `data.data || []`
+  - PoemDisplay is a client component (uses `useState`) placed in `widgets/` since it's shared between tuner and poem detail page
+  - Mock `@/widgets` in page tests to avoid resolving the full widget barrel dependency chain (same pattern as mocking `@/ui`)
+  - `lucide-react` icons can be mocked as simple spans in tests: `ArrowLeft: () => <span data-testid="arrow-left" />`
+---
+
+## 2026-02-24 22:05 - US-010
+Thread: https://ampcode.com/threads/T-019c9177-3a79-75c9-abfa-bd03c8e9f000
+- Created unit tests for `useSourceCreate` hook in `src/hooks/__tests__/use-source-create.test.ts`
+- 4 tests: idle state, successful upload (sets sourceId + success toast), failed upload (error state + error toast), thrown exception (error state + error toast)
+- Used `vi.hoisted()` + `vi.mock()` pattern for sonner toast and server action mocks
+- Files changed: src/hooks/__tests__/use-source-create.test.ts (new)
+- **Learnings for future iterations:**
+  - `useSourceCreate` does NOT set processing back to a non-processing state on success — it stays "processing" (polling hooks take over from there)
+  - `renderHook` + `act(async () => ...)` is the pattern for testing hooks with async methods (no QueryClient wrapper needed since this hook doesn't use TanStack Query)
+  - Server action mocks: mock the module path `@/server/actions/tuner` and control `uploadAction` return values per test
+---
+
+## 2026-02-24 22:08 - US-011
+Thread: https://ampcode.com/threads/T-019c9179-efbf-74ad-8c1e-1935aa8631b4
+- Tests already existed from US-015 (5 tests); added 1 new test to explicitly verify retry count (3 retries = 4 total ky.get calls)
+- Imported mocked `ky` in test to assert `ky.get` call count
+- All 6 tests passing, 63 total tests passing, typecheck clean
+- Files changed: src/hooks/__tests__/use-processing-status-fetch.test.ts
+- **Learnings for future iterations:**
+  - To verify retry count, import the mocked module and check `.toHaveBeenCalledTimes(initialAttempt + retryCount)`
+  - Tests created in US-015 covered most US-011 acceptance criteria — only retry count verification was missing
+---
+
+## 2026-02-24 22:15 - US-020
+Thread: https://ampcode.com/threads/T-019c917c-8c34-765d-82fd-efcdccd4098b
+- Added `resetProcessing` function to `useSourceCreate` hook to reset state back to IDLE
+- Modified TunerResult to redirect to `/poems/{sourceId}` on SUCCESS via `useRouter().push()` instead of rendering inline
+- TunerResult now returns `null` on success (no inline rendering)
+- Added "Try again" button with `onReset` prop to all error states in TunerResult (retry exhausted, API error, result fetch error)
+- Modified TunerForm to pass `resetProcessing` as `onReset` to TunerResult
+- Added "Try again" button to TunerForm's upload error state (alongside ErrorReport)
+- Image preview persists after reset since it's managed by TunerForm's local state (not affected by `resetProcessing`)
+- Added translation keys: `error.tryAgain` in en.json ("Try again") and de.json ("Erneut versuchen")
+- Created 7 unit tests for TunerResult: processing state, redirect on success, no inline content on success, retry exhausted error, API error, result fetch error, try again click
+- Created 5 unit tests for TunerForm: idle form, processing with TunerResult, onReset passthrough, error with try again, try again click reset
+- All 75 tests passing, typecheck clean, lint clean
+- Files changed: src/hooks/use-source-create.ts, src/components/tuner/tuner-result/tuner-result.tsx, src/components/tuner/tuner-form/tuner-form.tsx, src/messages/en.json, src/messages/de.json, src/components/tuner/tuner-result/__tests__/tuner-result.test.tsx (new), src/components/tuner/tuner-form/__tests__/tuner-form.test.tsx (new)
+- **Learnings for future iterations:**
+  - `useRouter` from `next/navigation` + `useEffect` for redirect-on-state-change pattern
+  - TunerResult's `onReset` prop communicates error recovery back to parent (TunerForm resets to IDLE)
+  - Image preview survives reset because it's in TunerForm's local `useState`, independent from `useSourceCreate`'s state
+  - Mock `@/hooks` in component tests to control hook return values: `useSourceCreate`, `useProcessingStatusFetch`, `useResultFetch`
+  - Mock `@/components/tuner/tuner-result/tuner-result` (direct path, not barrel) in TunerForm tests to isolate from TunerResult
+---
+
+## 2026-02-24 22:16 - US-012
+Thread: https://ampcode.com/threads/T-019c9181-94d3-7582-b2d5-d04225211280
+- All 7 tests already existed from US-015 iteration — covering all acceptance criteria
+- Verified: does not fetch when not success, fetches on success, critic's choice selection, first poem fallback, empty array, retry exhaustion toast, no toast on success
+- No new files changed — tests were already comprehensive
+- **Learnings for future iterations:**
+  - US-015 created tests that fully satisfy US-012 acceptance criteria — always check if prior iterations already covered test requirements
+---

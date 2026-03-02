@@ -1,0 +1,343 @@
+{
+  "project": "Poets Crew UI",
+  "branchName": "ralph/client-side-refactoring",
+  "description": "Client-Side Refactoring — modernize build tooling, code quality tooling, testing infrastructure, HTTP client migration, constants extraction, hooks refactoring, and new poems history pages",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Install and configure Vitest and Playwright",
+      "description": "As a developer, I want Vitest for unit tests and Playwright for end-to-end tests so that we have a proper testing infrastructure before writing any tests.",
+      "acceptanceCriteria": [
+        "Install vitest, @vitejs/plugin-react, @testing-library/react, @testing-library/jest-dom, @testing-library/user-event, and jsdom as dev dependencies",
+        "Create vitest.config.ts at project root with: jsdom environment, path aliases matching tsconfig.json, coverage configuration, setup file reference",
+        "Create vitest.setup.ts that imports @testing-library/jest-dom/vitest",
+        "Install @playwright/test as dev dependency and run npx playwright install",
+        "Create playwright.config.ts at project root with: base URL http://localhost:3000, test directory e2e/, reasonable timeouts",
+        "Create e2e/ directory with a sample smoke test (e.g., landing page loads successfully)",
+        "Add scripts to package.json: test, test:run, test:coverage, test:e2e",
+        "A trivial sample unit test (e.g., src/lib/__tests__/utils.test.ts testing cn()) passes with yarn test:run",
+        "The sample Playwright smoke test passes with yarn test:e2e (when dev server is running)",
+        "Typecheck passes"
+      ],
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-002",
+      "title": "Replace Prettier with Biome (keep ESLint)",
+      "description": "As a developer, I want to use Biome as the formatter (replacing Prettier) while keeping ESLint for linting, because Biome's CSS linter and Tailwind class sorting are still experimental.",
+      "acceptanceCriteria": [
+        "Install @biomejs/biome as dev dependency",
+        "Run biome migrate prettier --write to migrate Prettier config to Biome",
+        "Configure biome.json formatter: quoteStyle double, trailingCommas none, lineWidth 100",
+        "Configure Biome import sorting in biome.json to match the current .prettierrc import order groups",
+        "Enable useSortedClasses nursery rule in biome.json with functions: [clsx, cn, cva]",
+        "Remove Prettier-related packages: prettier, @ianvs/prettier-plugin-sort-imports, prettier-plugin-tailwindcss",
+        "Delete .prettierrc and .prettierignore",
+        "Keep ESLint: eslint, eslint-config-next, eslint-plugin-jsx-a11y, and eslint.config.mjs remain unchanged",
+        "Update package.json scripts: format uses biome format, lint stays as ESLint, lint:fix combines both, lint:ci combines both, add check script",
+        "Update lint-staged config: replace prettier --write with biome format --write; keep eslint --fix",
+        "Run biome format --write . across the entire codebase",
+        "Run biome check --write . to apply import sorting and Tailwind class sorting",
+        "Verify ESLint still works: yarn lint passes",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-003",
+      "title": "Extract hardcoded status values into constants",
+      "description": "As a developer, I want all hardcoded status values centralized in src/constants/status.ts so that the codebase is consistent and maintainable.",
+      "acceptanceCriteria": [
+        "Create src/constants/status.ts with a const object exporting processing status values: IDLE, PROCESSING, SUCCESS, ERROR. Derive a ProcessingStatusType union type from it.",
+        "Scan and replace all hardcoded status string literals (processing, success, error, idle) in hooks and tuner components",
+        "Update barrel export in src/constants/ with re-exports",
+        "All existing functionality works identically after replacement",
+        "Typecheck passes"
+      ],
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "Extract hardcoded query keys into constants",
+      "description": "As a developer, I want all hardcoded TanStack Query keys centralized in src/constants/query-keys.ts so that query key management is consistent.",
+      "acceptanceCriteria": [
+        "Create src/constants/query-keys.ts with query key constants: POEM_SOURCE_STATUS, POEMS, USERS, etc.",
+        "Replace hardcoded query keys in all hooks with constants from query-keys.ts",
+        "Update barrel export in src/constants/",
+        "All existing functionality works identically after replacement",
+        "Typecheck passes"
+      ],
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-005",
+      "title": "Extract hardcoded API paths and error messages into constants",
+      "description": "As a developer, I want all hardcoded API endpoint paths and error messages centralized in src/constants/api.ts so that the codebase is consistent.",
+      "acceptanceCriteria": [
+        "Create src/constants/api.ts with API-related constants: endpoint paths (/api/v1/login, /api/v1/logout, /api/v1/user, /api/v1/poem-source, etc.), timeout values, default error messages",
+        "Replace hardcoded API paths in src/server/actions/tuner.ts and other files with constants",
+        "Replace hardcoded error message strings in hooks, server actions, and src/lib/api.ts",
+        "Translate the Turkish error message 'Bilinmeyen hata' to English ('Unknown error')",
+        "Update barrel export in src/constants/",
+        "All existing functionality works identically after replacement",
+        "Typecheck passes"
+      ],
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-006",
+      "title": "Replace Axios with ky in src/lib/api.ts",
+      "description": "As a developer, I want to replace the Axios-based HTTP client in src/lib/api.ts with ky so that the HTTP client is lightweight and modern.",
+      "acceptanceCriteria": [
+        "Install ky as a dependency",
+        "Rewrite src/lib/api.ts: replace axios.create() with ky.create() using equivalent configuration (base URL, timeout, JSON accept header)",
+        "Migrate request interceptor to ky beforeRequest hook",
+        "Migrate response error interceptor to ky beforeError hook",
+        "Rewrite get(), post(), put(), del() helpers using ky API (.json() for response parsing)",
+        "Translate the Turkish error message 'Bilinmeyen hata' to English if not already done",
+        "Remove axios from package.json",
+        "All API calls using the helpers still work identically",
+        "Typecheck passes"
+      ],
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-007",
+      "title": "Replace raw fetch() in hooks with ky",
+      "description": "As a developer, I want to replace raw fetch() calls in polling hooks with ky for consistency.",
+      "acceptanceCriteria": [
+        "Replace fetch() in src/hooks/use-processing-status-fetch.ts with ky",
+        "Replace fetch() in src/hooks/use-result-fetch.ts with ky",
+        "Both hooks work identically after migration (polling, error handling, retry)",
+        "Typecheck passes"
+      ],
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-008",
+      "title": "Replace raw fetch() in server actions and BFF routes with ky",
+      "description": "As a developer, I want to replace raw fetch() calls in server actions and BFF route handlers with ky for consistency.",
+      "acceptanceCriteria": [
+        "Replace fetch() in src/server/actions/tuner.ts with ky",
+        "Replace fetch() in BFF route handlers (src/app/api/auth/, src/app/api/tuner/) with ky",
+        "Replace fetch() in server API clients (src/server/api/auth.ts) with ky",
+        "All auth flow and tuner flow work identically after migration",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-009",
+      "title": "Create unit tests for utility functions and route constants",
+      "description": "As a developer, I want unit tests for utility and route modules so that I have a safety net before refactoring.",
+      "acceptanceCriteria": [
+        "Tests for src/lib/utils.ts — cn() utility (merging classes, handling edge cases)",
+        "Tests for src/lib/routes-book.ts — route constant values, type correctness",
+        "Tests for src/lib/api.ts — get(), post(), put(), del() helpers, interceptor behavior, error handling",
+        "All tests pass with yarn test:run",
+        "Typecheck passes"
+      ],
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-010",
+      "title": "Create unit tests for use-source-create hook",
+      "description": "As a developer, I want unit tests for the source create hook so I have a safety net before refactoring.",
+      "acceptanceCriteria": [
+        "Happy path: successful upload sets sourceId and shows success toast",
+        "Error path: failed upload sets processing to error, shows error toast",
+        "Exception path: thrown error is caught, processing set to error",
+        "All tests pass with yarn test:run",
+        "Typecheck passes"
+      ],
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-011",
+      "title": "Create unit tests for use-processing-status-fetch hook",
+      "description": "As a developer, I want unit tests for the processing status polling hook so I have a safety net before refactoring.",
+      "acceptanceCriteria": [
+        "Returns processing status while polling",
+        "Stops polling when status is success",
+        "Stops polling when status is error",
+        "Sets isError when response is not OK",
+        "Retry behavior (3 retries) verified",
+        "All tests pass with yarn test:run",
+        "Typecheck passes"
+      ],
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-012",
+      "title": "Create unit tests for use-result-fetch hook",
+      "description": "As a developer, I want unit tests for the result fetch hook so I have a safety net before refactoring.",
+      "acceptanceCriteria": [
+        "Does not fetch when status is not success (enabled: false)",
+        "Fetches poems when status is success",
+        "Sets active poem to critic's choice when available",
+        "Falls back to first poem when no critic's choice",
+        "Handles empty poems array",
+        "All tests pass with yarn test:run",
+        "Typecheck passes"
+      ],
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-013",
+      "title": "Create unit tests for tuner components",
+      "description": "As a developer, I want unit tests for TunerResult and TunerForm components so I have a safety net before refactoring.",
+      "acceptanceCriteria": [
+        "TunerResult: renders processing state, error state, success state with active poem, poem selector buttons, critic's choice highlight",
+        "TunerForm: renders form in idle state, shows TunerResult in processing state, shows ErrorReport in error state, image preview after file selection, form submission calls sourceCreate",
+        "All tests pass with yarn test:run",
+        "Typecheck passes"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-014",
+      "title": "Create unit tests for server actions (tuner)",
+      "description": "As a developer, I want unit tests for tuner server actions so I have a safety net before refactoring.",
+      "acceptanceCriteria": [
+        "Successful upload returns { success: true, data: {...} }",
+        "Failed API response returns { success: false, error: '...' }",
+        "Missing access token triggers redirect",
+        "All tests pass with yarn test:run",
+        "Typecheck passes"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-015",
+      "title": "Refactor hooks error handling (toast instead of throw)",
+      "description": "As a user, I want to see friendly toast notifications when something goes wrong instead of the app crashing, and a clear message when all retries are exhausted.",
+      "acceptanceCriteria": [
+        "In use-processing-status-fetch.ts: do NOT throw when response.ok is false — report via toast.error() with user-friendly translated message",
+        "After all retries (3) exhausted with server errors, set status to a failed state",
+        "When in failed state, UI shows translated message: 'We are unable to process your request at this time. Please, try again later'",
+        "Add translation keys for retry-exhausted message in all locale files",
+        "In use-result-fetch.ts: do NOT throw when response.ok is false — report via toast.error()",
+        "After all retries (4) exhausted, set an error state that the UI can display",
+        "Existing tests updated to verify new behavior (toast called, not thrown)",
+        "New tests added for retry-exhaustion edge cases",
+        "All tests pass with yarn test:run",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-016",
+      "title": "Migrate build configuration from Webpack to Rspack",
+      "description": "As a developer, I want the project to use Rspack instead of Webpack so that build times are faster and the toolchain is more modern.",
+      "acceptanceCriteria": [
+        "Install next-rspack as dev dependency (version matching Next.js 16.x)",
+        "Remove webpack dependency from package.json",
+        "Update next.config.ts: wrap config with withRspack(), remove RuleSetRule import from webpack",
+        "Verify @next/bundle-analyzer works with Rspack — if incompatible, document and remove temporarily",
+        "Verify next-intl plugin works with Rspack — if incompatible, document workaround",
+        "Update the analyze script in package.json to remove --webpack flag",
+        "Turbopack configuration in next.config.ts remains unchanged",
+        "yarn dev, yarn build, and yarn start all work without errors",
+        "SVG imports still render correctly as React components",
+        "All existing unit tests pass after migration",
+        "Typecheck passes"
+      ],
+      "passes": false,
+      "notes": "Known risk: compatibility issues between next-rspack@16.x and @next/bundle-analyzer + next-intl plugin. Test thoroughly. If unstable, defer."
+    },
+    {
+      "id": "US-017",
+      "title": "Create server-side API service for poem sources",
+      "description": "As a developer, I need a server-side ky service to fetch poem sources from fast-api so the poems list page can use server-side data fetching.",
+      "acceptanceCriteria": [
+        "Create src/server/api/poem-sources.ts with getPoemSources() function",
+        "Function calls GET ${NEXT_PUBLIC_API_URL}/api/v1/poem-sources using ky",
+        "Reads access_token from cookies via cookies() from next/headers",
+        "Returns typed PoemSourceRead[] array",
+        "Create PoemSourceRead type in src/types/ if not exists",
+        "Handle auth failures (redirect to signin) and network errors gracefully",
+        "Typecheck passes"
+      ],
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-018",
+      "title": "Create poems list page (/poems)",
+      "description": "As a user, I want to see a list of all my poem requests so that I can browse my history and navigate to individual results.",
+      "acceptanceCriteria": [
+        "Create page at src/app/[locale]/poems/page.tsx — route: /poems",
+        "Page is a Server Component that calls getPoemSources() directly",
+        "Page title from translations via getTranslations()",
+        "Each list item displays: thumbnail (~80x80 px, object-cover), creation date formatted via next-intl getFormatter(), date is a Link to /poems/{poem_source_id}",
+        "Handle empty state: show 'No poems yet' with a link to tuner page",
+        "Handle error state: show user-friendly error message",
+        "Register route in src/lib/routes-book.ts: add poems to routesBook and routesPrivate",
+        "Add navigation link to this page from the dashboard",
+        "Add all user-facing text to src/messages/en.json and src/messages/de.json",
+        "Create unit tests for the page and server service",
+        "All tests pass with yarn test:run",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-019",
+      "title": "Create poem detail page (/poems/[id])",
+      "description": "As a user, I want to view the poems generated for a specific request so that I can read and switch between poem variations.",
+      "acceptanceCriteria": [
+        "Create page at src/app/[locale]/poems/[id]/page.tsx — route: /poems/{poem_source_id}",
+        "Extract shared poem display logic from TunerResult into a reusable PoemDisplay component",
+        "Page displays active poem, allows switching between poems, highlights critic's choice",
+        "Add a Link back to the poems list page (/poems)",
+        "Handle loading, error, and not-found states",
+        "Add all user-facing text to locale files",
+        "Create unit tests for PoemDisplay component and poem detail page",
+        "All tests pass with yarn test:run",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-020",
+      "title": "Redirect tuner on success, allow retry on error",
+      "description": "As a user, when my poem is successfully generated I want to be redirected to the poem detail page, and when there's an error I want to retry without reloading.",
+      "acceptanceCriteria": [
+        "When processing status becomes success: redirect to /poems/{poem_source_id} using useRouter().push()",
+        "Do NOT render TunerResult inline on success",
+        "When processing status becomes error: show error message on tuner page (no redirect)",
+        "Show a 'Try again' button that is only visible in error state",
+        "Clicking 'Try again' resets component state to idle; previously selected image preview remains visible",
+        "Add translation keys for 'Try again' button text in all locale files",
+        "Create unit tests: redirect on success, error state shows message, try again resets state, image preview persists",
+        "All tests pass with yarn test:run",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "passes": true,
+      "notes": ""
+    }
+  ]
+}

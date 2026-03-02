@@ -40,7 +40,7 @@ export default async function PoemsPage() {
     <section className="container py-16">
       <h1 className="mb-8 font-bold text-2xl">{t("title")}</h1>
       <ul className="flex flex-col gap-4">
-        {poemSources.map((source) => (
+        {poemSources?.map((source) => (
           <li
             key={source.id}
             className="flex items-center gap-4 rounded-base border border-default-strong p-4"
