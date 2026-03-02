@@ -4,7 +4,7 @@ import bundleAnalyzer from "@next/bundle-analyzer";
 import createNextIntlPlugin from "next-intl/plugin";
 import withRspack from "next-rspack";
 
-const withNextIntl = createNextIntlPlugin();
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === "true"
 });
@@ -46,4 +46,4 @@ const nextConfig: NextConfig = {
   }
 };
 
-export default withRspack(withBundleAnalyzer(withNextIntl(nextConfig)));
+export default withNextIntl(withRspack(withBundleAnalyzer(nextConfig)));

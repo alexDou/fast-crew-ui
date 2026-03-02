@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation";
 
 import ky from "ky";
 
@@ -18,11 +18,13 @@ export async function getPoemSources(): Promise<PoemSourceReadType[]> {
     return redirect(routesBook.signin);
   }
 
-  return ky
+  const response = await ky
     .get(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.POEM_SOURCES}`, {
       headers: { Authorization: `Bearer ${accessToken}` }
     })
-    .json<PoemSourceReadType[]>();
+    .json<{ data?: PoemSourceReadType[] }>();
+
+  return response.data || [];
 }
 
 export async function getPoemsBySourceId(sourceId: string): Promise<PoemType[]> {
