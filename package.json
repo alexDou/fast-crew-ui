@@ -4,7 +4,7 @@
   "private": true,
   "description": "Poets crew UI",
   "engines": {
-    "node": "22.x"
+    "node": ">=22.x"
   },
   "scripts": {
     "dev": "next dev",
@@ -12,9 +12,6 @@
     "start": "next start",
     "analyze": "cross-env ANALYZE=true next build && open .next/analyze/nodejs.html",
     "clean": "rimraf .next",
-    "check": "biome check --write .",
-    "format": "biome format --write .",
-    "format:check": "biome format .",
     "knip": "knip",
     "lint": "eslint . --ext js,ts,tsx --cache",
     "lint:fix": "eslint . --ext js,ts,tsx --fix --cache && biome format --write .",
@@ -28,13 +25,8 @@
     "commit": "cz"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "eslint --fix",
-      "biome format --write"
-    ],
-    "*.{css,md,json}": [
-      "biome format --write"
-    ]
+    "*.{ts,tsx,js,jsx}": ["eslint --fix", "biome format --write"],
+    "*.{css,md,json}": ["biome format --write"]
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -117,10 +109,5 @@
     "url": ""
   },
   "license": "MIT",
-  "keywords": [
-    "Ai image processing",
-    "AI image",
-    "crewai"
-  ],
-  "packageManager": "yarn@4.12.0"
+  "keywords": ["Ai image processing", "AI image", "crewai"]
 }

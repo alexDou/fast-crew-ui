@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { redirect } from "@/i18n/navigation";
+import { redirect } from "next/navigation";
 
 import ky, { HTTPError } from "ky";
 

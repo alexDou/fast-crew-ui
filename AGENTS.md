@@ -5,29 +5,29 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 ## Development Commands
 
 ### Running the Application
-- `yarn dev` - Start development server on http://localhost:3000
-- `yarn build` - Production build
-- `yarn start` - Start production server
-- `yarn clean` - Clean `.next` directory
+- `pnpm dev` - Start development server on http://localhost:3000
+- `pnpm build` - Production build
+- `pnpm start` - Start production server
+- `pnpm clean` - Clean `.next` directory
 
 ### Code Quality
-- `yarn lint` - Check for lint errors
-- `yarn lint:fix` - Auto-fix lint issues and format code
-- `yarn lint:ci` - CI mode (no warnings allowed) + format check
-- `yarn format` - Format code with Prettier
-- `yarn format:check` - Check formatting without modifying
-- `yarn typecheck` - Run TypeScript type checking
-- `yarn knip` - Analyze unused dependencies and files
+- `pnpm lint` - Check for lint errors
+- `pnpm lint:fix` - Auto-fix lint issues and format code
+- `pnpm lint:ci` - CI mode (no warnings allowed) + format check
+- `pnpm format` - Format code with Prettier
+- `pnpm format:check` - Check formatting without modifying
+- `pnpm typecheck` - Run TypeScript type checking
+- `pnpm knip` - Analyze unused dependencies and files
 
 ### Bundle Analysis
-- `yarn analyze` - Analyze bundle sizes and open report
+- `pnpm analyze` - Analyze bundle sizes and open report
 
 ### Git Commits
-- `yarn commit` - Interactive commit with Conventional Commits format
+- `pnpm commit` - Interactive commit with Conventional Commits format
 - All commits MUST follow Conventional Commits specification (feat:, fix:, refactor:, etc.)
 
 ### System-Specific
-- **IMPORTANT**: On this system, `/tmp` partition is small (437M). Use `TMPDIR=/home/aldou/codes/ai/ui/.tmp yarn install` if yarn install fails with ENOSPC errors
+- **IMPORTANT**: On this system, `/tmp` partition is small (437M). Use `TMPDIR=/home/aldou/codes/ai/ui/.tmp pnpm install` if pnpm install fails with ENOSPC errors
 
 ## Architecture Overview
 
@@ -39,7 +39,7 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 - **Zustand** for lightweight global client state
 - **Zod** for runtime validation (env vars, schemas)
 - **next-intl** for internationalization with locale-based routing
-- **Yarn 4.12.0** as package manager
+- **pnpm** as package manager
 
 ### Project Structure Philosophy
 This is a **barrel export architecture** with strict naming conventions:
@@ -203,7 +203,7 @@ Import order enforced by Prettier (see `.prettierrc`):
 
 ## Notes
 - Node.js 22+ required (specified in `package.json` engines)
-- Package manager: Yarn 4.12.0 (using node_modules linker for compatibility)
+- Package manager: pnpm (using node_modules linker for compatibility)
 - React Compiler enabled in Next.js config
 - Google Analytics integration via `NEXT_PUBLIC_GA_ID` env var
 - Bundle analyzer available for performance optimization

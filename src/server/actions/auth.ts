@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { redirect } from "@/i18n/navigation";
+import { redirect } from "next/navigation";
 
 import ky, { HTTPError } from "ky";
 
@@ -85,7 +85,7 @@ export async function logoutAction(): Promise<void> {
     console.error("Logout action error:", error);
   }
 
-  redirect("/");
+  redirect(routesBook.main);
 }
 
 export async function getCurrentUser(): Promise<APIUser | null> {
