@@ -5,7 +5,17 @@ import nextTs from "eslint-config-next/typescript";
 export default defineConfig([
   ...nextVitals,
   ...nextTs,
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    ".agents/**",
+    ".vscode/**",
+    ".tasks/**",
+    ".dev/**",
+    "build/**",
+    "next-env.d.ts",
+    "eslint.config.mjs"
+  ]),
   {
     settings: {
       tailwindcss: {
