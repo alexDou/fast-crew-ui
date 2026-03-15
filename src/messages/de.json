@@ -38,7 +38,7 @@
     "registration": {
       "success": {
         "title": "Das Konto wurde erfolgreich erstellt!",
-        "message": "Loggen Sie sich mit Ihren Daten ein"
+        "message": "Bitte überprüfen Sie Ihre E-Mail auf den Bestätigungslink, bevor Sie sich anmelden"
       },
       "error": {
         "title": "Die Anmeldung fehlgeschlagen",
@@ -106,7 +106,9 @@
       "errorFromAPIMessage": "Wir lösen das Problem, und ermutigen Sie, später erneut zu versuchen",
       "retryExhaustedTitle": "Verarbeitung nicht möglich",
       "retryExhaustedMessage": "Wir können Ihre Anfrage momentan nicht verarbeiten. Bitte versuchen Sie es später erneut",
-      "tryAgain": "Erneut versuchen"
+      "tryAgain": "Erneut versuchen",
+      "requestLimit": "Anfragelimit erreicht",
+      "requestLimitMessage": "Sie haben die maximale Anzahl von 3 Gedichtgenerierungen pro Konto erreicht"
     },
     "form": {
       "success": {

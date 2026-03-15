@@ -37,7 +37,10 @@ export function SigninForm() {
       const result = await loginAction(data.username, data.password);
 
       if (!result.success) {
-        throw new Error(result.error);
+        toast.error(tForm("signin.error.title"), {
+          description: result.error || tForm("signin.error.message")
+        });
+        return;
       }
 
       toast.success(tForm("signin.success.title"), {

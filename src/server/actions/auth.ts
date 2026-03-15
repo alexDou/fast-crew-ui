@@ -41,10 +41,10 @@ export async function loginAction(username: string, password: string): Promise<A
       success: true
     };
   } catch (error) {
-    console.error("Login action error:", error);
+    const message = error instanceof Error ? error.message : ERROR_MESSAGES.LOGIN_ERROR;
     return {
       success: false,
-      error: ERROR_MESSAGES.LOGIN_ERROR
+      error: message
     };
   }
 }

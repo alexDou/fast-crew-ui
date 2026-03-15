@@ -38,7 +38,7 @@
     "registration": {
       "success": {
         "title": "Account created!",
-        "message": "Please sign in with your credentials"
+        "message": "Please check your email for verification link before signing in"
       },
       "error": {
         "title": "Registration failed",
@@ -106,7 +106,9 @@
       "errorFromAPIMessage": "We are resolving the issue, and encourage you to check back later",
       "retryExhaustedTitle": "Unable to process",
       "retryExhaustedMessage": "We are unable to process your request at this time. Please, try again later",
-      "tryAgain": "Try again"
+      "tryAgain": "Try again",
+      "requestLimit": "Request limit reached",
+      "requestLimitMessage": "You have reached the maximum of 3 poem generations per account"
     },
     "form": {
       "success": {

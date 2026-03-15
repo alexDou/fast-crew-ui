@@ -14,6 +14,7 @@ export interface APIUser {
   username: string;
   email: string;
   tier_id: number | null;
+  is_email_verified: boolean;
 }
 
 export async function loginToAPI(username: string, password: string): Promise<string | null> {
@@ -31,6 +32,10 @@ export async function loginToAPI(username: string, password: string): Promise<st
 
     return tokens.access_token;
   } catch (error) {
+    if (error instanceof HTTPError) {
+      const errorBody = await error.response.json<{ detail?: string }>();
+      throw new Error(errorBody.detail || "Login failed");
+    }
     console.error("Login error:", error);
     return null;
   }
