@@ -104,6 +104,8 @@
       "fileNetworkErrorMessage": "We are experiencing a file processing error. Please try again later",
       "errorFromAPI": "Error processing your file",
       "errorFromAPIMessage": "We are resolving the issue, and encourage you to check back later",
+      "indistinctContentTitle": "We need a clearer story image",
+      "indistinctContentMessage": "This upload appears too abstract, indistinct, or non-narrative for poem generation. Please upload a clear scene, portrait, action, animal, architecture, or nature moment.",
       "retryExhaustedTitle": "Unable to process",
       "retryExhaustedMessage": "We are unable to process your request at this time. Please, try again later",
       "tryAgain": "Try again",

@@ -30,3 +30,7 @@ export const ERROR_MESSAGES = {
   CHECK_STATUS_FAILED: "Failed to check status",
   INTERNAL_SERVER_ERROR: "Internal server error"
 } as const;
+
+export const PROCESSING_FAILURE_REASONS = {
+  INDISTINCT_CONTENT: "indistinct content"
+} as const;

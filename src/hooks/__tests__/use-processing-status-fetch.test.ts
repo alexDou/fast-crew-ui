@@ -66,6 +66,7 @@ describe("useProcessingStatusFetch", () => {
     });
     expect(result.current.isError).toBe(false);
     expect(result.current.isRetryExhausted).toBe(false);
+    expect(result.current.isIndistinctContentFailure).toBe(false);
   });
 
   it("returns success status and stops polling", async () => {
@@ -93,6 +94,27 @@ describe("useProcessingStatusFetch", () => {
       expect(result.current.isError).toBe(true);
     });
     expect(result.current.isRetryExhausted).toBe(false);
+    expect(result.current.isIndistinctContentFailure).toBe(false);
+  });
+
+  it("exposes indistinct content rejection message from API", async () => {
+    mockJsonFn.mockResolvedValue({
+      ready: true,
+      status: "error",
+      poem_source_id: 1,
+      message: "indistinct content"
+    });
+
+    const { result } = renderHook(() => useProcessingStatusFetch(1), {
+      wrapper: createWrapper()
+    });
+
+    await waitFor(() => {
+      expect(result.current.status).toBe("error");
+      expect(result.current.isIndistinctContentFailure).toBe(true);
+    });
+
+    expect(result.current.failureMessage).toBe("indistinct content");
   });
 
   it("shows toast and sets error status when retries exhausted", async () => {

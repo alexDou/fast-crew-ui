@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
+import { PROCESSING_FAILURE_REASONS } from "@/constants/api";
 import { PROCESSING_STATUS, type ProcessingStatusType } from "@/constants/status";
 
 import { uploadAction } from "@/server/actions/tuner";
@@ -19,11 +20,21 @@ export function useSourceCreate() {
       const result = await uploadAction(data);
 
       if (!result.success || !result.data) {
+        const isIndistinctContentError =
+          result.error?.trim().toLowerCase() === PROCESSING_FAILURE_REASONS.INDISTINCT_CONTENT;
+
         setProcessing(PROCESSING_STATUS.ERROR);
         setSourceId(null);
-        toast.error(t("error.actionErrorTitle"), {
-          description: t("error.actionErrorMessage")
-        });
+        toast.error(
+          t(isIndistinctContentError ? "error.indistinctContentTitle" : "error.actionErrorTitle"),
+          {
+            description: t(
+              isIndistinctContentError
+                ? "error.indistinctContentMessage"
+                : "error.actionErrorMessage"
+            )
+          }
+        );
         return;
       }
 

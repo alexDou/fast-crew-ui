@@ -80,6 +80,25 @@ describe("useSourceCreate", () => {
     });
   });
 
+  it("shows a dedicated toast when upload fails with indistinct content", async () => {
+    mockUploadAction.mockResolvedValue({
+      success: false,
+      error: "indistinct content"
+    });
+
+    const { result } = renderHook(() => useSourceCreate());
+
+    await act(async () => {
+      await result.current.sourceCreate({ file: mockFile });
+    });
+
+    expect(result.current.processing).toBe("error");
+    expect(result.current.sourceId).toBeNull();
+    expect(mockToastError).toHaveBeenCalledWith("error.indistinctContentTitle", {
+      description: "error.indistinctContentMessage"
+    });
+  });
+
   it("sets processing to error and shows error toast when exception is thrown", async () => {
     mockUploadAction.mockRejectedValue(new Error("Network error"));
 

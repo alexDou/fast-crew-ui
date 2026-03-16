@@ -4,7 +4,7 @@ const { mockPush } = vi.hoisted(() => ({
   mockPush: vi.fn()
 }));
 
-vi.mock("next/navigation", () => ({
+vi.mock("@/i18n/navigation", () => ({
   useRouter: () => ({ push: mockPush })
 }));
 
@@ -101,13 +101,28 @@ describe("TunerResult", () => {
   it("shows API error with try again button", () => {
     mockProcessingStatus.mockReturnValue({
       status: "error",
-      isRetryExhausted: false
+      isRetryExhausted: false,
+      isIndistinctContentFailure: false
     });
 
     render(<TunerResult sourceId={1} onReset={onReset} />);
 
     expect(screen.getByText("error.errorFromAPI")).toBeInTheDocument();
     expect(screen.getByText("error.errorFromAPIMessage")).toBeInTheDocument();
+    expect(screen.getByText("error.tryAgain")).toBeInTheDocument();
+  });
+
+  it("shows dedicated indistinct content message", () => {
+    mockProcessingStatus.mockReturnValue({
+      status: "error",
+      isRetryExhausted: false,
+      isIndistinctContentFailure: true
+    });
+
+    render(<TunerResult sourceId={1} onReset={onReset} />);
+
+    expect(screen.getByText("error.indistinctContentTitle")).toBeInTheDocument();
+    expect(screen.getByText("error.indistinctContentMessage")).toBeInTheDocument();
     expect(screen.getByText("error.tryAgain")).toBeInTheDocument();
   });
 

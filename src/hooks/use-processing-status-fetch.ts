@@ -5,7 +5,7 @@ import ky from "ky";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
-import { BFF_ENDPOINTS } from "@/constants/api";
+import { BFF_ENDPOINTS, PROCESSING_FAILURE_REASONS } from "@/constants/api";
 import { QUERY_KEYS } from "@/constants/query-keys";
 import { PROCESSING_STATUS, type ProcessingStatusType } from "@/constants/status";
 
@@ -13,6 +13,7 @@ interface StatusResponse {
   ready: boolean;
   status: ProcessingStatusType;
   poem_source_id: number;
+  message?: string;
 }
 
 export function useProcessingStatusFetch(sourceId: number) {
@@ -46,6 +47,9 @@ export function useProcessingStatusFetch(sourceId: number) {
     status: isError ? PROCESSING_STATUS.ERROR : data?.status || PROCESSING_STATUS.PROCESSING,
     isLoading,
     isError: isError || data?.status === PROCESSING_STATUS.ERROR,
-    isRetryExhausted: isError
+    isRetryExhausted: isError,
+    failureMessage: data?.message,
+    isIndistinctContentFailure:
+      data?.message?.trim().toLowerCase() === PROCESSING_FAILURE_REASONS.INDISTINCT_CONTENT
   };
 }

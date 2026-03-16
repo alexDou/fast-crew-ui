@@ -19,7 +19,8 @@ export function TunerResult({ sourceId, onReset }: TunerResultPropsType) {
   const t = useTranslations("Tuner");
   const router = useRouter();
 
-  const { status, isRetryExhausted } = useProcessingStatusFetch(sourceId);
+  const { status, isRetryExhausted, isIndistinctContentFailure } =
+    useProcessingStatusFetch(sourceId);
   const { isError: resultError } = useResultFetch({
     sourceId,
     status
@@ -55,6 +56,20 @@ export function TunerResult({ sourceId, onReset }: TunerResultPropsType) {
   }
 
   if (status === PROCESSING_STATUS.ERROR) {
+    if (isIndistinctContentFailure) {
+      return (
+        <div className="container flex flex-col items-center justify-center py-16">
+          <h2 className="font-bold text-red-500 text-xl">{t("error.indistinctContentTitle")}</h2>
+          <p className="mt-4 text-muted-foreground text-red-800">
+            {t("error.indistinctContentMessage")}
+          </p>
+          <Button variant="outline" className="mt-6" onClick={onReset}>
+            {t("error.tryAgain")}
+          </Button>
+        </div>
+      );
+    }
+
     return (
       <div className="container flex flex-col items-center justify-center py-16">
         <h2 className="font-bold text-red-500 text-xl">{t("error.errorFromAPI")}</h2>

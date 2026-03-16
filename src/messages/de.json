@@ -104,6 +104,8 @@
       "fileNetworkErrorMessage": "Die Verarbeitung Ihres Bildes fehlgeschlagen ist. Bitte versuchen Sie es mal erneut",
       "errorFromAPI": "Fehler bei der Verarbeitung Ihres Bildes",
       "errorFromAPIMessage": "Wir lösen das Problem, und ermutigen Sie, später erneut zu versuchen",
+      "indistinctContentTitle": "Wir brauchen ein klareres Bild mit Geschichte",
+      "indistinctContentMessage": "Dieses Bild wirkt zu abstrakt, undeutlich oder nicht erzählerisch für die Gedichtgenerierung. Bitte laden Sie eine klare Szene, ein Porträt, eine Handlung, ein Tier, Architektur oder einen markanten Naturmoment hoch.",
       "retryExhaustedTitle": "Verarbeitung nicht möglich",
       "retryExhaustedMessage": "Wir können Ihre Anfrage momentan nicht verarbeiten. Bitte versuchen Sie es später erneut",
       "tryAgain": "Erneut versuchen",
