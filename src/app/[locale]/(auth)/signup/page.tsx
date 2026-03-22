@@ -1,32 +1,18 @@
 import { useTranslations } from "next-intl";
-import { Balancer } from "react-wrap-balancer";
 
 import { RegisterForm } from "@/widgets";
 
-export default function Home() {
-  const t = useTranslations();
+export default function SignupPage() {
+  const t = useTranslations("Auth");
 
   return (
-    <div className="container py-16">
-      <section className="flex flex-col items-center justify-center pb-10">
-        <Balancer
-          as="h1"
-          className="text-center font-bold text-2xl text-black lg:text-5xl dark:text-white"
-        >
-          {t("Dashboard.title")}
-        </Balancer>
-      </section>
-      <section className="flex flex-col items-center justify-center">
-        <Balancer
-          as="h3"
-          className="text-center font-bold text-black text-xl lg:text-2xl dark:text-white"
-        >
-          {t("Auth.signup")}
-        </Balancer>
-      </section>
-      <section className="flex flex-col items-center justify-center pb-40">
+    <div className="flex flex-1 items-center justify-center p-6 lg:p-8">
+      <div className="w-full max-w-md bg-bento-beige p-8 lg:p-10 [&_[data-slot=button]]:bg-bento-beige-text [&_[data-slot=button]]:text-bento-beige [&_[data-slot=button]]:hover:bg-bento-beige-text/85 [&_[data-slot=form-label]]:text-bento-beige-muted [&_[data-slot=input]]:border-bento-beige-accent/25 [&_[data-slot=input]]:text-bento-beige-text [&_[data-slot=input]]:placeholder:text-bento-beige-subtle [&_[data-slot=label]]:text-bento-beige-muted">
+        <h2 className="mb-6 text-center font-[family-name:var(--font-playfair)] text-2xl font-bold text-bento-beige-text">
+          {t("signup")}
+        </h2>
         <RegisterForm />
-      </section>
+      </div>
     </div>
   );
 }

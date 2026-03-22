@@ -15,20 +15,20 @@ describe("PoemDisplay", () => {
   ];
 
   it("renders the critic's choice poem as active by default", () => {
-    render(<PoemDisplay poems={poems} />);
+    render(<PoemDisplay title="poems list" poems={poems} />);
 
     expect(screen.getByText("Violets are blue")).toBeInTheDocument();
   });
 
   it("renders first poem when no critic's choice", () => {
     const noCritic = poems.map((p) => ({ ...p, critic_choice: false }));
-    render(<PoemDisplay poems={noCritic} />);
+    render(<PoemDisplay title="poems list" poems={noCritic} />);
 
     expect(screen.getByText("Roses are red")).toBeInTheDocument();
   });
 
   it("renders poem selector buttons when multiple poems", () => {
-    render(<PoemDisplay poems={poems} />);
+    render(<PoemDisplay title="poems list" poems={poems} />);
 
     expect(screen.getByText("criticChoice")).toBeInTheDocument();
     expect(screen.getByText("alternative 1")).toBeInTheDocument();
@@ -36,21 +36,21 @@ describe("PoemDisplay", () => {
   });
 
   it("switches active poem on button click", () => {
-    render(<PoemDisplay poems={poems} />);
+    render(<PoemDisplay title="poems list" poems={poems} />);
 
     fireEvent.click(screen.getByText("alternative 1"));
     expect(screen.getByText("Roses are red")).toBeInTheDocument();
   });
 
   it("does not render selector when single poem", () => {
-    render(<PoemDisplay poems={[poems[0]]} />);
+    render(<PoemDisplay title="poems list" poems={[poems[0]]} />);
 
     expect(screen.getByText("Roses are red")).toBeInTheDocument();
     expect(screen.queryByText("otherPoems")).not.toBeInTheDocument();
   });
 
   it("returns null for empty poems array", () => {
-    const { container } = render(<PoemDisplay poems={[]} />);
+    const { container } = render(<PoemDisplay title="poems list" poems={[]} />);
 
     expect(container.innerHTML).toBe("");
   });

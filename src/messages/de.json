@@ -1,10 +1,41 @@
 {
+  "Landing": {
+    "overview": {
+      "badge": "Plattform",
+      "title": "Wo KI",
+      "titleAccent": "sieht",
+      "titleEnd": "Kunst",
+      "description": "Eine kreative Plattform, auf der künstliche Intelligenz auf menschliche Vorstellungskraft trifft. Laden Sie Ihre Welt hoch — ein Bild, einen Moment, ein Gefühl — und beobachten Sie, wie KI-Crews es in unerwartete Kunstformen verwandeln. Jede Crew bringt eine einzigartige Perspektive, eine andere Stimme, eine frische Interpretation.",
+      "statusLabel": "Status",
+      "statusValue": "Live · Beta",
+      "crewsLabel": "Crews",
+      "crewsValue": "1 aktiv · weitere folgen",
+      "stackLabel": "Stack",
+      "stackValue": "CrewAI · Multi-Agent"
+    },
+    "poetsCrew": {
+      "badge": "Crew #1 · Aktiv",
+      "title": "Dichter-Crew",
+      "description": "Ein Team von KI-Dichtern liest Ihr Bild und verfasst originelle Gedichte — jedes in einem anderen Stil. Ein Kritiker wählt den besten Vers. Ihr Foto wird zur Poesie.",
+      "cta": "Gedicht erstellen"
+    },
+    "comingSoon": {
+      "title": "Wird noch vorgestellt…",
+      "subtitle": "Neue Crew in Arbeit"
+    }
+  },
+  "Nav": {
+    "home": "Startseite",
+    "tuner": "Tuner",
+    "poems": "Gedichte",
+    "signin": "Anmelden",
+    "signup": "Registrieren"
+  },
   "Dashboard": {
-    "title": "Dichter-Crew",
-    "description": "Mit diesem Online-Tool kann man ein Gedicht generieren indem man einen Bild hochladt",
-    "projectBy": "Mustervorlage von",
-    "tunerButton": "Bild zum Gedicht",
-    "poemsButton": "Meine Gedichte"
+    "crewTitle": "Dichter-Crew",
+    "crewDescription": "Laden Sie ein erzählerisches Bild hoch — ein Porträt, eine Landschaft, einen besonderen Moment — und ein Team von KI-Dichtern verfasst originelle Verse, inspiriert von dem, was sie sehen. Jeder Dichter schreibt in einem anderen Stil. Ein Kritiker wählt dann das beste Werk aus. Ihr Foto wird zur Poesie.",
+    "tunerLink": "Gedicht erstellen",
+    "poemsLink": "Meine Gedichte"
   },
   "Auth": {
     "signin": "Anmelden",
@@ -28,6 +59,7 @@
     "emailLabel": "Emailadresse",
     "emailPlaceholder": "karl@mustermann.de",
     "usernameLabel": "Benutzername",
+    "usernameLoginLabel": "Benutzername",
     "usernamePlaceholder": "kmustermann",
     "passwordLabel": "Passwort",
     "passwordPlaceholder": "••••••••",

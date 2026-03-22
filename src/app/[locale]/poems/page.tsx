@@ -1,9 +1,10 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 import { getFormatter, getTranslations } from "next-intl/server";
 
 import { routesBook } from "@/lib/routes-book";
 
+import { ContentArea } from "@/layouts";
 import { getPoemSources } from "@/server/api/poem-sources";
 
 import { Button } from "@/ui";
@@ -17,33 +18,41 @@ export default async function PoemsPage() {
     poemSources = await getPoemSources();
   } catch {
     return (
-      <section className="container flex flex-col items-center justify-center py-16">
-        <h1 className="font-bold text-2xl text-red-500">{t("errorTitle")}</h1>
-        <p className="mt-4 text-muted-foreground">{t("errorMessage")}</p>
-      </section>
+      <ContentArea className="items-center justify-center">
+        <h1 className="font-[family-name:var(--font-playfair)] font-bold text-2xl text-bento-teal-text">
+          {t("errorTitle")}
+        </h1>
+        <p className="mt-4 text-bento-teal-muted">{t("errorMessage")}</p>
+      </ContentArea>
     );
   }
 
   if (poemSources.length === 0) {
     return (
-      <section className="container flex flex-col items-center justify-center py-16">
-        <h1 className="mb-4 font-bold text-2xl">{t("title")}</h1>
-        <p className="mb-6 text-muted-foreground">{t("empty")}</p>
+      <ContentArea className="items-center justify-center">
+        <h1 className="mb-4 font-[family-name:var(--font-playfair)] font-bold text-2xl text-bento-teal-text">
+          {t("title")}
+        </h1>
+        <p className="mb-6 text-bento-teal-muted">{t("empty")}</p>
         <Link href={routesBook.tuner}>
-          <Button>{t("emptyAction")}</Button>
+          <Button className="bg-bento-dark text-bento-beige hover:bg-bento-dark-lighter">
+            {t("emptyAction")}
+          </Button>
         </Link>
-      </section>
+      </ContentArea>
     );
   }
 
   return (
-    <section className="container py-16">
-      <h1 className="mb-8 font-bold text-2xl">{t("title")}</h1>
+    <ContentArea>
+      <h1 className="mb-8 font-[family-name:var(--font-playfair)] font-bold text-2xl text-bento-teal-text">
+        {t("title")}
+      </h1>
       <ul className="flex flex-col gap-4">
         {poemSources?.map((source) => (
           <li
             key={source.id}
-            className="flex items-center gap-4 rounded-base border border-default-strong p-4"
+            className="flex items-center gap-4 border border-bento-teal-muted/15 p-4"
           >
             <figure className="shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -52,13 +61,13 @@ export default async function PoemsPage() {
                 alt=""
                 width={80}
                 height={80}
-                className="rounded-base object-cover"
+                className="object-cover"
                 style={{ width: 80, height: 80 }}
               />
             </figure>
             <Link
               href={routesBook.poemDetail(source.id)}
-              className="text-primary underline-offset-4 hover:underline"
+              className="text-bento-teal-text underline-offset-4 hover:underline"
             >
               {formatter.dateTime(new Date(source.created_at), {
                 year: "numeric",
@@ -71,6 +80,6 @@ export default async function PoemsPage() {
           </li>
         ))}
       </ul>
-    </section>
+    </ContentArea>
   );
 }

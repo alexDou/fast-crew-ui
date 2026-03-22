@@ -2,6 +2,7 @@ export * from "../register-form";
 export * from "../signin-form";
 export * from "./dashboard";
 export * from "./hero";
+export * from "./landing";
 export * from "./locale-switcher";
 export * from "./poem-display";
 export * from "./private-nav";

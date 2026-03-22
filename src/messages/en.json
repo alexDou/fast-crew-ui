@@ -1,10 +1,41 @@
 {
+  "Landing": {
+    "overview": {
+      "badge": "Platform",
+      "title": "Where AI",
+      "titleAccent": "sees",
+      "titleEnd": "art",
+      "description": "A creative platform where artificial intelligence meets human imagination. Upload your world — an image, a moment, a feeling — and watch AI crews transform it into unexpected forms of art. Each crew brings a unique lens, a different voice, a fresh interpretation.",
+      "statusLabel": "Status",
+      "statusValue": "Live · Beta",
+      "crewsLabel": "Crews",
+      "crewsValue": "1 active · more coming",
+      "stackLabel": "Stack",
+      "stackValue": "CrewAI · Multi-Agent"
+    },
+    "poetsCrew": {
+      "badge": "Crew #1 · Active",
+      "title": "Poets Crew",
+      "description": "A team of AI poets reads your image and writes original poems — each in a different style. A critic picks the best verse. Your photo becomes poetry.",
+      "cta": "Create a Poem"
+    },
+    "comingSoon": {
+      "title": "To be introduced…",
+      "subtitle": "New crew in the works"
+    }
+  },
+  "Nav": {
+    "home": "Home",
+    "tuner": "Tuner",
+    "poems": "Poems",
+    "signin": "Sign in",
+    "signup": "Sign up"
+  },
   "Dashboard": {
-    "title": "Poets crew",
-    "description": "With this tool you can generate a poem out of an uploaded image content.",
-    "projectBy": "Template by",
-    "tunerButton": "Picture to a Poem",
-    "poemsButton": "My Poems"
+    "crewTitle": "Poets Crew",
+    "crewDescription": "Upload a story-telling image — a portrait, a landscape, a candid moment — and a team of AI poets will craft original verse inspired by what they see. Each poet writes in a different style. A critic then picks the best piece. Your photo becomes poetry.",
+    "tunerLink": "Create a poem",
+    "poemsLink": "My poems"
   },
   "Auth": {
     "signin": "Login",
@@ -28,6 +59,7 @@
     "emailLabel": "Email address",
     "emailPlaceholder": "john@doe.com",
     "usernameLabel": "Choose a username",
+    "usernameLoginLabel": "Username",
     "usernamePlaceholder": "johndoe",
     "passwordLabel": "Password",
     "passwordPlaceholder": "••••••••",

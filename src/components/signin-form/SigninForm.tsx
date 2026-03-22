@@ -61,7 +61,7 @@ export function SigninForm() {
   });
 
   return (
-    <section className="col-span-3 mt-16 space-y-5 lg:col-span-1">
+    <section className="space-y-5">
       <Form {...form}>
         <form onSubmit={onSubmit} className="space-y-5">
           <FormField
@@ -69,7 +69,7 @@ export function SigninForm() {
             name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{tForm("usernameLabel")}</FormLabel>
+                <FormLabel>{tForm("usernameLoginLabel")}</FormLabel>
                 <FormControl>
                   <Input
                     placeholder={tForm("usernamePlaceholder")}

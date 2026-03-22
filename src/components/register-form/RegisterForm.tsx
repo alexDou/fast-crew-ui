@@ -57,7 +57,7 @@ export function RegisterForm() {
   });
 
   return (
-    <section className="mt-16 w-full lg:w-1/3">
+    <section className="w-full">
       <Form {...form}>
         <form onSubmit={onSubmit} className="w-full space-y-5">
           <FormField

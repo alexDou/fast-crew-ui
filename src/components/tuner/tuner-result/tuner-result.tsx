@@ -35,8 +35,8 @@ export function TunerResult({ sourceId, onReset }: TunerResultPropsType) {
   if (status === PROCESSING_STATUS.PROCESSING) {
     return (
       <div className="container flex flex-col items-center justify-center py-16">
-        <h2 className="font-bold text-xl">{t("result.processing.title")}</h2>
-        <p className="mt-4 text-muted-foreground">{t("result.processing.message")}</p>
+        <h2 className="font-bold text-xl text-bento-beige-text">{t("result.processing.title")}</h2>
+        <p className="mt-4 text-bento-beige-muted">{t("result.processing.message")}</p>
       </div>
     );
   }

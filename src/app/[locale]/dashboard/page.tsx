@@ -10,8 +10,8 @@ export default async function DashboardPage() {
   }
 
   return (
-    <section className="flex flex-col items-center justify-center pb-40">
+    <div className="flex flex-1 flex-col bg-bento-beige p-8 lg:p-12">
       <Dashboard user={user} />
-    </section>
+    </div>
   );
 }

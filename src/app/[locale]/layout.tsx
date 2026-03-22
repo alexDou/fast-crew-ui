@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import { notFound } from "next/navigation";
 
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -25,6 +25,11 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"]
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"]
 });
 
@@ -59,11 +64,11 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen w-full flex-col antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} flex min-h-screen w-full flex-col antialiased`}
       >
         <Providers messages={messages} locale={locale}>
           <Header />
-          <main className="flex-1">{children}</main>
+          <main className="flex flex-1 flex-col">{children}</main>
           <Toaster richColors />
           <Footer />
         </Providers>

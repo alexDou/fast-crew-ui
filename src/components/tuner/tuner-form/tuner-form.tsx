@@ -66,9 +66,9 @@ export function TunerForm() {
                 name="file"
                 render={({ field }) => (
                   <FormItem>
-                    <div className="flex w-full items-center justify-center">
-                      <FormLabel className="flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-base border border-default-strong border-dashed bg-neutral-secondary-medium hover:bg-neutral-tertiary-medium">
-                        <div className="flex flex-col items-center justify-center pt-5 pb-6 text-body">
+                    <div className="relative flex w-full items-center justify-center before:pointer-events-none before:absolute before:inset-0 before:bg-[url('/images/feather-wing.jpg')] before:bg-[size:100%_100%] before:opacity-[0.1] before:content-['']">
+                      <FormLabel className="relative z-10 flex h-64 w-full cursor-pointer flex-col items-center justify-center border border-bento-beige-accent/25 border-dashed">
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6 text-black">
                           <Upload className="mb-4 h-8 w-8" />
                           <Balancer className="mb-2 text-sm">{t("form.file.label")}</Balancer>
                           <Balancer className="text-xs">{t("form.file.prompt")}</Balancer>
@@ -104,7 +104,7 @@ export function TunerForm() {
                 name="enhance"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("form.enhance.label")}</FormLabel>
+                    <FormLabel className="text-black">{t("form.enhance.label")}</FormLabel>
                     <FormControl>
                       <Input
                         placeholder={t("form.enhance.placeholder")}
@@ -116,7 +116,10 @@ export function TunerForm() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">
+              <Button
+                type="submit"
+                className="w-full bg-bento-beige-text text-bento-beige hover:bg-bento-beige-text/85"
+              >
                 {t("form.submit")}
               </Button>
             </form>

@@ -1,10 +1,11 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 import { ArrowLeft } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 import { routesBook } from "@/lib/routes-book";
 
+import { ContentArea } from "@/layouts";
 import { PoemDisplay } from "@/widgets";
 import { getPoemsBySourceId } from "@/server/api/poem-sources";
 
@@ -17,47 +18,50 @@ export default async function PoemDetailPage({ params }: { params: Promise<{ id:
     poems = await getPoemsBySourceId(id);
   } catch {
     return (
-      <section className="container flex flex-col items-center justify-center py-16">
-        <h1 className="font-bold text-2xl text-red-500">{t("errorTitle")}</h1>
-        <p className="mt-4 text-muted-foreground">{t("errorMessage")}</p>
+      <ContentArea className="items-center justify-center">
+        <h1 className="font-[family-name:var(--font-playfair)] font-bold text-2xl text-bento-teal-text">
+          {t("errorTitle")}
+        </h1>
+        <p className="mt-4 text-bento-teal-muted">{t("errorMessage")}</p>
         <Link
           href={routesBook.poems}
-          className="mt-6 flex items-center gap-2 text-primary hover:underline"
+          className="mt-6 flex items-center gap-2 text-bento-teal-text hover:underline"
         >
           <ArrowLeft className="h-4 w-4" />
           {t("backToList")}
         </Link>
-      </section>
+      </ContentArea>
     );
   }
 
-  if (poems.length === 0) {
+  if (!poems.length) {
     return (
-      <section className="container flex flex-col items-center justify-center py-16">
-        <h1 className="mb-4 font-bold text-2xl">{t("notFoundTitle")}</h1>
-        <p className="mb-6 text-muted-foreground">{t("notFoundMessage")}</p>
+      <ContentArea className="items-center justify-center">
+        <h1 className="mb-4 font-[family-name:var(--font-playfair)] font-bold text-2xl text-bento-teal-text">
+          {t("notFoundTitle")}
+        </h1>
+        <p className="mb-6 text-bento-teal-muted">{t("notFoundMessage")}</p>
         <Link
           href={routesBook.poems}
-          className="flex items-center gap-2 text-primary hover:underline"
+          className="flex items-center gap-2 text-bento-teal-text hover:underline"
         >
           <ArrowLeft className="h-4 w-4" />
           {t("backToList")}
         </Link>
-      </section>
+      </ContentArea>
     );
   }
 
   return (
-    <section className="container py-16">
+    <ContentArea>
       <Link
         href={routesBook.poems}
-        className="mb-8 flex items-center gap-2 text-primary hover:underline"
+        className="mb-8 flex items-center gap-2 text-bento-teal-text hover:underline"
       >
         <ArrowLeft className="h-4 w-4" />
         {t("backToList")}
       </Link>
-      <h1 className="mb-8 font-bold text-2xl">{t("title")}</h1>
-      <PoemDisplay poems={poems} />
-    </section>
+      <PoemDisplay title={t("title")} poems={poems} />
+    </ContentArea>
   );
 }

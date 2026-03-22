@@ -1,3 +1,4 @@
+import { ContentArea } from "@/layouts";
 import { ErrorReport } from "@/components/error-report";
 import { TunerForm } from "@/components/tuner";
 import { getCurrentUser } from "@/server/actions/auth";
@@ -9,5 +10,9 @@ export default async function TunerPage() {
     return <ErrorReport errorKey="user.network" />;
   }
 
-  return <TunerForm />;
+  return (
+    <ContentArea>
+      <TunerForm />
+    </ContentArea>
+  );
 }
