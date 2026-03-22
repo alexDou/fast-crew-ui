@@ -34,7 +34,7 @@ describe("getPoemSources", () => {
       { id: 1, media_path: "/img/1.jpg", status: "ready", created_at: "2026-01-01T00:00:00Z" }
     ];
     mockCookiesGet.mockReturnValue({ value: "test-token" });
-    mockKyGet.mockReturnValue({ json: () => Promise.resolve(mockSources) });
+    mockKyGet.mockReturnValue({ json: () => Promise.resolve({ data: mockSources }) });
 
     const result = await getPoemSources();
 

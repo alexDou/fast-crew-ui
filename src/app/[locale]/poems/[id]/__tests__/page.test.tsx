@@ -16,8 +16,8 @@ vi.mock("next-intl/server", () => ({
   getTranslations: mockGetTranslations
 }));
 
-vi.mock("next/link", () => ({
-  default: ({ children, href }: { children: React.ReactNode; href: string }) => (
+vi.mock("@/i18n/navigation", () => ({
+  Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
     <a href={href}>{children}</a>
   )
 }));
@@ -27,8 +27,11 @@ vi.mock("lucide-react", () => ({
 }));
 
 vi.mock("@/widgets", () => ({
-  PoemDisplay: ({ poems }: { poems: { id: number }[] }) => (
-    <div data-testid="poem-display">Poems: {poems.length}</div>
+  PoemDisplay: ({ title, poems }: { title: string; poems: { id: number }[] }) => (
+    <div data-testid="poem-display">
+      <span>{title}</span>
+      <span>Poems: {poems.length}</span>
+    </div>
   )
 }));
 

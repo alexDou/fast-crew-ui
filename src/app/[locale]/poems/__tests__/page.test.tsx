@@ -18,8 +18,8 @@ vi.mock("next-intl/server", () => ({
   getFormatter: mockGetFormatter
 }));
 
-vi.mock("next/link", () => ({
-  default: ({ children, href }: { children: React.ReactNode; href: string }) => (
+vi.mock("@/i18n/navigation", () => ({
+  Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
     <a href={href}>{children}</a>
   )
 }));
@@ -65,7 +65,7 @@ describe("PoemsPage", () => {
 
     expect(screen.getByText("empty")).toBeInTheDocument();
     expect(screen.getByText("emptyAction")).toBeInTheDocument();
-    expect(screen.getByRole("link")).toHaveAttribute("href", "tuner");
+    expect(screen.getByRole("link")).toHaveAttribute("href", "/tuner");
   });
 
   it("renders error state when API fails", async () => {

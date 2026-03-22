@@ -8,7 +8,7 @@ describe("routesBook", () => {
     expect(routesBook.signin).toBe("/signin");
     expect(routesBook.signup).toBe("/signup");
     expect(routesBook.dashboard).toBe("/dashboard");
-    expect(routesBook.tuner).toBe("tuner");
+    expect(routesBook.tuner).toBe("/tuner");
     expect(routesBook.poems).toBe("/poems");
   });
 
