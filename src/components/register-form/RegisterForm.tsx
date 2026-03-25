@@ -41,7 +41,7 @@ export function RegisterForm() {
       }
 
       toast.success(tForm("registration.success.title"), {
-        description: tForm("registration.success.messsage")
+        description: tForm("registration.success.message")
       });
 
       router.push("/signin");

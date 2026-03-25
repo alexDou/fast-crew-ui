@@ -84,7 +84,17 @@
       },
       "error": {
         "title": "Login failed",
-        "message": "An error occurred, we cannot log you in at this moment. Please try again after a while"
+        "message": "An error occurred, we cannot log you in at this moment. Please try again after a while",
+        "notVerified": "email is not yet veified, please check you email"
+      },
+      "resendVerification": {
+        "link": "Resend verification email",
+        "loading": "Resending verification email...",
+        "missingIdentifier": "Please enter your username or email first",
+        "success": {
+          "title": "Verification email sent",
+          "message": "Please check your inbox for the new verification link"
+        }
       }
     }
   },

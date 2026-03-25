@@ -1,15 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { mockCookieStore, mockLoginToAPI, mockRegisterToAPI } = vi.hoisted(() => {
-  const mockCookieStore = {
-    get: vi.fn(),
-    set: vi.fn(),
-    delete: vi.fn()
-  };
-  const mockLoginToAPI = vi.fn();
-  const mockRegisterToAPI = vi.fn();
-  return { mockCookieStore, mockLoginToAPI, mockRegisterToAPI };
-});
+const { mockCookieStore, mockLoginToAPI, mockRegisterToAPI, mockResendVerificationToAPI } =
+  vi.hoisted(() => {
+    const mockCookieStore = {
+      get: vi.fn(),
+      set: vi.fn(),
+      delete: vi.fn()
+    };
+    const mockLoginToAPI = vi.fn();
+    const mockRegisterToAPI = vi.fn();
+    const mockResendVerificationToAPI = vi.fn();
+    return { mockCookieStore, mockLoginToAPI, mockRegisterToAPI, mockResendVerificationToAPI };
+  });
 
 vi.mock("next/headers", () => ({
   cookies: vi.fn(() => Promise.resolve(mockCookieStore))
@@ -29,10 +31,11 @@ vi.mock("ky", () => ({
 vi.mock("@/server/api/auth", () => ({
   loginToAPI: mockLoginToAPI,
   registerToAPI: mockRegisterToAPI,
+  resendVerificationToAPI: mockResendVerificationToAPI,
   logoutFromAPI: vi.fn()
 }));
 
-import { loginAction, registerAction } from "@/server/actions/auth";
+import { loginAction, registerAction, resendVerificationAction } from "@/server/actions/auth";
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -63,13 +66,15 @@ describe("loginAction", () => {
   });
 
   it("returns email verification error from API", async () => {
-    mockLoginToAPI.mockRejectedValueOnce(new Error("Please verify your email before logging in."));
+    mockLoginToAPI.mockRejectedValueOnce(
+      new Error("Email is not yet verified, please check your email")
+    );
 
     const result = await loginAction("testuser", "testpass");
 
     expect(result).toEqual({
       success: false,
-      error: "Please verify your email before logging in."
+      error: "Email is not yet verified, please check your email"
     });
   });
 
@@ -80,6 +85,24 @@ describe("loginAction", () => {
 
     expect(result.success).toBe(false);
     expect(result.error).toBeDefined();
+  });
+});
+
+describe("resendVerificationAction", () => {
+  it("returns success when resend succeeds", async () => {
+    mockResendVerificationToAPI.mockResolvedValueOnce(undefined);
+
+    const result = await resendVerificationAction("testuser");
+
+    expect(result).toEqual({ success: true });
+  });
+
+  it("returns error when resend fails", async () => {
+    mockResendVerificationToAPI.mockRejectedValueOnce(new Error("failed"));
+
+    const result = await resendVerificationAction("testuser");
+
+    expect(result).toEqual({ success: false, error: "failed" });
   });
 });
 

@@ -4,6 +4,7 @@ export const API_ENDPOINTS = {
   REFRESH: "/api/v1/refresh",
   USER: "/api/v1/user",
   USER_ME: "/api/v1/user/me",
+  RESEND_VERIFICATION: "/api/v1/resend-verification",
   POEM_SOURCE: "/api/v1/poem-source",
   POEM_SOURCES: "/api/v1/poem-sources",
   poems: (sourceId: number | string) => `/api/v1/poems/${sourceId}`,

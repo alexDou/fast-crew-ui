@@ -63,6 +63,20 @@ export async function registerToAPI(data: {
   }
 }
 
+export async function resendVerificationToAPI(identifier: string): Promise<void> {
+  try {
+    await ky.post(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.RESEND_VERIFICATION}`, {
+      json: { identifier }
+    });
+  } catch (error) {
+    if (error instanceof HTTPError) {
+      const errorBody = await error.response.json<{ detail?: string }>();
+      throw new Error(errorBody.detail || "Unable to resend verification email");
+    }
+    throw error;
+  }
+}
+
 export async function getUserFromAPI(accessToken: string): Promise<APIUser | null> {
   try {
     return await ky

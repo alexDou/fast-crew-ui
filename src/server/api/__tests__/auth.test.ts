@@ -26,7 +26,7 @@ vi.mock("ky", () => {
 });
 
 import { HTTPError } from "ky";
-import { loginToAPI, registerToAPI } from "../auth";
+import { loginToAPI, registerToAPI, resendVerificationToAPI } from "../auth";
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -53,13 +53,14 @@ describe("loginToAPI", () => {
     );
     Object.assign(httpError, {
       response: {
-        json: () => Promise.resolve({ detail: "Please verify your email before logging in." })
+        json: () =>
+          Promise.resolve({ detail: "Email is not yet verified, please check your email" })
       }
     });
     mockJsonFn.mockRejectedValueOnce(httpError);
 
     await expect(loginToAPI("testuser", "testpass")).rejects.toThrow(
-      "Please verify your email before logging in."
+      "Email is not yet verified, please check your email"
     );
   });
 
@@ -83,6 +84,21 @@ describe("loginToAPI", () => {
     const result = await loginToAPI("testuser", "testpass");
 
     expect(result).toBeNull();
+  });
+});
+
+describe("resendVerificationToAPI", () => {
+  it("posts identifier to resend endpoint", async () => {
+    mockJsonFn.mockResolvedValueOnce({ message: "ok" });
+
+    await resendVerificationToAPI("testuser");
+
+    expect(mockPost).toHaveBeenCalledWith(
+      "https://api.example.com/api/v1/resend-verification",
+      expect.objectContaining({
+        json: { identifier: "testuser" }
+      })
+    );
   });
 });
 

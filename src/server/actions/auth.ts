@@ -10,7 +10,12 @@ import { API_ENDPOINTS, ERROR_MESSAGES } from "@/constants/api";
 import { routesBook } from "@/lib/routes-book";
 
 import type { APIUser } from "@/server/api/auth";
-import { loginToAPI, logoutFromAPI, registerToAPI } from "@/server/api/auth";
+import {
+  loginToAPI,
+  logoutFromAPI,
+  registerToAPI,
+  resendVerificationToAPI
+} from "@/server/api/auth";
 
 export interface AuthActionResult {
   success: boolean;
@@ -67,6 +72,19 @@ export async function registerAction(data: {
     return {
       success: false,
       error: error.message || ERROR_MESSAGES.REGISTRATION_ERROR
+    };
+  }
+}
+
+export async function resendVerificationAction(identifier: string): Promise<AuthActionResult> {
+  try {
+    await resendVerificationToAPI(identifier);
+    return { success: true };
+  } catch (err) {
+    const error = err as Error;
+    return {
+      success: false,
+      error: error.message || "Unable to resend verification email"
     };
   }
 }
