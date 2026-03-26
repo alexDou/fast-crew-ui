@@ -11,7 +11,7 @@ export default function SignupPage() {
         <h2 className="mb-6 text-center font-[family-name:var(--font-playfair)] text-2xl font-bold text-bento-beige-text">
           {t("signup")}
         </h2>
-        <p className="font-xs text-red-800 italic text-center">{t("signup-note")}</p>
+        <p className="font-xs text-red-800 italic text-center">{t("signup-warning")}</p>
         <RegisterForm />
       </div>
     </div>
