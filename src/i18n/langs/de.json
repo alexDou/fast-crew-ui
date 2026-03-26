@@ -27,7 +27,7 @@
   "Nav": {
     "home": "Startseite",
     "tuner": "Tuner",
-    "poems": "Gedichte",
+    "incentives": "Motiverungen",
     "signin": "Anmelden",
     "signup": "Registrieren"
   },
@@ -40,6 +40,7 @@
   "Auth": {
     "signin": "Anmelden",
     "signup": "Registrieren",
+    "signup-warning": "Achtung! Die Aktivierungsemail kann als Spam eingechätzt werden. Die Hauptdienste wie Gmail und MS können die Email total ignorieren. Wir arbeiten darauf eine bessere Lösung au finden",
     "logout": "Abmelden"
   },
   "UserList": {

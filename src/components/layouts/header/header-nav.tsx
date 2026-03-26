@@ -38,7 +38,7 @@ export function HeaderNav({ isAuthenticated }: HeaderNavProps) {
               {t("tuner")}
             </NavLink>
             <NavLink href={routesBook.poems} icon={<BookOpen />}>
-              {t("poems")}
+              {t("incentives")}
             </NavLink>
           </>
         )}

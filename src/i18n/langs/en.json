@@ -27,7 +27,7 @@
   "Nav": {
     "home": "Home",
     "tuner": "Tuner",
-    "poems": "Poems",
+    "incentives": "Incentives",
     "signin": "Sign in",
     "signup": "Sign up"
   },
@@ -40,6 +40,7 @@
   "Auth": {
     "signin": "Login",
     "signup": "Register",
+    "signup-warning": "Warning! activation email can land in spam. It is possible that major provider such as GMail and MS can reject it entirely. We are working on a better solution",
     "logout": "Logout"
   },
   "UserList": {
