@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import ky, { HTTPError } from "ky";
 
 import { API_ENDPOINTS, ERROR_MESSAGES, PROCESSING_FAILURE_REASONS } from "@/constants/api";
+import { env } from "@/env";
 
 import { routesBook } from "@/lib/routes-book";
 
@@ -20,7 +21,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ sourceId: 
     }
 
     const data = await ky
-      .get(`${process.env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.poemSourceStatus(sourceId)}`, {
+      .get(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.poemSourceStatus(sourceId)}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`
         }

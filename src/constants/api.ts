@@ -28,6 +28,7 @@ export const ERROR_MESSAGES = {
   LOGIN_ERROR: "An error occurred during login",
   REGISTRATION_FAILED: "Registration failed",
   REGISTRATION_ERROR: "An error occurred during registration",
+  CAPTCHA_VALIDATION_FAILED: "Captcha validation failed",
   CHECK_STATUS_FAILED: "Failed to check status",
   INTERNAL_SERVER_ERROR: "Internal server error"
 } as const;

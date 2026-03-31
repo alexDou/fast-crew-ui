@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import ky, { HTTPError } from "ky";
 
 import { API_ENDPOINTS, ERROR_MESSAGES } from "@/constants/api";
+import { env } from "@/env";
 
 import { routesBook } from "@/lib/routes-book";
 
@@ -22,6 +23,43 @@ export interface AuthActionResult {
   error?: string;
 }
 
+interface RecaptchaVerificationResponse {
+  success: boolean;
+}
+
+async function verifyRecaptchaToken(token: string): Promise<boolean> {
+  const recaptchaSecretKey = env.RECAPTCHA_SECRET_KEY;
+
+  if (!recaptchaSecretKey) {
+    console.error("Missing RECAPTCHA_SECRET_KEY environment variable");
+    return false;
+  }
+
+  try {
+    const response = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: new URLSearchParams({
+        secret: recaptchaSecretKey,
+        response: token
+      }),
+      cache: "no-store"
+    });
+
+    if (!response.ok) {
+      return false;
+    }
+
+    const data = (await response.json()) as RecaptchaVerificationResponse;
+    return data.success;
+  } catch (error) {
+    console.error("reCAPTCHA verification failed:", error);
+    return false;
+  }
+}
+
 export async function loginAction(username: string, password: string): Promise<AuthActionResult> {
   try {
     const accessToken = await loginToAPI(username, password);
@@ -36,7 +74,7 @@ export async function loginAction(username: string, password: string): Promise<A
     const cookieStore = await cookies();
     cookieStore.set("access_token", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 60 * 30,
       path: "/"
@@ -58,10 +96,25 @@ export async function registerAction(data: {
   name: string;
   username: string;
   email: string;
+  captchaToken: string;
   password: string;
 }): Promise<AuthActionResult> {
   try {
-    await registerToAPI(data);
+    const isCaptchaValid = await verifyRecaptchaToken(data.captchaToken);
+
+    if (!isCaptchaValid) {
+      return {
+        success: false,
+        error: ERROR_MESSAGES.CAPTCHA_VALIDATION_FAILED
+      };
+    }
+
+    await registerToAPI({
+      name: data.name,
+      username: data.username,
+      email: data.email,
+      password: data.password
+    });
 
     return {
       success: true
@@ -116,7 +169,7 @@ export async function getCurrentUser(): Promise<APIUser | null> {
     }
 
     return await ky
-      .get(`${process.env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.USER_ME}`, {
+      .get(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.USER_ME}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
         cache: "no-store"
       })

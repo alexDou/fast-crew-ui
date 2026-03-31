@@ -40,7 +40,7 @@
   "Auth": {
     "signin": "Login",
     "signup": "Register",
-    "signup-warning": "Warning! activation email can land in spam. It is possible that major provider such as GMail and MS can reject it entirely. We are working on a better solution",
+    "signup-warning": "Warning! Registration is blocked for the moment. You are very welcome to check back later. all previously created accounts are activated.",
     "logout": "Logout"
   },
   "UserList": {
@@ -75,7 +75,9 @@
       },
       "error": {
         "title": "Registration failed",
-        "message": "An unexpected error occurred"
+        "message": "An unexpected error occurred",
+        "captchaUnavailable": "Captcha is not configured. Please try again later",
+        "captchaFailed": "Captcha verification failed. Please try again"
       }
     },
     "signin": {

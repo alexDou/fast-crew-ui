@@ -41,6 +41,12 @@ vi.mock("ky", () => {
   };
 });
 
+vi.mock("@/env", () => ({
+  env: {
+    NEXT_PUBLIC_API_URL: "https://api.example.com"
+  }
+}));
+
 import { HTTPError } from "ky";
 
 import { GET } from "../route";
@@ -53,7 +59,6 @@ const createMockHttpError = (status = 500) => {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  process.env.NEXT_PUBLIC_API_URL = "https://api.example.com";
 });
 
 describe("/api/tuner/poems/[sourceId] GET", () => {

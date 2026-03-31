@@ -40,7 +40,7 @@
   "Auth": {
     "signin": "Anmelden",
     "signup": "Registrieren",
-    "signup-warning": "Achtung! Die Aktivierungsemail kann als Spam eingechätzt werden. Die Hauptdienste wie Gmail und MS können die Email total ignorieren. Wir arbeiten darauf eine bessere Lösung au finden",
+    "signup-warning": "Achtung! Die Anmeldung ist momentan blockiert. Sie sind herzlich willkommen in ein paar Tage noch mal zu checken. alle vorherig angerichtete Accounts sind aktiviert.",
     "logout": "Abmelden"
   },
   "UserList": {
@@ -75,7 +75,9 @@
       },
       "error": {
         "title": "Die Anmeldung fehlgeschlagen",
-        "message": "Ein unerwarteter Fehler ist aufgetreten"
+        "message": "Ein unerwarteter Fehler ist aufgetreten",
+        "captchaUnavailable": "Captcha ist nicht konfiguriert. Bitte versuchen Sie es später erneut",
+        "captchaFailed": "Captcha-Verifizierung fehlgeschlagen. Bitte versuchen Sie es erneut"
       }
     },
     "signin": {

@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 import { PROCESSING_FAILURE_REASONS } from "@/constants/api";
 import { PROCESSING_STATUS, type ProcessingStatusType } from "@/constants/status";
+import { env } from "@/env";
 
 import { uploadAction } from "@/server/actions/tuner";
 
@@ -48,7 +49,7 @@ export function useSourceCreate() {
       toast.error(t("error.actionErrorTitle"), {
         description: t("error.actionErrorMessage")
       });
-      if (process.env.NEXT_PUBLIC_NODE_ENV === "development") {
+      if (env.NEXT_PUBLIC_NODE_ENV === "development") {
         console.error(error);
       }
     }

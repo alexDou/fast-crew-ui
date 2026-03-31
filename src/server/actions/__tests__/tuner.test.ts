@@ -33,13 +33,18 @@ vi.mock("ky", () => {
   };
 });
 
+vi.mock("@/env", () => ({
+  env: {
+    NEXT_PUBLIC_API_URL: "https://api.example.com"
+  }
+}));
+
 import { HTTPError } from "ky";
 
 import { uploadAction } from "@/server/actions/tuner";
 
 beforeEach(() => {
   vi.clearAllMocks();
-  process.env.NEXT_PUBLIC_API_URL = "https://api.example.com";
 });
 
 describe("uploadAction", () => {

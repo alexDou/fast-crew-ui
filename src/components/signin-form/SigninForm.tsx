@@ -8,6 +8,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { env } from "@/env";
+
 import {
   Button,
   Form,
@@ -91,7 +93,7 @@ export function SigninForm() {
       toast.error(tForm("signin.error.title"), {
         description: tForm("signin.error.message")
       });
-      if (process.env.NEXT_PUBLIC_NODE_ENV) {
+      if (env.NEXT_PUBLIC_NODE_ENV) {
         console.error(error);
       }
     }

@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import ky, { HTTPError } from "ky";
 
 import { API_ENDPOINTS, ERROR_MESSAGES } from "@/constants/api";
+import { env } from "@/env";
 
 import { routesBook } from "@/lib/routes-book";
 
@@ -37,7 +38,7 @@ export async function uploadAction(data: {
     }
 
     const result = await ky
-      .post(`${process.env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.POEM_SOURCE}`, {
+      .post(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.POEM_SOURCE}`, {
         body: formData,
         headers: {
           Authorization: `Bearer ${accessToken}`

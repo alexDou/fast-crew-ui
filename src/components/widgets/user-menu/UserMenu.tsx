@@ -5,6 +5,8 @@ import { useRouter } from "@/i18n/navigation";
 import { LogOutIcon, UserIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { env } from "@/env";
+
 import { Button } from "@/ui";
 import { logoutAction } from "@/server/actions/auth";
 
@@ -18,7 +20,7 @@ export function UserMenu() {
     } catch (error) {
       router.push("/");
       router.refresh();
-      if (process.env.NEXT_PUBLIC_NODE_ENV === "development") {
+      if (env.NEXT_PUBLIC_NODE_ENV === "development") {
         console.log(error);
       }
     }

@@ -1,11 +1,16 @@
 "use client";
 
+import { useCallback, useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
+import ReCAPTCHA from "react-google-recaptcha";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+
+import { ERROR_MESSAGES } from "@/constants/api";
+import { env } from "@/env";
 
 import {
   Button,
@@ -25,6 +30,11 @@ export function RegisterForm() {
   const tForm = useTranslations("AuthForm");
   const tSchema = useTranslations("AuthSchema");
   const router = useRouter();
+  const [recaptchaInstance, setRecaptchaInstance] = useState<ReCAPTCHA | null>(null);
+  const reCaptchaSiteKey = env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+  const handleRecaptchaRef = useCallback((instance: ReCAPTCHA | null) => {
+    setRecaptchaInstance(instance);
+  }, []);
 
   const form = useForm<SignupFormValuesType>({
     resolver: zodResolver(createSignupSchema(tSchema)),
@@ -33,11 +43,36 @@ export function RegisterForm() {
   const { control, handleSubmit } = form;
 
   const onSubmit = handleSubmit(async ({ name, email, username, password }) => {
+    if (!reCaptchaSiteKey || !recaptchaInstance) {
+      toast.error(tForm("registration.error.title"), {
+        description: tForm("registration.error.captchaUnavailable")
+      });
+      return;
+    }
+
     try {
-      const result = await registerAction({ name, email, username, password });
+      const captchaToken = await recaptchaInstance.executeAsync();
+      recaptchaInstance.reset();
+
+      if (!captchaToken) {
+        toast.error(tForm("registration.error.title"), {
+          description: tForm("registration.error.captchaFailed")
+        });
+        return;
+      }
+
+      const result = await registerAction({ name, email, username, password, captchaToken });
 
       if (!result.success) {
-        throw new Error(result.error);
+        const errorDescription =
+          result.error === ERROR_MESSAGES.CAPTCHA_VALIDATION_FAILED
+            ? tForm("registration.error.captchaFailed")
+            : result.error || tForm("registration.error.message");
+
+        toast.error(tForm("registration.error.title"), {
+          description: errorDescription
+        });
+        return;
       }
 
       toast.success(tForm("registration.success.title"), {
@@ -47,10 +82,10 @@ export function RegisterForm() {
       router.push("/signin");
     } catch (err) {
       const error = err as Error;
-      toast.error("Registration failed", {
-        description: "An unexpected error occurred"
+      toast.error(tForm("registration.error.title"), {
+        description: tForm("registration.error.message")
       });
-      if (process.env.NEXT_PUBLIC_NODE_ENV) {
+      if (env.NEXT_PUBLIC_NODE_ENV) {
         console.error(error);
       }
     }
@@ -147,6 +182,10 @@ export function RegisterForm() {
           <Button type="submit" className="w-full">
             {tForm("submit")}
           </Button>
+
+          {reCaptchaSiteKey ? (
+            <ReCAPTCHA ref={handleRecaptchaRef} sitekey={reCaptchaSiteKey} size="invisible" />
+          ) : null}
         </form>
       </Form>
     </section>

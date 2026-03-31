@@ -1,17 +1,29 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-const { mockCookieStore, mockLoginToAPI, mockRegisterToAPI, mockResendVerificationToAPI } =
-  vi.hoisted(() => {
-    const mockCookieStore = {
-      get: vi.fn(),
-      set: vi.fn(),
-      delete: vi.fn()
-    };
-    const mockLoginToAPI = vi.fn();
-    const mockRegisterToAPI = vi.fn();
-    const mockResendVerificationToAPI = vi.fn();
-    return { mockCookieStore, mockLoginToAPI, mockRegisterToAPI, mockResendVerificationToAPI };
-  });
+const {
+  mockCookieStore,
+  mockLoginToAPI,
+  mockRegisterToAPI,
+  mockResendVerificationToAPI,
+  mockFetch
+} = vi.hoisted(() => {
+  const mockCookieStore = {
+    get: vi.fn(),
+    set: vi.fn(),
+    delete: vi.fn()
+  };
+  const mockLoginToAPI = vi.fn();
+  const mockRegisterToAPI = vi.fn();
+  const mockResendVerificationToAPI = vi.fn();
+  const mockFetch = vi.fn();
+  return {
+    mockCookieStore,
+    mockLoginToAPI,
+    mockRegisterToAPI,
+    mockResendVerificationToAPI,
+    mockFetch
+  };
+});
 
 vi.mock("next/headers", () => ({
   cookies: vi.fn(() => Promise.resolve(mockCookieStore))
@@ -35,11 +47,32 @@ vi.mock("@/server/api/auth", () => ({
   logoutFromAPI: vi.fn()
 }));
 
-import { loginAction, registerAction, resendVerificationAction } from "@/server/actions/auth";
+vi.mock("@/env", () => ({
+  env: {
+    NODE_ENV: "test",
+    RECAPTCHA_SECRET_KEY: "test-recaptcha-secret",
+    NEXT_PUBLIC_API_URL: "https://api.example.com"
+  }
+}));
+
+let loginAction: typeof import("@/server/actions/auth")["loginAction"];
+let registerAction: typeof import("@/server/actions/auth")["registerAction"];
+let resendVerificationAction: typeof import("@/server/actions/auth")["resendVerificationAction"];
+
+beforeAll(async () => {
+  ({ loginAction, registerAction, resendVerificationAction } = await import(
+    "@/server/actions/auth"
+  ));
+});
 
 beforeEach(() => {
   vi.clearAllMocks();
-  process.env.NEXT_PUBLIC_API_URL = "https://api.example.com";
+
+  vi.stubGlobal("fetch", mockFetch);
+  mockFetch.mockResolvedValue({
+    ok: true,
+    json: vi.fn().mockResolvedValue({ success: true })
+  });
 });
 
 describe("loginAction", () => {
@@ -119,10 +152,38 @@ describe("registerAction", () => {
       name: "Test",
       username: "test",
       email: "t@t.com",
-      password: "pass123"
+      password: "pass123",
+      captchaToken: "captcha-token"
     });
 
     expect(result).toEqual({ success: true });
+    expect(mockRegisterToAPI).toHaveBeenCalledWith({
+      name: "Test",
+      username: "test",
+      email: "t@t.com",
+      password: "pass123"
+    });
+  });
+
+  it("returns captcha validation error when reCAPTCHA check fails", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ success: false })
+    });
+
+    const result = await registerAction({
+      name: "Test",
+      username: "test",
+      email: "t@t.com",
+      password: "pass123",
+      captchaToken: "captcha-token"
+    });
+
+    expect(result).toEqual({
+      success: false,
+      error: "Captcha validation failed"
+    });
+    expect(mockRegisterToAPI).not.toHaveBeenCalled();
   });
 
   it("returns error message from API on failure", async () => {
@@ -132,7 +193,8 @@ describe("registerAction", () => {
       name: "Test",
       username: "test",
       email: "t@t.com",
-      password: "pass123"
+      password: "pass123",
+      captchaToken: "captcha-token"
     });
 
     expect(result).toEqual({
