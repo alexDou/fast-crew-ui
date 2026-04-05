@@ -16,7 +16,7 @@
     "poetsCrew": {
       "badge": "Crew #1 · Active",
       "title": "Poets Crew",
-      "description": "A team of AI poets reads your image and writes original poems — each in a different style. A critic picks the best verse. Your photo becomes poetry.",
+      "description": "A team of AI poets reads your image and writes original poems — modern, classical, and mystical. Your photo becomes poetry in three distinct voices.",
       "cta": "Create a Poem"
     },
     "comingSoon": {
@@ -33,7 +33,7 @@
   },
   "Dashboard": {
     "crewTitle": "Poets Crew",
-    "crewDescription": "Upload a story-telling image — a portrait, a landscape, a candid moment — and a team of AI poets will craft original verse inspired by what they see. Each poet writes in a different style. A critic then picks the best piece. Your photo becomes poetry.",
+    "crewDescription": "Upload a story-telling image — a portrait, a landscape, a candid moment — and a team of AI poets will craft original verse inspired by what they see. One writes in a modern voice, one in a classical voice, and one answers with a mystical poem. Your photo becomes poetry.",
     "tunerLink": "Create a poem",
     "poemsLink": "My poems"
   },

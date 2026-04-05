@@ -9,20 +9,13 @@ import { PoemDisplay } from "../PoemDisplay";
 
 describe("PoemDisplay", () => {
   const poems = [
-    { id: 1, poem: "Roses are red", critic_choice: false },
-    { id: 2, poem: "Violets are blue", critic_choice: true },
-    { id: 3, poem: "Sugar is sweet", critic_choice: false }
+    { id: 1, poem: "Roses are red" },
+    { id: 2, poem: "Violets are blue" },
+    { id: 3, poem: "Sugar is sweet" }
   ];
 
-  it("renders the critic's choice poem as active by default", () => {
+  it("renders the first poem as active by default", () => {
     render(<PoemDisplay title="poems list" poems={poems} />);
-
-    expect(screen.getByText("Violets are blue")).toBeInTheDocument();
-  });
-
-  it("renders first poem when no critic's choice", () => {
-    const noCritic = poems.map((p) => ({ ...p, critic_choice: false }));
-    render(<PoemDisplay title="poems list" poems={noCritic} />);
 
     expect(screen.getByText("Roses are red")).toBeInTheDocument();
   });
@@ -30,16 +23,16 @@ describe("PoemDisplay", () => {
   it("renders poem selector buttons when multiple poems", () => {
     render(<PoemDisplay title="poems list" poems={poems} />);
 
-    expect(screen.getByText("criticChoice")).toBeInTheDocument();
     expect(screen.getByText("alternative 1")).toBeInTheDocument();
+    expect(screen.getByText("alternative 2")).toBeInTheDocument();
     expect(screen.getByText("alternative 3")).toBeInTheDocument();
   });
 
   it("switches active poem on button click", () => {
     render(<PoemDisplay title="poems list" poems={poems} />);
 
-    fireEvent.click(screen.getByText("alternative 1"));
-    expect(screen.getByText("Roses are red")).toBeInTheDocument();
+    fireEvent.click(screen.getByText("alternative 2"));
+    expect(screen.getByText("Violets are blue")).toBeInTheDocument();
   });
 
   it("does not render selector when single poem", () => {

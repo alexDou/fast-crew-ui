@@ -69,8 +69,8 @@ describe("useResultFetch", () => {
 
   it("fetches poems when status is success", async () => {
     const mockPoems = [
-      { id: 1, poem: "Roses are red", critic_choice: false },
-      { id: 2, poem: "Violets are blue", critic_choice: true }
+      { id: 1, poem: "Roses are red" },
+      { id: 2, poem: "Violets are blue" }
     ];
     mockJsonFn.mockResolvedValue(mockPoems);
 
@@ -85,27 +85,10 @@ describe("useResultFetch", () => {
     expect(result.current.isError).toBe(false);
   });
 
-  it("sets active poem to critic's choice when available", async () => {
+  it("sets active poem to the first poem when poems are available", async () => {
     const mockPoems = [
-      { id: 1, poem: "Roses are red", critic_choice: false },
-      { id: 2, poem: "Violets are blue", critic_choice: true }
-    ];
-    mockJsonFn.mockResolvedValue(mockPoems);
-
-    const { result } = renderHook(
-      () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.SUCCESS }),
-      { wrapper: createWrapper() }
-    );
-
-    await waitFor(() => {
-      expect(result.current.activePoem).toEqual(mockPoems[1]);
-    });
-  });
-
-  it("falls back to first poem when no critic's choice", async () => {
-    const mockPoems = [
-      { id: 1, poem: "Roses are red", critic_choice: false },
-      { id: 2, poem: "Violets are blue", critic_choice: false }
+      { id: 1, poem: "Roses are red" },
+      { id: 2, poem: "Violets are blue" }
     ];
     mockJsonFn.mockResolvedValue(mockPoems);
 
@@ -152,7 +135,7 @@ describe("useResultFetch", () => {
   });
 
   it("does not show toast on successful fetch", async () => {
-    mockJsonFn.mockResolvedValue([{ id: 1, poem: "Test", critic_choice: false }]);
+    mockJsonFn.mockResolvedValue([{ id: 1, poem: "Test" }]);
 
     const { result } = renderHook(
       () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.SUCCESS }),

@@ -16,7 +16,7 @@
     "poetsCrew": {
       "badge": "Crew #1 · Aktiv",
       "title": "Dichter-Crew",
-      "description": "Ein Team von KI-Dichtern liest Ihr Bild und verfasst originelle Gedichte — jedes in einem anderen Stil. Ein Kritiker wählt den besten Vers. Ihr Foto wird zur Poesie.",
+      "description": "Ein Team von KI-Dichtern liest Ihr Bild und verfasst originelle Gedichte — modern, klassisch und mystisch. Ihr Foto wird in drei unterschiedlichen Stimmen zur Poesie.",
       "cta": "Gedicht erstellen"
     },
     "comingSoon": {
@@ -33,7 +33,7 @@
   },
   "Dashboard": {
     "crewTitle": "Dichter-Crew",
-    "crewDescription": "Laden Sie ein erzählerisches Bild hoch — ein Porträt, eine Landschaft, einen besonderen Moment — und ein Team von KI-Dichtern verfasst originelle Verse, inspiriert von dem, was sie sehen. Jeder Dichter schreibt in einem anderen Stil. Ein Kritiker wählt dann das beste Werk aus. Ihr Foto wird zur Poesie.",
+    "crewDescription": "Laden Sie ein erzählerisches Bild hoch — ein Porträt, eine Landschaft, einen besonderen Moment — und ein Team von KI-Dichtern verfasst originelle Verse, inspiriert von dem, was sie sehen. Einer schreibt modern, einer klassisch, und ein dritter antwortet mit einem mystischen Gedicht. Ihr Foto wird zur Poesie.",
     "tunerLink": "Gedicht erstellen",
     "poemsLink": "Meine Gedichte"
   },

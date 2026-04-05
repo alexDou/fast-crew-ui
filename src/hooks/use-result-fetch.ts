@@ -18,7 +18,7 @@ interface UseResultFetchProps {
 
 export function useResultFetch({ sourceId, status }: UseResultFetchProps) {
   const t = useTranslations("Tuner");
-  const [activePoemId, setActivePoemId] = useState<number | null>(null);
+  const [selectedPoemId, setSelectedPoemId] = useState<number | null>(null);
 
   const {
     data: poems = [],
@@ -40,19 +40,13 @@ export function useResultFetch({ sourceId, status }: UseResultFetchProps) {
     }
   }, [isError, t]);
 
-  // Set initial active poem when poems are loaded
-  if (poems.length > 0 && activePoemId === null) {
-    // Find critic's choice or use first poem
-    const criticChoice = poems.find((p) => p.critic_choice);
-    setActivePoemId(criticChoice ? criticChoice.id : poems[0].id);
-  }
-
+  const activePoemId = selectedPoemId ?? poems[0]?.id ?? null;
   const activePoem = poems.find((p) => p.id === activePoemId) || null;
 
   return {
     poems,
     activePoem,
-    setActivePoemId,
+    setActivePoemId: setSelectedPoemId,
     isLoading,
     isError
   };

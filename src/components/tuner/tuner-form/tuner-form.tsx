@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Upload } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useForm } from "react-hook-form";
+import { useForm, type ControllerRenderProps } from "react-hook-form";
 import { Balancer } from "react-wrap-balancer";
 
 import { PROCESSING_STATUS } from "@/constants/status";
@@ -44,6 +44,27 @@ export function TunerForm() {
     await sourceCreate({ file, enhance });
   });
 
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: ControllerRenderProps<
+      {
+        file: File;
+        enhance?: string | undefined;
+      },
+      "file"
+    >
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      field.onChange(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="container flex flex-col items-center justify-center gap-6">
       <section className="mt-16 flex w-full items-center justify-center lg:w-1/3">
@@ -79,17 +100,7 @@ export function TunerForm() {
                             type="file"
                             className="hidden"
                             value={void 0}
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                field.onChange(file);
-                                const reader = new FileReader();
-                                reader.onloadend = () => {
-                                  setImagePreview(reader.result);
-                                };
-                                reader.readAsDataURL(file);
-                              }
-                            }}
+                            onChange={(e) => handleFileChange.apply(null, [e, field])}
                           />
                         </FormControl>
                       </FormLabel>

@@ -13,11 +13,7 @@ interface PoemDisplayPropsType {
 
 export function PoemDisplay({ title, poems }: PoemDisplayPropsType) {
   const t = useTranslations("PoemDisplay");
-
-  const criticChoice = poems.find((p) => p.critic_choice);
-  const [activePoemId, setActivePoemId] = useState<number>(
-    criticChoice ? criticChoice.id : poems[0]?.id
-  );
+  const [activePoemId, setActivePoemId] = useState<number | undefined>(poems[0]?.id);
 
   if (poems.length === 0) {
     return null;
@@ -52,7 +48,7 @@ export function PoemDisplay({ title, poems }: PoemDisplayPropsType) {
                     : "bg-bento-beige hover:bg-neutral-tertiary-medium text-black"
                 }`}
               >
-                {poem.critic_choice ? t("criticChoice") : `${t("alternative")} ${idx + 1}`}
+                {`${t("alternative")} ${idx + 1}`}
               </button>
             ))}
           </div>
