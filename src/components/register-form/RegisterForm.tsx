@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useRef } from "react";
 import { useRouter } from "@/i18n/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,11 +30,8 @@ export function RegisterForm() {
   const tForm = useTranslations("AuthForm");
   const tSchema = useTranslations("AuthSchema");
   const router = useRouter();
-  const [recaptchaInstance, setRecaptchaInstance] = useState<ReCAPTCHA | null>(null);
+  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
   const reCaptchaSiteKey = env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-  const handleRecaptchaRef = useCallback((instance: ReCAPTCHA | null) => {
-    setRecaptchaInstance(instance);
-  }, []);
 
   const form = useForm<SignupFormValuesType>({
     resolver: zodResolver(createSignupSchema(tSchema)),
@@ -42,8 +39,9 @@ export function RegisterForm() {
   });
   const { control, handleSubmit } = form;
 
-  const onSubmit = handleSubmit(async ({ name, email, username, password }) => {
-    if (!reCaptchaSiteKey || !recaptchaInstance) {
+  async function onSubmitHandler({ name, email, username, password }: SignupFormValuesType) {
+    const captchaInstance = recaptchaRef.current;
+    if (!reCaptchaSiteKey || !captchaInstance) {
       toast.error(tForm("registration.error.title"), {
         description: tForm("registration.error.captchaUnavailable")
       });
@@ -51,8 +49,8 @@ export function RegisterForm() {
     }
 
     try {
-      const captchaToken = await recaptchaInstance.executeAsync();
-      recaptchaInstance.reset();
+      const captchaToken = await captchaInstance.executeAsync();
+      captchaInstance.reset();
 
       if (!captchaToken) {
         toast.error(tForm("registration.error.title"), {
@@ -89,12 +87,12 @@ export function RegisterForm() {
         console.error(error);
       }
     }
-  });
+  }
 
   return (
     <section className="w-full">
       <Form {...form}>
-        <form onSubmit={onSubmit} className="w-full space-y-5">
+        <form onSubmit={(e) => handleSubmit(onSubmitHandler)(e)} className="w-full space-y-5">
           <FormField
             control={control}
             name="name"
@@ -184,7 +182,7 @@ export function RegisterForm() {
           </Button>
 
           {reCaptchaSiteKey ? (
-            <ReCAPTCHA ref={handleRecaptchaRef} sitekey={reCaptchaSiteKey} size="invisible" />
+            <ReCAPTCHA ref={recaptchaRef} sitekey={reCaptchaSiteKey} size="invisible" />
           ) : null}
         </form>
       </Form>

@@ -33,8 +33,14 @@ export async function loginToAPI(username: string, password: string): Promise<st
     return tokens.access_token;
   } catch (error) {
     if (error instanceof HTTPError) {
-      const errorBody = await error.response.json<{ detail?: string }>();
-      throw new Error(errorBody.detail || "Login failed");
+      const errorBody = await error.response.json<{ detail?: string | Array<{ msg?: string }> }>();
+      let message: string = "Login failed";
+      if (typeof errorBody.detail === "string") {
+        message = errorBody.detail;
+      } else if (Array.isArray(errorBody.detail) && errorBody.detail.length > 0) {
+        message = errorBody.detail.map((e) => e.msg ?? String(e)).join(", ");
+      }
+      throw new Error(message);
     }
     console.error("Login error:", error);
     return null;
@@ -55,8 +61,14 @@ export async function registerToAPI(data: {
       .json<APIUser>();
   } catch (error) {
     if (error instanceof HTTPError) {
-      const errorBody = await error.response.json<{ detail?: string }>();
-      throw new Error(errorBody.detail || ERROR_MESSAGES.REGISTRATION_FAILED);
+      const errorBody = await error.response.json<{ detail?: string | Array<{ msg?: string }> }>();
+      let message: string = ERROR_MESSAGES.REGISTRATION_FAILED;
+      if (typeof errorBody.detail === "string") {
+        message = errorBody.detail;
+      } else if (Array.isArray(errorBody.detail) && errorBody.detail.length > 0) {
+        message = errorBody.detail.map((e) => e.msg ?? String(e)).join(", ");
+      }
+      throw new Error(message);
     }
     console.error("Registration error:", error);
     throw error;

@@ -6,16 +6,13 @@ export function createSignupSchema(t: (key: string) => string) {
       name: string()
         .trim()
         .min(3, t("nameMin"))
-        .regex(/^[a-zA-Z ]+$/, t("nameRegex")),
+        .regex(/^[a-zA-Z0-9 \-]+$/, t("nameRegex")),
       email: email({ message: t("emailInvalid") }),
       username: string()
         .trim()
         .min(3, t("usernameMin"))
-        .regex(/^[a-z0-9_]+$/i, t("usernameRegex")),
-      password: string()
-        .trim()
-        .min(8, t("passwordMin"))
-        .regex(/^[a-z0-9_\-]+$/i, t("passwordRegex")),
+        .regex(/^[a-zA-Z0-9.:@_\-]+$/, t("usernameRegex")),
+      password: string().trim().min(8, t("passwordMin")),
       confirmPassword: string()
     })
     .refine((data) => data.password === data.confirmPassword, {

@@ -103,12 +103,11 @@
   },
   "AuthSchema": {
     "nameMin": "Name must be at least 3 characters",
-    "nameRegex": "Only letters and spaces are allowed",
+    "nameRegex": "Only letters, numbers, spaces and hyphens are allowed",
     "emailInvalid": "Invalid email address",
     "usernameMin": "Username must be at least 3 characters",
-    "usernameRegex": "Only letters, numbers and underscores are allowed",
-    "passwordMin": "Password must be at least 6 characters",
-    "passwordRegex": "Password is alphanumeric here with underscore and dashes allowed",
+    "usernameRegex": "Only letters, numbers, dots, colons, @, underscores and hyphens are allowed",
+    "passwordMin": "Password must be at least 8 characters",
     "passwordMatch": "Passwords do not match"
   },
   "User": {
