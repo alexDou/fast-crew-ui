@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+const TEST_API_URL = process.env.NEXT_PUBLIC_API_URL!;
+
 const { mockPost, mockJsonFn } = vi.hoisted(() => {
   const mockJsonFn = vi.fn();
   const mockPost = vi.fn(() => ({ json: mockJsonFn }));
@@ -7,7 +9,7 @@ const { mockPost, mockJsonFn } = vi.hoisted(() => {
 });
 
 vi.mock("@/env", () => ({
-  env: { NEXT_PUBLIC_API_URL: "https://api.example.com" }
+  env: { NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL! }
 }));
 
 vi.mock("ky", () => {
@@ -29,7 +31,7 @@ import { HTTPError } from "ky";
 import { loginToAPI, registerToAPI, resendVerificationToAPI } from "../auth";
 
 beforeEach(() => {
-  vi.clearAllMocks();
+  vi.resetAllMocks();
 });
 
 describe("loginToAPI", () => {
@@ -40,17 +42,13 @@ describe("loginToAPI", () => {
 
     expect(result).toBe("test-token");
     expect(mockPost).toHaveBeenCalledWith(
-      "https://api.example.com/api/v1/login",
+      `${TEST_API_URL}/api/v1/login`,
       expect.objectContaining({ credentials: "include" })
     );
   });
 
   it("throws error with detail when API returns email not verified", async () => {
-    const httpError = new HTTPError(
-      new Response(),
-      new Request("https://api.example.com"),
-      {} as never
-    );
+    const httpError = new HTTPError(new Response(), new Request(TEST_API_URL), {} as never);
     Object.assign(httpError, {
       response: {
         json: () =>
@@ -65,11 +63,7 @@ describe("loginToAPI", () => {
   });
 
   it("throws error with fallback message when HTTPError has no detail", async () => {
-    const httpError = new HTTPError(
-      new Response(),
-      new Request("https://api.example.com"),
-      {} as never
-    );
+    const httpError = new HTTPError(new Response(), new Request(TEST_API_URL), {} as never);
     Object.assign(httpError, {
       response: { json: () => Promise.resolve({}) }
     });
@@ -94,7 +88,7 @@ describe("resendVerificationToAPI", () => {
     await resendVerificationToAPI("testuser");
 
     expect(mockPost).toHaveBeenCalledWith(
-      "https://api.example.com/api/v1/resend-verification",
+      `${TEST_API_URL}/api/v1/resend-verification`,
       expect.objectContaining({
         json: { identifier: "testuser" }
       })
@@ -125,11 +119,7 @@ describe("registerToAPI", () => {
   });
 
   it("throws error with detail on HTTPError", async () => {
-    const httpError = new HTTPError(
-      new Response(),
-      new Request("https://api.example.com"),
-      {} as never
-    );
+    const httpError = new HTTPError(new Response(), new Request(TEST_API_URL), {} as never);
     Object.assign(httpError, {
       response: { json: () => Promise.resolve({ detail: "Email is already registered" }) }
     });

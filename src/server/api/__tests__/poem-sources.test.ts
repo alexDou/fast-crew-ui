@@ -1,11 +1,13 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
+const TEST_API_URL = process.env.NEXT_PUBLIC_API_URL!;
+
 const mockKyGet = vi.hoisted(() => vi.fn());
 const mockRedirect = vi.hoisted(() => vi.fn());
 const mockCookiesGet = vi.hoisted(() => vi.fn());
 
 vi.mock("@/env", () => ({
-  env: { NEXT_PUBLIC_API_URL: "https://api.example.com" }
+  env: { NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL! }
 }));
 
 vi.mock("ky", () => ({
@@ -40,7 +42,7 @@ describe("getPoemSources", () => {
 
     expect(result).toEqual(mockSources);
     expect(mockKyGet).toHaveBeenCalledWith(
-      "https://api.example.com/api/v1/poem-sources",
+      `${TEST_API_URL}/api/v1/poem-sources`,
       expect.objectContaining({
         headers: { Authorization: "Bearer test-token" }
       })

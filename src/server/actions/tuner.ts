@@ -25,16 +25,17 @@ export async function uploadAction(data: {
   enhance?: string;
 }): Promise<UploadActionResult> {
   try {
-    const formData = new FormData();
-    formData.append("file", data.file);
-    if (data.enhance) {
-      formData.append("enhance", data.enhance);
-    }
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("access_token")?.value;
 
     if (!accessToken) {
       return redirect(routesBook.signin);
+    }
+
+    const formData = new FormData();
+    formData.append("file", data.file);
+    if (data.enhance) {
+      formData.append("enhance", data.enhance);
     }
 
     const result = await ky

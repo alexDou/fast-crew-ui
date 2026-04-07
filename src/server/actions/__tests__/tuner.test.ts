@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+const TEST_API_URL = process.env.NEXT_PUBLIC_API_URL!;
+
 const { mockCookieStore, mockJsonFn, mockPost, mockRedirect } = vi.hoisted(() => {
   const mockCookieStore = {
     get: vi.fn()
@@ -35,7 +37,7 @@ vi.mock("ky", () => {
 
 vi.mock("@/env", () => ({
   env: {
-    NEXT_PUBLIC_API_URL: "https://api.example.com"
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL!
   }
 }));
 
@@ -69,11 +71,25 @@ describe("uploadAction", () => {
       }
     });
     expect(mockPost).toHaveBeenCalledWith(
-      "https://api.example.com/api/v1/poem-source",
+      `${TEST_API_URL}/api/v1/poem-source`,
       expect.objectContaining({
         headers: { Authorization: "Bearer test-token" }
       })
     );
+  });
+
+  it("passes the uploaded file in FormData", async () => {
+    mockCookieStore.get.mockReturnValue({ value: "test-token" });
+    mockJsonFn.mockResolvedValueOnce({ id: 1, media_path: "/x", status: "processing" });
+
+    await uploadAction({ file });
+
+    const callArgs = mockPost.mock.calls[0] as unknown as [string, { body: FormData }];
+    const formData = callArgs[1].body;
+    const formFile = formData.get("file");
+
+    expect(formFile).toBeInstanceOf(File);
+    expect(formFile).toBe(file);
   });
 
   it("passes enhance parameter in FormData when provided", async () => {
@@ -89,11 +105,7 @@ describe("uploadAction", () => {
 
   it("returns error with detail from API on HTTPError", async () => {
     mockCookieStore.get.mockReturnValue({ value: "test-token" });
-    const httpError = new HTTPError(
-      new Response(),
-      new Request("https://api.example.com"),
-      {} as never
-    );
+    const httpError = new HTTPError(new Response(), new Request(TEST_API_URL), {} as never);
     // Override response.json for our mock
     Object.assign(httpError, {
       response: { json: () => Promise.resolve({ detail: "File too large" }) }
@@ -110,11 +122,7 @@ describe("uploadAction", () => {
 
   it("returns fallback error message when HTTPError has no detail", async () => {
     mockCookieStore.get.mockReturnValue({ value: "test-token" });
-    const httpError = new HTTPError(
-      new Response(),
-      new Request("https://api.example.com"),
-      {} as never
-    );
+    const httpError = new HTTPError(new Response(), new Request(TEST_API_URL), {} as never);
     Object.assign(httpError, {
       response: { json: () => Promise.resolve({}) }
     });

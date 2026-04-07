@@ -1,5 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+const TEST_API_URL = process.env.NEXT_PUBLIC_API_URL!;
+const TEST_SITE_URL = process.env.NEXT_PUBLIC_SITE_URL!;
+
 const { mockCookieStore, mockGet, mockJsonFn, mockRedirect } = vi.hoisted(() => {
   const mockCookieStore = {
     get: vi.fn()
@@ -46,7 +49,7 @@ vi.mock("ky", () => {
 
 vi.mock("@/env", () => ({
   env: {
-    NEXT_PUBLIC_API_URL: "https://api.example.com"
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL!
   }
 }));
 
@@ -72,12 +75,12 @@ describe("/api/tuner/status/[sourceId] GET", () => {
     mockCookieStore.get.mockReturnValue({ value: "access-token" });
     mockJsonFn.mockResolvedValueOnce({ ready: false, status: "processing", poem_source_id: 7 });
 
-    const response = await GET(new Request("https://example.com"), {
+    const response = await GET(new Request(TEST_SITE_URL), {
       params: Promise.resolve({ sourceId: "7" })
     });
 
     expect(mockGet).toHaveBeenCalledWith(
-      "https://api.example.com/api/v1/poem-source/7/ready",
+      `${TEST_API_URL}/api/v1/poem-source/7/ready`,
       expect.objectContaining({
         headers: { Authorization: "Bearer access-token" }
       })
@@ -94,7 +97,7 @@ describe("/api/tuner/status/[sourceId] GET", () => {
     mockCookieStore.get.mockReturnValue({ value: "access-token" });
     mockJsonFn.mockRejectedValueOnce(createMockHttpError({ detail: "indistinct content" }, 404));
 
-    const response = await GET(new Request("https://example.com"), {
+    const response = await GET(new Request(TEST_SITE_URL), {
       params: Promise.resolve({ sourceId: "12" })
     });
 
@@ -110,7 +113,7 @@ describe("/api/tuner/status/[sourceId] GET", () => {
     mockCookieStore.get.mockReturnValue({ value: "access-token" });
     mockJsonFn.mockRejectedValueOnce(createMockHttpError({ detail: "Poem source not found" }, 404));
 
-    const response = await GET(new Request("https://example.com"), {
+    const response = await GET(new Request(TEST_SITE_URL), {
       params: Promise.resolve({ sourceId: "3" })
     });
 

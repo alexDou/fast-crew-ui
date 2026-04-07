@@ -51,7 +51,7 @@ vi.mock("@/env", () => ({
   env: {
     NODE_ENV: "test",
     RECAPTCHA_SECRET_KEY: "test-recaptcha-secret",
-    NEXT_PUBLIC_API_URL: "https://api.example.com"
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL!
   }
 }));
 

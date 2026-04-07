@@ -1,5 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+const TEST_API_URL = process.env.NEXT_PUBLIC_API_URL!;
+const TEST_SITE_URL = process.env.NEXT_PUBLIC_SITE_URL!;
+
 const { mockCookieStore, mockGet, mockJsonFn, mockRedirect } = vi.hoisted(() => {
   const mockCookieStore = {
     get: vi.fn()
@@ -43,7 +46,7 @@ vi.mock("ky", () => {
 
 vi.mock("@/env", () => ({
   env: {
-    NEXT_PUBLIC_API_URL: "https://api.example.com"
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL!
   }
 }));
 
@@ -66,12 +69,12 @@ describe("/api/tuner/poems/[sourceId] GET", () => {
     mockCookieStore.get.mockReturnValue({ value: "access-token" });
     mockJsonFn.mockResolvedValueOnce({ data: [{ id: 1 }, { id: 2 }] });
 
-    const response = await GET(new Request("https://example.com"), {
+    const response = await GET(new Request(TEST_SITE_URL), {
       params: Promise.resolve({ sourceId: "7" })
     });
 
     expect(mockGet).toHaveBeenCalledWith(
-      "https://api.example.com/api/v1/poems/7",
+      `${TEST_API_URL}/api/v1/poems/7`,
       expect.objectContaining({
         headers: { Authorization: "Bearer access-token" }
       })
@@ -83,7 +86,7 @@ describe("/api/tuner/poems/[sourceId] GET", () => {
   it("redirects to signin when access token is missing", async () => {
     mockCookieStore.get.mockReturnValue(undefined);
 
-    await GET(new Request("https://example.com"), {
+    await GET(new Request(TEST_SITE_URL), {
       params: Promise.resolve({ sourceId: "8" })
     });
 
@@ -94,7 +97,7 @@ describe("/api/tuner/poems/[sourceId] GET", () => {
     mockCookieStore.get.mockReturnValue({ value: "access-token" });
     mockJsonFn.mockRejectedValueOnce(createMockHttpError(404));
 
-    const response = await GET(new Request("https://example.com"), {
+    const response = await GET(new Request(TEST_SITE_URL), {
       params: Promise.resolve({ sourceId: "9" })
     });
 
@@ -106,7 +109,7 @@ describe("/api/tuner/poems/[sourceId] GET", () => {
     mockCookieStore.get.mockReturnValue({ value: "access-token" });
     mockJsonFn.mockRejectedValueOnce(new Error("Network broke"));
 
-    const response = await GET(new Request("https://example.com"), {
+    const response = await GET(new Request(TEST_SITE_URL), {
       params: Promise.resolve({ sourceId: "10" })
     });
 

@@ -5,7 +5,7 @@ const mockGetPoemsBySourceId = vi.hoisted(() => vi.fn());
 const mockGetTranslations = vi.hoisted(() => vi.fn());
 
 vi.mock("@/env", () => ({
-  env: { NEXT_PUBLIC_API_URL: "https://api.example.com" }
+  env: { NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL! }
 }));
 
 vi.mock("@/server/api/poem-sources", () => ({

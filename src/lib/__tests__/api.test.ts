@@ -21,7 +21,7 @@ vi.mock("ky", () => ({
 }));
 
 vi.mock("@/env", () => ({
-  env: { NEXT_PUBLIC_API_URL: "https://api.example.com" }
+  env: { NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL! }
 }));
 
 import { del, get, post, put } from "@/lib/api";
