@@ -8,7 +8,9 @@ describe("cn()", () => {
   });
 
   it("handles conditional classes", () => {
-    expect(cn("px-2", false && "py-1")).toBe("px-2");
+    const isVisible = false;
+
+    expect(cn("px-2", isVisible ? "py-1" : undefined)).toBe("px-2");
   });
 
   it("resolves Tailwind conflicts (last wins)", () => {

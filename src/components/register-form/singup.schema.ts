@@ -6,12 +6,12 @@ export function createSignupSchema(t: (key: string) => string) {
       name: string()
         .trim()
         .min(3, t("nameMin"))
-        .regex(/^[a-zA-Z0-9 \-]+$/, t("nameRegex")),
+        .regex(/^[a-zA-Z0-9 -]+$/, t("nameRegex")),
       email: email({ message: t("emailInvalid") }),
       username: string()
         .trim()
         .min(3, t("usernameMin"))
-        .regex(/^[a-zA-Z0-9.:@_\-]+$/, t("usernameRegex")),
+        .regex(/^[a-zA-Z0-9.:@_-]+$/, t("usernameRegex")),
       password: string().trim().min(8, t("passwordMin")),
       confirmPassword: string()
     })

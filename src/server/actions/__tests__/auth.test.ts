@@ -55,14 +55,13 @@ vi.mock("@/env", () => ({
   }
 }));
 
-let loginAction: typeof import("@/server/actions/auth")["loginAction"];
-let registerAction: typeof import("@/server/actions/auth")["registerAction"];
-let resendVerificationAction: typeof import("@/server/actions/auth")["resendVerificationAction"];
+let loginAction: (typeof import("@/server/actions/auth"))["loginAction"];
+let registerAction: (typeof import("@/server/actions/auth"))["registerAction"];
+let resendVerificationAction: (typeof import("@/server/actions/auth"))["resendVerificationAction"];
 
 beforeAll(async () => {
-  ({ loginAction, registerAction, resendVerificationAction } = await import(
-    "@/server/actions/auth"
-  ));
+  ({ loginAction, registerAction, resendVerificationAction } =
+    await import("@/server/actions/auth"));
 });
 
 beforeEach(() => {

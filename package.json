@@ -3,8 +3,19 @@
   "version": "16.0.0",
   "private": true,
   "description": "Poets crew UI",
-  "engines": {
-    "node": ">=22.x"
+  "keywords": [
+    "AI image",
+    "Ai image processing",
+    "crewai"
+  ],
+  "homepage": "",
+  "bugs": {
+    "url": ""
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
   },
   "scripts": {
     "dev": "next dev",
@@ -13,21 +24,19 @@
     "analyze": "cross-env ANALYZE=true next build && open .next/analyze/nodejs.html",
     "clean": "rimraf .next",
     "knip": "knip",
-    "lint": "eslint . --ext js,ts,tsx --cache",
-    "lint:fix": "eslint . --ext js,ts,tsx --fix --cache && biome format --write .",
-    "lint:ci": "eslint . --ext js,ts,tsx --max-warnings=0 && biome format .",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint --fix . && oxfmt .",
+    "lint:ci": "oxlint --deny-warnings . && oxfmt --check .",
     "prepare": "husky",
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "typecheck": "tsc --noEmit",
-    "check:all": "pnpm run typecheck && pnpm run lint:fix",
-    "commit": "cz"
-  },
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx}": ["eslint --fix", "biome format --write"],
-    "*.{css,md,json}": ["biome format --write"]
+    "check:all": "pnpm run typecheck && pnpm run lint:ci",
+    "commit": "cz",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check ."
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -64,7 +73,6 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.4",
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
     "@commitlint/cz-commitlint": "^20.0.0",
@@ -84,13 +92,15 @@
     "commitizen": "^4.3.0",
     "cross-env": "^10.1.0",
     "eslint": "^9",
-    "eslint-config-next": "16.0.0",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "husky": "^9.1.7",
     "jsdom": "^28.1.0",
     "knip": "^5.66.4",
     "lint-staged": "^16.2.6",
     "next-rspack": "16.1.6",
+    "oxfmt": "^0.44.0",
+    "oxlint": "^1.59.0",
     "postcss": "^8.4.47",
     "rimraf": "^6.0.1",
     "tailwindcss": "^4",
@@ -98,19 +108,21 @@
     "typescript": "^5",
     "vitest": "^4.0.18"
   },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,mjs,cjs}": [
+      "oxlint --fix",
+      "oxfmt --no-error-on-unmatched-pattern"
+    ],
+    "*.{css,md,json,yml,yaml}": [
+      "oxfmt --no-error-on-unmatched-pattern"
+    ]
+  },
   "config": {
     "commitizen": {
       "path": "@commitlint/cz-commitlint"
     }
   },
-  "repository": {
-    "type": "git",
-    "url": ""
-  },
-  "homepage": "",
-  "bugs": {
-    "url": ""
-  },
-  "license": "MIT",
-  "keywords": ["Ai image processing", "AI image", "crewai"]
+  "engines": {
+    "node": ">=22.x"
+  }
 }

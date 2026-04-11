@@ -31,25 +31,27 @@ export function UserList() {
       {
         accessorKey: "id",
         header: ({ column }) => (
-          <span
-            className="flex cursor-pointer items-center gap-2 [&_svg]:size-4"
+          <button
+            type="button"
+            className="flex items-center gap-2 [&_svg]:size-4"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("id")}
             <ArrowUpDown />
-          </span>
+          </button>
         )
       },
       {
         accessorKey: "name",
         header: ({ column }) => (
-          <span
-            className="flex cursor-pointer items-center gap-2 [&_svg]:size-4"
+          <button
+            type="button"
+            className="flex items-center gap-2 [&_svg]:size-4"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {t("name")}
             <ArrowUpDown />
-          </span>
+          </button>
         )
       },
       {

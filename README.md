@@ -1,9 +1,6 @@
-# UI to Fast CrewAI
-(https://github.com/alexDou/fast-crew)
+# UI for Fast CrewAI
 
-This project indets to provide a UI to Fast crew.
-User interacts with UI connetcted to FastAPI & CrewAI service.
+This project provides the Next.js UI for the FastAPI + CrewAI backend.
 
-
-### Based on Nizam — A Modern Next.js 16 Boilerplate
-(https://github.com/omergulcicek/nizam)
+- Backend repository: [alexDou/fast-crew](https://github.com/alexDou/fast-crew)
+- Boilerplate foundation: [Nizam — A Modern Next.js 16 Boilerplate](https://github.com/omergulcicek/nizam)
