@@ -17,7 +17,7 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 - `pnpm lint:fix` - Auto-fix `oxlint` issues and run `oxfmt`
 - `pnpm lint:ci` - CI mode (`oxlint --deny-warnings` + `oxfmt --check`)
 - `pnpm format` - Format code with `oxfmt`
-- `pnpm format:check` - Check `oxfmt` formatting without modifying
+- `pnpm format:check` - Check `oxfmt` formatting without modifying files
 - `pnpm typecheck` - Run TypeScript type checking
 - `pnpm check:all` - Run typecheck and CI lint/format checks together
 - `pnpm knip` - Analyze unused dependencies and files

@@ -91,9 +91,6 @@
     "babel-plugin-react-compiler": "1.0.0",
     "commitizen": "^4.3.0",
     "cross-env": "^10.1.0",
-    "eslint": "^9",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.0.1",
     "husky": "^9.1.7",
     "jsdom": "^28.1.0",
     "knip": "^5.66.4",
@@ -109,7 +106,7 @@
     "vitest": "^4.0.18"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,mjs,cjs}": [
+    "*.{ts,tsx,js,jsx,mjs,cjs,mts,cts}": [
       "oxlint --fix",
       "oxfmt --no-error-on-unmatched-pattern"
     ],

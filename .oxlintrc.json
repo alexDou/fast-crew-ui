@@ -21,8 +21,7 @@
     ".agents/**",
     ".vscode/**",
     ".tasks/**",
-    ".dev/**",
-    "eslint.config.mjs"
+    ".dev/**"
   ],
   "rules": {
     "no-array-constructor": "error",
