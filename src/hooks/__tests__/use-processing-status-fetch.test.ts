@@ -30,7 +30,7 @@ vi.mock("ky", () => ({
 import React from "react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import ky from "ky";
 
 import { useProcessingStatusFetch } from "@/hooks/use-processing-status-fetch";
@@ -94,6 +94,44 @@ describe("useProcessingStatusFetch", () => {
       { id: "q1", text: "What memory does this image wake up?" },
       { id: "q2", text: "What feeling should guide the poem?" }
     ]);
+    expect(result.current.isPollingEnabled).toBe(false);
+  });
+
+  it("resumes polling after stage_1 when requested", async () => {
+    mockJsonFn
+      .mockResolvedValueOnce({
+        ready: true,
+        status: "stage_1",
+        poem_source_id: 1,
+        questions: [{ id: "q1", text: "What memory does this image wake up?" }]
+      })
+      .mockResolvedValueOnce({
+        ready: false,
+        status: "generating",
+        poem_source_id: 1
+      });
+
+    const { result } = renderHook(() => useProcessingStatusFetch(1), {
+      wrapper: createWrapper()
+    });
+
+    await waitFor(() => {
+      expect(result.current.status).toBe("stage_1");
+    });
+
+    expect(result.current.isPollingEnabled).toBe(false);
+    expect(ky.get).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      await result.current.resumePolling();
+    });
+
+    await waitFor(() => {
+      expect(result.current.status).toBe("generating");
+    });
+
+    expect(result.current.isPollingEnabled).toBe(true);
+    expect(ky.get).toHaveBeenCalledTimes(2);
   });
 
   it("normalizes legacy success status to complete and stops polling", async () => {
