@@ -40,10 +40,9 @@ export function TunerResult({ sourceId, onReset }: TunerResultPropsType) {
     case PROCESSING_STATUS.PROCESSING:
       return (
         <div className="container flex flex-col items-center justify-center py-16">
-          <h2 className="font-bold text-xl text-bento-beige-text">
-            {t("result.processing.title")}
-          </h2>
-          <p className="mt-4 text-bento-beige-muted">{t("result.processing.message")}</p>
+          <p className="font-bold text-xl text-bento-beige-text">
+            {t("workflow.processing.message")}
+          </p>
         </div>
       );
     case PROCESSING_STATUS.STAGE_1:

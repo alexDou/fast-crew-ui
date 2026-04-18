@@ -173,6 +173,11 @@
       },
       "submit": "Submit the content"
     },
+    "workflow": {
+      "processing": {
+        "message": "We are processing your image."
+      }
+    },
     "result": {
       "processing": {
         "title": "We are processing your file..",

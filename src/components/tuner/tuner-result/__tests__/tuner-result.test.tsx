@@ -59,8 +59,7 @@ describe("TunerResult", () => {
 
     render(<TunerResult sourceId={1} onReset={onReset} />);
 
-    expect(screen.getByText("result.processing.title")).toBeInTheDocument();
-    expect(screen.getByText("result.processing.message")).toBeInTheDocument();
+    expect(screen.getByText("workflow.processing.message")).toBeInTheDocument();
   });
 
   it("renders stage_1 through the workflow controller", () => {

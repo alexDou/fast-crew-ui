@@ -173,6 +173,11 @@
       },
       "submit": "Inhalt Abgeben"
     },
+    "workflow": {
+      "processing": {
+        "message": "Wir verarbeiten Ihr Bild."
+      }
+    },
     "result": {
       "processing": {
         "title": "Wir bearbeiten Ihre Eingaben..",
