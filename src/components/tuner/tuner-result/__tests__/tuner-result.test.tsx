@@ -63,6 +63,28 @@ describe("TunerResult", () => {
     expect(screen.getByText("result.processing.message")).toBeInTheDocument();
   });
 
+  it("renders stage_1 through the workflow controller", () => {
+    mockProcessingStatus.mockReturnValue({
+      status: "stage_1",
+      isRetryExhausted: false
+    });
+
+    render(<TunerResult sourceId={1} onReset={onReset} />);
+
+    expect(screen.getByTestId("tuner-stage-1-screen")).toBeInTheDocument();
+  });
+
+  it("renders generating through the workflow controller", () => {
+    mockProcessingStatus.mockReturnValue({
+      status: "generating",
+      isRetryExhausted: false
+    });
+
+    render(<TunerResult sourceId={1} onReset={onReset} />);
+
+    expect(screen.getByTestId("tuner-generating-screen")).toBeInTheDocument();
+  });
+
   it("redirects to poem detail page on success", () => {
     mockProcessingStatus.mockReturnValue({
       status: "complete",
