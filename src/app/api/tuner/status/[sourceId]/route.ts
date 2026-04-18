@@ -8,6 +8,7 @@ import { API_ENDPOINTS, ERROR_MESSAGES, PROCESSING_FAILURE_REASONS } from "@/con
 import { env } from "@/env";
 
 import { routesBook } from "@/lib/routes-book";
+import type { PoemSourceStatusResponseType } from "@/types";
 
 export async function GET(_: Request, { params }: { params: Promise<{ sourceId: string }> }) {
   const { sourceId } = await params;
@@ -26,7 +27,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ sourceId: 
           Authorization: `Bearer ${accessToken}`
         }
       })
-      .json();
+      .json<PoemSourceStatusResponseType>();
 
     return NextResponse.json(data);
   } catch (error) {
@@ -37,7 +38,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ sourceId: 
       const detail = (errorBody.detail || "").trim().toLowerCase();
 
       if (detail === PROCESSING_FAILURE_REASONS.INDISTINCT_CONTENT) {
-        return NextResponse.json({
+        return NextResponse.json<PoemSourceStatusResponseType>({
           ready: true,
           status: "error",
           poem_source_id: Number(sourceId),

@@ -67,9 +67,36 @@ describe("useProcessingStatusFetch", () => {
     expect(result.current.isError).toBe(false);
     expect(result.current.isRetryExhausted).toBe(false);
     expect(result.current.isIndistinctContentFailure).toBe(false);
+    expect(result.current.poemSourceId).toBe(1);
+    expect(result.current.questions).toEqual([]);
   });
 
-  it("returns success status and stops polling", async () => {
+  it("exposes questions when backend reaches stage_1", async () => {
+    mockJsonFn.mockResolvedValue({
+      ready: true,
+      status: "stage_1",
+      poem_source_id: 1,
+      questions: [
+        { id: "q1", text: "What memory does this image wake up?" },
+        { id: "q2", text: "What feeling should guide the poem?" }
+      ]
+    });
+
+    const { result } = renderHook(() => useProcessingStatusFetch(1), {
+      wrapper: createWrapper()
+    });
+
+    await waitFor(() => {
+      expect(result.current.status).toBe("stage_1");
+    });
+
+    expect(result.current.questions).toEqual([
+      { id: "q1", text: "What memory does this image wake up?" },
+      { id: "q2", text: "What feeling should guide the poem?" }
+    ]);
+  });
+
+  it("normalizes legacy success status to complete and stops polling", async () => {
     mockJsonFn.mockResolvedValue({ ready: true, status: "success", poem_source_id: 1 });
 
     const { result } = renderHook(() => useProcessingStatusFetch(1), {
@@ -77,7 +104,7 @@ describe("useProcessingStatusFetch", () => {
     });
 
     await waitFor(() => {
-      expect(result.current.status).toBe("success");
+      expect(result.current.status).toBe("complete");
     });
     expect(result.current.isError).toBe(false);
   });
@@ -150,7 +177,7 @@ describe("useProcessingStatusFetch", () => {
     expect(ky.get).toHaveBeenCalledTimes(4);
   });
 
-  it("does not show toast on successful response", async () => {
+  it("does not show toast on complete response", async () => {
     mockJsonFn.mockResolvedValue({ ready: true, status: "success", poem_source_id: 1 });
 
     const { result } = renderHook(() => useProcessingStatusFetch(1), {
@@ -158,7 +185,7 @@ describe("useProcessingStatusFetch", () => {
     });
 
     await waitFor(() => {
-      expect(result.current.status).toBe("success");
+      expect(result.current.status).toBe("complete");
     });
 
     expect(mockToastError).not.toHaveBeenCalled();

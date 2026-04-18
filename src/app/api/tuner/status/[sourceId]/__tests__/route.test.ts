@@ -73,7 +73,12 @@ beforeEach(() => {
 describe("/api/tuner/status/[sourceId] GET", () => {
   it("returns upstream status response on success", async () => {
     mockCookieStore.get.mockReturnValue({ value: "access-token" });
-    mockJsonFn.mockResolvedValueOnce({ ready: false, status: "processing", poem_source_id: 7 });
+    mockJsonFn.mockResolvedValueOnce({
+      ready: true,
+      status: "stage_1",
+      poem_source_id: 7,
+      questions: [{ id: "q1", text: "What feeling should guide the poem?" }]
+    });
 
     const response = await GET(new Request(TEST_SITE_URL), {
       params: Promise.resolve({ sourceId: "7" })
@@ -87,9 +92,10 @@ describe("/api/tuner/status/[sourceId] GET", () => {
     );
 
     await expect(response.json()).resolves.toEqual({
-      ready: false,
-      status: "processing",
-      poem_source_id: 7
+      ready: true,
+      status: "stage_1",
+      poem_source_id: 7,
+      questions: [{ id: "q1", text: "What feeling should guide the poem?" }]
     });
   });
 

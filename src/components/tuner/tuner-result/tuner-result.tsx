@@ -27,7 +27,7 @@ export function TunerResult({ sourceId, onReset }: TunerResultPropsType) {
   });
 
   useEffect(() => {
-    if (status === PROCESSING_STATUS.SUCCESS) {
+    if (status === PROCESSING_STATUS.COMPLETE) {
       router.push(routesBook.poemDetail(sourceId));
     }
   }, [status, sourceId, router]);

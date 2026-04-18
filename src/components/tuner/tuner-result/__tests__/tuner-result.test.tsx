@@ -65,7 +65,7 @@ describe("TunerResult", () => {
 
   it("redirects to poem detail page on success", () => {
     mockProcessingStatus.mockReturnValue({
-      status: "success",
+      status: "complete",
       isRetryExhausted: false
     });
 
@@ -76,7 +76,7 @@ describe("TunerResult", () => {
 
   it("does not render inline content on success", () => {
     mockProcessingStatus.mockReturnValue({
-      status: "success",
+      status: "complete",
       isRetryExhausted: false
     });
 
@@ -128,7 +128,7 @@ describe("TunerResult", () => {
 
   it("shows result fetch error with try again button", () => {
     mockProcessingStatus.mockReturnValue({
-      status: "success",
+      status: "complete",
       isRetryExhausted: false
     });
     mockResultFetch.mockReturnValue({ poems: [], isError: true });

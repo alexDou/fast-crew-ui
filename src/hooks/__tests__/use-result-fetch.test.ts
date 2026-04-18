@@ -55,7 +55,7 @@ beforeEach(() => {
 });
 
 describe("useResultFetch", () => {
-  it("does not fetch when status is not success", async () => {
+  it("does not fetch when status is not complete", async () => {
     const { result } = renderHook(
       () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.PROCESSING }),
       { wrapper: createWrapper() }
@@ -67,7 +67,7 @@ describe("useResultFetch", () => {
     expect(mockJsonFn).not.toHaveBeenCalled();
   });
 
-  it("fetches poems when status is success", async () => {
+  it("fetches poems when status is complete", async () => {
     const mockPoems = [
       { id: 1, poem: "Roses are red" },
       { id: 2, poem: "Violets are blue" }
@@ -75,7 +75,7 @@ describe("useResultFetch", () => {
     mockJsonFn.mockResolvedValue(mockPoems);
 
     const { result } = renderHook(
-      () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.SUCCESS }),
+      () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.COMPLETE }),
       { wrapper: createWrapper() }
     );
 
@@ -93,7 +93,7 @@ describe("useResultFetch", () => {
     mockJsonFn.mockResolvedValue(mockPoems);
 
     const { result } = renderHook(
-      () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.SUCCESS }),
+      () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.COMPLETE }),
       { wrapper: createWrapper() }
     );
 
@@ -106,7 +106,7 @@ describe("useResultFetch", () => {
     mockJsonFn.mockResolvedValue([]);
 
     const { result } = renderHook(
-      () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.SUCCESS }),
+      () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.COMPLETE }),
       { wrapper: createWrapper() }
     );
 
@@ -121,7 +121,7 @@ describe("useResultFetch", () => {
     mockJsonFn.mockRejectedValue(new Error("Server error"));
 
     const { result } = renderHook(
-      () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.SUCCESS }),
+      () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.COMPLETE }),
       { wrapper: createWrapper() }
     );
 
@@ -138,7 +138,7 @@ describe("useResultFetch", () => {
     mockJsonFn.mockResolvedValue([{ id: 1, poem: "Test" }]);
 
     const { result } = renderHook(
-      () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.SUCCESS }),
+      () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.COMPLETE }),
       { wrapper: createWrapper() }
     );
 

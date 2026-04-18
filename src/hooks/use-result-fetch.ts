@@ -27,7 +27,7 @@ export function useResultFetch({ sourceId, status }: UseResultFetchProps) {
   } = useQuery<PoemType[]>({
     queryKey: [QUERY_KEYS.POEMS, sourceId],
     queryFn: () => ky.get(BFF_ENDPOINTS.tunerPoems(sourceId)).json<PoemType[]>(),
-    enabled: status === PROCESSING_STATUS.SUCCESS,
+    enabled: status === PROCESSING_STATUS.COMPLETE,
     retry: 4,
     staleTime: Infinity
   });
