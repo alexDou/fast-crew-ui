@@ -7,11 +7,7 @@ import { toast } from "sonner";
 
 import { BFF_ENDPOINTS, PROCESSING_FAILURE_REASONS } from "@/constants/api";
 import { QUERY_KEYS } from "@/constants/query-keys";
-import {
-  normalizeProcessingStatus,
-  PROCESSING_STATUS,
-  type ProcessingStatusType
-} from "@/constants/status";
+import { normalizeProcessingStatus, PROCESSING_STATUS } from "@/constants/status";
 import type { PoemSourceStatusResponseType } from "@/types";
 
 export function useProcessingStatusFetch(sourceId: number) {

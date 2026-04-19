@@ -65,12 +65,14 @@ describe("TunerResult", () => {
   it("renders stage_1 through the workflow controller", () => {
     mockProcessingStatus.mockReturnValue({
       status: "stage_1",
+      questions: [{ id: "q1", text: "What memory does this image wake up?" }],
       isRetryExhausted: false
     });
 
     render(<TunerResult sourceId={1} onReset={onReset} />);
 
-    expect(screen.getByTestId("tuner-stage-1-screen")).toBeInTheDocument();
+    expect(screen.getByText("workflow.stage1.title")).toBeInTheDocument();
+    expect(screen.getByText("What memory does this image wake up?")).toBeInTheDocument();
   });
 
   it("renders generating through the workflow controller", () => {

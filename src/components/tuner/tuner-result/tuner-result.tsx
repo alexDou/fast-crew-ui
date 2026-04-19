@@ -10,20 +10,18 @@ import { Button } from "@/ui";
 import { PROCESSING_STATUS } from "@/constants/status";
 import { routesBook } from "@/lib/routes-book";
 
+import { TunerQuestionForm } from "../tuner-question-form";
+
 interface TunerResultPropsType {
   sourceId: number;
   onReset: () => void;
-}
-
-function WorkflowPlaceholder({ testId }: { testId: string }) {
-  return <div data-testid={testId} />;
 }
 
 export function TunerResult({ sourceId, onReset }: TunerResultPropsType) {
   const t = useTranslations("Tuner");
   const router = useRouter();
 
-  const { status, isRetryExhausted, isIndistinctContentFailure } =
+  const { status, questions, isRetryExhausted, isIndistinctContentFailure } =
     useProcessingStatusFetch(sourceId);
   const { isError: resultError } = useResultFetch({
     sourceId,
@@ -46,9 +44,9 @@ export function TunerResult({ sourceId, onReset }: TunerResultPropsType) {
         </div>
       );
     case PROCESSING_STATUS.STAGE_1:
-      return <WorkflowPlaceholder testId="tuner-stage-1-screen" />;
+      return <TunerQuestionForm questions={questions} onSubmit={async () => undefined} />;
     case PROCESSING_STATUS.GENERATING:
-      return <WorkflowPlaceholder testId="tuner-generating-screen" />;
+      return <div data-testid="tuner-generating-screen" />;
     case PROCESSING_STATUS.COMPLETE:
       if (resultError) {
         return (

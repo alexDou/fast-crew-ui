@@ -176,6 +176,13 @@
     "workflow": {
       "processing": {
         "message": "Wir verarbeiten Ihr Bild."
+      },
+      "stage1": {
+        "title": "Wir haben noch ein paar Fragen, bevor das Gedicht ankommt.",
+        "description": "Beantworten Sie die Fragen unten, damit das Gedicht Ihrer Erinnerung, Stimmung und den wichtigen Details folgen kann.",
+        "questionLabel": "Frage {index}",
+        "answerPlaceholder": "Schreiben Sie Ihre Antwort hier",
+        "submit": "Antworten senden"
       }
     },
     "result": {

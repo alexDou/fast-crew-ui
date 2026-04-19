@@ -176,6 +176,13 @@
     "workflow": {
       "processing": {
         "message": "We are processing your image."
+      },
+      "stage1": {
+        "title": "We have a few questions before the poem arrives.",
+        "description": "Answer the questions below so the poem can follow the memory, mood, and details you want to keep.",
+        "questionLabel": "Question {index}",
+        "answerPlaceholder": "Write your answer here",
+        "submit": "Send answers"
       }
     },
     "result": {
