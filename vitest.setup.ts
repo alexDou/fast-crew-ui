@@ -42,8 +42,10 @@ loadEnvFile(".env");
 
 const mutableProcessEnv = process.env as Record<string, string | undefined>;
 
-mutableProcessEnv.NODE_ENV ??= "test";
-process.env.NEXT_PUBLIC_NODE_ENV ??= "test";
+// Force test-mode flags so values from .env (e.g. NEXT_PUBLIC_NODE_ENV=development)
+// cannot leak into vitest and flip dev-only diagnostics like console logs on.
+mutableProcessEnv.NODE_ENV = "test";
+process.env.NEXT_PUBLIC_NODE_ENV = "test";
 process.env.AUTH_SECRET ??= "test-auth-secret-value-with-32-chars";
 process.env.NEXT_PUBLIC_SITE_URL ??= "http://localhost:3000";
 process.env.NEXT_PUBLIC_API_URL ??= "http://localhost:8000";

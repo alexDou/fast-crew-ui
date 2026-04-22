@@ -121,7 +121,6 @@ export async function registerAction(data: {
     };
   } catch (err) {
     const error = err as Error;
-    console.error("Register action error:", error);
     return {
       success: false,
       error: error.message || ERROR_MESSAGES.REGISTRATION_ERROR

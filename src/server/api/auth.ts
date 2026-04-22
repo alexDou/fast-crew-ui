@@ -42,7 +42,6 @@ export async function loginToAPI(username: string, password: string): Promise<st
       }
       throw new Error(message);
     }
-    console.error("Login error:", error);
     return null;
   }
 }

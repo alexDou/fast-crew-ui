@@ -36,7 +36,6 @@ export async function GET(_: Request, { params }: { params: Promise<{ sourceId: 
         { status: error.response.status }
       );
     }
-    console.error("Fetch poems error:", error);
     return NextResponse.json({ error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR }, { status: 500 });
   }
 }

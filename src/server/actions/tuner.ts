@@ -71,7 +71,6 @@ export async function uploadAction(data: {
         error: errorBody.detail || ERROR_MESSAGES.UPLOAD_FAILED
       };
     }
-    console.error("Upload action error:", error);
     return {
       success: false,
       error: ERROR_MESSAGES.UPLOAD_ERROR
@@ -114,7 +113,6 @@ export async function submitAnswersAction(
         error: errorBody.detail || ERROR_MESSAGES.SUBMIT_ANSWERS_FAILED
       };
     }
-    console.error("Submit answers action error:", error);
     return {
       success: false,
       error: ERROR_MESSAGES.SUBMIT_ANSWERS_ERROR
