@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 
 import { Upload } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,6 +11,8 @@ import { useForm, type ControllerRenderProps } from "react-hook-form";
 import { Balancer } from "react-wrap-balancer";
 
 import { PROCESSING_STATUS } from "@/constants/status";
+
+import { usePathname, useRouter } from "@/i18n/navigation";
 
 import { useSourceCreate } from "@/hooks";
 
@@ -28,11 +31,41 @@ import {
 
 import { type TunerFormValuesType, tunerFormSchema } from "./tuner.schema";
 
+const SOURCE_ID_PARAM = "sourceId";
+
+function parseSourceIdParam(value: string | null): number | null {
+  if (value === null) {
+    return null;
+  }
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+}
+
 export function TunerForm() {
   const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(null);
   const t = useTranslations("Tuner");
 
-  const { sourceCreate, processing, sourceId, resetProcessing } = useSourceCreate();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const urlSourceId = parseSourceIdParam(searchParams.get(SOURCE_ID_PARAM));
+
+  const { sourceCreate, processing, sourceId: hookSourceId, resetProcessing } = useSourceCreate();
+
+  const activeSourceId = urlSourceId ?? hookSourceId;
+
+  useEffect(() => {
+    if (hookSourceId && hookSourceId !== urlSourceId) {
+      router.replace(`${pathname}?${SOURCE_ID_PARAM}=${hookSourceId}`);
+    }
+  }, [hookSourceId, pathname, router, urlSourceId]);
+
+  const handleReset = useCallback(() => {
+    resetProcessing();
+    if (urlSourceId !== null) {
+      router.replace(pathname);
+    }
+  }, [pathname, resetProcessing, router, urlSourceId]);
 
   const form = useForm<TunerFormValuesType>({
     resolver: zodResolver(tunerFormSchema(t)),
@@ -78,7 +111,7 @@ export function TunerForm() {
           />
         ) : null}
       </section>
-      {processing === PROCESSING_STATUS.IDLE && (
+      {activeSourceId === null && processing !== PROCESSING_STATUS.ERROR && (
         <section className="t-16 lg:w-1/3">
           <Form {...form}>
             <form onSubmit={onSubmit} className="w-full space-y-5">
@@ -137,13 +170,11 @@ export function TunerForm() {
           </Form>
         </section>
       )}
-      {processing === PROCESSING_STATUS.PROCESSING && sourceId && (
-        <TunerResult sourceId={sourceId} onReset={resetProcessing} />
-      )}
-      {processing === PROCESSING_STATUS.ERROR && (
+      {activeSourceId !== null && <TunerResult sourceId={activeSourceId} onReset={handleReset} />}
+      {activeSourceId === null && processing === PROCESSING_STATUS.ERROR && (
         <>
           <ErrorReport errorKey="file.network" />
-          <Button variant="outline" className="mt-4" onClick={resetProcessing}>
+          <Button variant="outline" className="mt-4" onClick={handleReset}>
             {t("error.tryAgain")}
           </Button>
         </>

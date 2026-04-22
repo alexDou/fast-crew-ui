@@ -37,6 +37,22 @@ vi.mock("@/hooks", () => ({
   })
 }));
 
+const { mockRouterReplace, mockUrlSourceIdParam } = vi.hoisted(() => ({
+  mockRouterReplace: vi.fn(),
+  mockUrlSourceIdParam: { current: null as string | null }
+}));
+
+vi.mock("@/i18n/navigation", () => ({
+  useRouter: () => ({ replace: mockRouterReplace }),
+  usePathname: () => "/tuner"
+}));
+
+vi.mock("next/navigation", () => ({
+  useSearchParams: () => ({
+    get: (key: string) => (key === "sourceId" ? mockUrlSourceIdParam.current : null)
+  })
+}));
+
 vi.mock("@/components/error-report", () => ({
   ErrorReport: ({ errorKey }: { errorKey: string }) => (
     <div data-testid="error-report">{errorKey}</div>
@@ -131,6 +147,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   mockProcessing.current = "idle";
   mockSourceId.current = null;
+  mockUrlSourceIdParam.current = null;
   mockFileReaderInstance.onloadend = null;
   vi.stubGlobal("FileReader", MockFileReader);
 });
@@ -142,7 +159,7 @@ describe("TunerForm", () => {
     expect(screen.getByText("form.submit")).toBeInTheDocument();
   });
 
-  it("renders TunerResult in processing state with sourceId", () => {
+  it("mounts TunerResult using the hook sourceId once upload succeeds", () => {
     mockProcessing.current = "processing";
     mockSourceId.current = 42;
 
@@ -153,9 +170,28 @@ describe("TunerForm", () => {
     expect(tunerResult).toHaveAttribute("data-source-id", "42");
   });
 
-  it("passes onReset to TunerResult", async () => {
+  it("persists the sourceId in the URL when the hook reports a new source", () => {
     mockProcessing.current = "processing";
     mockSourceId.current = 42;
+
+    render(<TunerForm />);
+
+    expect(mockRouterReplace).toHaveBeenCalledWith("/tuner?sourceId=42");
+  });
+
+  it("hydrates the active sourceId from the URL on refresh", () => {
+    mockUrlSourceIdParam.current = "42";
+
+    render(<TunerForm />);
+
+    const tunerResult = screen.getByTestId("tuner-result");
+    expect(tunerResult).toBeInTheDocument();
+    expect(tunerResult).toHaveAttribute("data-source-id", "42");
+    expect(screen.queryByText("form.submit")).not.toBeInTheDocument();
+  });
+
+  it("clears the URL sourceId when reset is triggered from TunerResult", async () => {
+    mockUrlSourceIdParam.current = "42";
 
     render(<TunerForm />);
 
@@ -163,6 +199,22 @@ describe("TunerForm", () => {
     await user.click(screen.getByTestId("result-reset"));
 
     expect(mockResetProcessing).toHaveBeenCalledTimes(1);
+    expect(mockRouterReplace).toHaveBeenCalledWith("/tuner");
+  });
+
+  it("does not touch the URL when reset is triggered without a URL sourceId", async () => {
+    mockProcessing.current = "processing";
+    mockSourceId.current = 42;
+
+    render(<TunerForm />);
+
+    mockRouterReplace.mockClear();
+
+    const user = userEvent.setup();
+    await user.click(screen.getByTestId("result-reset"));
+
+    expect(mockResetProcessing).toHaveBeenCalledTimes(1);
+    expect(mockRouterReplace).not.toHaveBeenCalled();
   });
 
   it("shows error report and try again button in error state", () => {
