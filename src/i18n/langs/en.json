@@ -156,7 +156,9 @@
       "retryExhaustedMessage": "We are unable to process your request at this time. Please, try again later",
       "tryAgain": "Try again",
       "requestLimit": "Request limit reached",
-      "requestLimitMessage": "You have reached the maximum of 3 poem generations per account"
+      "requestLimitMessage": "You have reached the maximum of 3 poem generations per account",
+      "submitAnswersTitle": "We could not send your answers",
+      "submitAnswersMessage": "Please try submitting your answers again in a moment"
     },
     "form": {
       "success": {
@@ -182,7 +184,11 @@
         "description": "Answer the questions below so the poem can follow the memory, mood, and details you want to keep.",
         "questionLabel": "Question {index}",
         "answerPlaceholder": "Write your answer here",
-        "submit": "Send answers"
+        "submit": "Send answers",
+        "submitting": "Sending answers..."
+      },
+      "generating": {
+        "message": "The breath of winds put words together."
       }
     },
     "result": {

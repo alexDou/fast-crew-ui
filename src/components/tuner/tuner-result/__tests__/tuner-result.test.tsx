@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { mockPush } = vi.hoisted(() => ({
-  mockPush: vi.fn()
+const { mockPush, mockToastError } = vi.hoisted(() => ({
+  mockPush: vi.fn(),
+  mockToastError: vi.fn()
 }));
 
 vi.mock("@/i18n/navigation", () => ({
@@ -12,14 +13,29 @@ vi.mock("next-intl", () => ({
   useTranslations: () => (key: string) => key
 }));
 
-const { mockProcessingStatus, mockResultFetch } = vi.hoisted(() => ({
-  mockProcessingStatus: vi.fn(),
-  mockResultFetch: vi.fn()
+vi.mock("sonner", () => ({
+  toast: {
+    error: mockToastError,
+    success: vi.fn()
+  }
 }));
+
+const { mockProcessingStatus, mockResultFetch, mockResumePolling, mockSubmitAnswers } = vi.hoisted(
+  () => ({
+    mockProcessingStatus: vi.fn(),
+    mockResultFetch: vi.fn(),
+    mockResumePolling: vi.fn(),
+    mockSubmitAnswers: vi.fn()
+  })
+);
 
 vi.mock("@/hooks", () => ({
   useProcessingStatusFetch: mockProcessingStatus,
   useResultFetch: mockResultFetch
+}));
+
+vi.mock("@/server/actions/tuner", () => ({
+  submitAnswersAction: mockSubmitAnswers
 }));
 
 vi.mock("@/ui", () => ({
@@ -38,7 +54,7 @@ vi.mock("@/ui", () => ({
   )
 }));
 
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { TunerResult } from "../tuner-result";
@@ -46,6 +62,8 @@ import { TunerResult } from "../tuner-result";
 beforeEach(() => {
   vi.clearAllMocks();
   mockResultFetch.mockReturnValue({ poems: [], isError: false });
+  mockResumePolling.mockReset();
+  mockSubmitAnswers.mockReset();
 });
 
 describe("TunerResult", () => {
@@ -66,7 +84,8 @@ describe("TunerResult", () => {
     mockProcessingStatus.mockReturnValue({
       status: "stage_1",
       questions: [{ id: "q1", text: "What memory does this image wake up?" }],
-      isRetryExhausted: false
+      isRetryExhausted: false,
+      resumePolling: mockResumePolling
     });
 
     render(<TunerResult sourceId={1} onReset={onReset} />);
@@ -75,7 +94,59 @@ describe("TunerResult", () => {
     expect(screen.getByText("What memory does this image wake up?")).toBeInTheDocument();
   });
 
-  it("renders generating through the workflow controller", () => {
+  it("submits stage_1 answers and resumes polling on success", async () => {
+    mockProcessingStatus.mockReturnValue({
+      status: "stage_1",
+      questions: [{ id: "q1", text: "What memory does this image wake up?" }],
+      isRetryExhausted: false,
+      resumePolling: mockResumePolling
+    });
+    mockSubmitAnswers.mockResolvedValue({
+      success: true,
+      data: { message: "Answers accepted", status: "generating", poem_source_id: 42 }
+    });
+
+    render(<TunerResult sourceId={42} onReset={onReset} />);
+
+    const user = userEvent.setup();
+    await user.type(screen.getByRole("textbox"), "A summer evening by the sea");
+    await user.click(screen.getByText("workflow.stage1.submit"));
+
+    await waitFor(() => {
+      expect(mockSubmitAnswers).toHaveBeenCalledWith(42, {
+        q1: "A summer evening by the sea"
+      });
+    });
+    await waitFor(() => {
+      expect(mockResumePolling).toHaveBeenCalledTimes(1);
+    });
+    expect(mockToastError).not.toHaveBeenCalled();
+  });
+
+  it("shows an error toast and keeps the form when answer submission fails", async () => {
+    mockProcessingStatus.mockReturnValue({
+      status: "stage_1",
+      questions: [{ id: "q1", text: "What memory does this image wake up?" }],
+      isRetryExhausted: false,
+      resumePolling: mockResumePolling
+    });
+    mockSubmitAnswers.mockResolvedValue({ success: false, error: "boom" });
+
+    render(<TunerResult sourceId={42} onReset={onReset} />);
+
+    const user = userEvent.setup();
+    await user.type(screen.getByRole("textbox"), "something");
+    await user.click(screen.getByText("workflow.stage1.submit"));
+
+    await waitFor(() => {
+      expect(mockToastError).toHaveBeenCalledWith("error.submitAnswersTitle", {
+        description: "error.submitAnswersMessage"
+      });
+    });
+    expect(mockResumePolling).not.toHaveBeenCalled();
+  });
+
+  it("renders generating copy from the workflow controller", () => {
     mockProcessingStatus.mockReturnValue({
       status: "generating",
       isRetryExhausted: false
@@ -84,6 +155,7 @@ describe("TunerResult", () => {
     render(<TunerResult sourceId={1} onReset={onReset} />);
 
     expect(screen.getByTestId("tuner-generating-screen")).toBeInTheDocument();
+    expect(screen.getByText("workflow.generating.message")).toBeInTheDocument();
   });
 
   it("redirects to poem detail page on success", () => {

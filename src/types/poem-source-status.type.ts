@@ -13,3 +13,9 @@ export interface PoemSourceStatusResponseType {
   message?: string;
   questions?: PoemSourceQuestionType[];
 }
+
+export interface PoemSourceAnswerSubmissionResponseType {
+  message: string;
+  status: BackendProcessingStatusType;
+  poem_source_id: number;
+}

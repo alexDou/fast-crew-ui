@@ -76,7 +76,7 @@ export function TunerQuestionForm({
 
           <div className="flex justify-center">
             <Button type="submit" disabled={isSubmitting} className="min-w-56">
-              {t("workflow.stage1.submit")}
+              {isSubmitting ? t("workflow.stage1.submitting") : t("workflow.stage1.submit")}
             </Button>
           </div>
         </form>

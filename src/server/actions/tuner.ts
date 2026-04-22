@@ -10,6 +10,8 @@ import { env } from "@/env";
 
 import { routesBook } from "@/lib/routes-book";
 
+import type { PoemSourceAnswerSubmissionResponseType } from "@/types";
+
 export interface UploadActionResult {
   success: boolean;
   error?: string;
@@ -18,6 +20,12 @@ export interface UploadActionResult {
     media_path: string;
     status: string;
   };
+}
+
+export interface SubmitAnswersActionResult {
+  success: boolean;
+  error?: string;
+  data?: PoemSourceAnswerSubmissionResponseType;
 }
 
 export async function uploadAction(data: {
@@ -67,6 +75,49 @@ export async function uploadAction(data: {
     return {
       success: false,
       error: ERROR_MESSAGES.UPLOAD_ERROR
+    };
+  }
+}
+
+export async function submitAnswersAction(
+  sourceId: number,
+  answers: Record<string, string>
+): Promise<SubmitAnswersActionResult> {
+  try {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get("access_token")?.value;
+
+    if (!accessToken) {
+      return redirect(routesBook.signin);
+    }
+
+    const result = await ky
+      .post(`${env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.poemSourceAnswers(sourceId)}`, {
+        json: { answers },
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+      .json<PoemSourceAnswerSubmissionResponseType>();
+
+    return {
+      success: true,
+      data: result
+    };
+  } catch (error) {
+    if (error instanceof HTTPError) {
+      const errorBody = await error.response
+        .json<{ detail?: string }>()
+        .catch(() => ({ detail: "" }));
+      return {
+        success: false,
+        error: errorBody.detail || ERROR_MESSAGES.SUBMIT_ANSWERS_FAILED
+      };
+    }
+    console.error("Submit answers action error:", error);
+    return {
+      success: false,
+      error: ERROR_MESSAGES.SUBMIT_ANSWERS_ERROR
     };
   }
 }

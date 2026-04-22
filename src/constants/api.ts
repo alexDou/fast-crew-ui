@@ -8,7 +8,8 @@ export const API_ENDPOINTS = {
   POEM_SOURCE: "/api/v1/poem-source",
   POEM_SOURCES: "/api/v1/poem-sources",
   poems: (sourceId: number | string) => `/api/v1/poems/${sourceId}`,
-  poemSourceStatus: (sourceId: number | string) => `/api/v1/poem-source/${sourceId}/ready`
+  poemSourceStatus: (sourceId: number | string) => `/api/v1/poem-source/${sourceId}/ready`,
+  poemSourceAnswers: (sourceId: number | string) => `/api/v1/poem-source/${sourceId}/answers`
 } as const;
 
 export const BFF_ENDPOINTS = {
@@ -30,7 +31,9 @@ export const ERROR_MESSAGES = {
   REGISTRATION_ERROR: "An error occurred during registration",
   CAPTCHA_VALIDATION_FAILED: "Captcha validation failed",
   CHECK_STATUS_FAILED: "Failed to check status",
-  INTERNAL_SERVER_ERROR: "Internal server error"
+  INTERNAL_SERVER_ERROR: "Internal server error",
+  SUBMIT_ANSWERS_FAILED: "Failed to submit answers",
+  SUBMIT_ANSWERS_ERROR: "An error occurred while submitting answers"
 } as const;
 
 export const PROCESSING_FAILURE_REASONS = {

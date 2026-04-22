@@ -156,7 +156,9 @@
       "retryExhaustedMessage": "Wir können Ihre Anfrage momentan nicht verarbeiten. Bitte versuchen Sie es später erneut",
       "tryAgain": "Erneut versuchen",
       "requestLimit": "Anfragelimit erreicht",
-      "requestLimitMessage": "Sie haben die maximale Anzahl von 3 Gedichtgenerierungen pro Konto erreicht"
+      "requestLimitMessage": "Sie haben die maximale Anzahl von 3 Gedichtgenerierungen pro Konto erreicht",
+      "submitAnswersTitle": "Wir konnten Ihre Antworten nicht senden",
+      "submitAnswersMessage": "Bitte versuchen Sie es in einem Augenblick noch einmal"
     },
     "form": {
       "success": {
@@ -182,7 +184,11 @@
         "description": "Beantworten Sie die Fragen unten, damit das Gedicht Ihrer Erinnerung, Stimmung und den wichtigen Details folgen kann.",
         "questionLabel": "Frage {index}",
         "answerPlaceholder": "Schreiben Sie Ihre Antwort hier",
-        "submit": "Antworten senden"
+        "submit": "Antworten senden",
+        "submitting": "Antworten werden gesendet..."
+      },
+      "generating": {
+        "message": "Der Atem der Winde fügt Worte zusammen."
       }
     },
     "result": {

@@ -1,14 +1,17 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { useProcessingStatusFetch, useResultFetch } from "@/hooks";
 
 import { Button } from "@/ui";
 
 import { PROCESSING_STATUS } from "@/constants/status";
 import { routesBook } from "@/lib/routes-book";
+
+import { submitAnswersAction } from "@/server/actions/tuner";
 
 import { TunerQuestionForm } from "../tuner-question-form";
 
@@ -20,8 +23,9 @@ interface TunerResultPropsType {
 export function TunerResult({ sourceId, onReset }: TunerResultPropsType) {
   const t = useTranslations("Tuner");
   const router = useRouter();
+  const [isSubmittingAnswers, setIsSubmittingAnswers] = useState(false);
 
-  const { status, questions, isRetryExhausted, isIndistinctContentFailure } =
+  const { status, questions, isRetryExhausted, isIndistinctContentFailure, resumePolling } =
     useProcessingStatusFetch(sourceId);
   const { isError: resultError } = useResultFetch({
     sourceId,
@@ -34,6 +38,26 @@ export function TunerResult({ sourceId, onReset }: TunerResultPropsType) {
     }
   }, [status, sourceId, router]);
 
+  const handleSubmitAnswers = async (answers: Record<string, string>) => {
+    setIsSubmittingAnswers(true);
+    try {
+      const result = await submitAnswersAction(sourceId, answers);
+      if (!result.success) {
+        toast.error(t("error.submitAnswersTitle"), {
+          description: t("error.submitAnswersMessage")
+        });
+        return;
+      }
+      await resumePolling();
+    } catch {
+      toast.error(t("error.submitAnswersTitle"), {
+        description: t("error.submitAnswersMessage")
+      });
+    } finally {
+      setIsSubmittingAnswers(false);
+    }
+  };
+
   switch (status) {
     case PROCESSING_STATUS.PROCESSING:
       return (
@@ -44,9 +68,24 @@ export function TunerResult({ sourceId, onReset }: TunerResultPropsType) {
         </div>
       );
     case PROCESSING_STATUS.STAGE_1:
-      return <TunerQuestionForm questions={questions} onSubmit={async () => undefined} />;
+      return (
+        <TunerQuestionForm
+          questions={questions}
+          onSubmit={handleSubmitAnswers}
+          isSubmitting={isSubmittingAnswers}
+        />
+      );
     case PROCESSING_STATUS.GENERATING:
-      return <div data-testid="tuner-generating-screen" />;
+      return (
+        <div
+          className="container flex flex-col items-center justify-center py-16"
+          data-testid="tuner-generating-screen"
+        >
+          <p className="font-bold text-xl text-bento-beige-text">
+            {t("workflow.generating.message")}
+          </p>
+        </div>
+      );
     case PROCESSING_STATUS.COMPLETE:
       if (resultError) {
         return (

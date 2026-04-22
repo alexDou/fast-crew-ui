@@ -2,14 +2,17 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const TEST_API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
-const { mockCookieStore, mockJsonFn, mockPost, mockRedirect } = vi.hoisted(() => {
+const { mockCookieStore, mockJsonFn, mockPost, mockRedirect, mockPostJsonFn } = vi.hoisted(() => {
   const mockCookieStore = {
     get: vi.fn()
   };
   const mockJsonFn = vi.fn();
-  const mockPost = vi.fn(() => ({ json: mockJsonFn }));
+  const mockPostJsonFn = vi.fn();
+  const mockPost = vi.fn((_url: string, options?: { json?: unknown }) => ({
+    json: options?.json === undefined ? mockJsonFn : mockPostJsonFn
+  }));
   const mockRedirect = vi.fn();
-  return { mockCookieStore, mockJsonFn, mockPost, mockRedirect };
+  return { mockCookieStore, mockJsonFn, mockPost, mockRedirect, mockPostJsonFn };
 });
 
 vi.mock("next/headers", () => ({
@@ -43,7 +46,7 @@ vi.mock("@/env", () => ({
 
 import { HTTPError } from "ky";
 
-import { uploadAction } from "@/server/actions/tuner";
+import { submitAnswersAction, uploadAction } from "@/server/actions/tuner";
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -152,6 +155,92 @@ describe("uploadAction", () => {
     mockCookieStore.get.mockReturnValue(undefined);
 
     await uploadAction({ file });
+
+    expect(mockRedirect).toHaveBeenCalledWith("/signin");
+  });
+});
+
+describe("submitAnswersAction", () => {
+  const answers = { q1: "A summer night by the sea", q2: "Tender and nostalgic" };
+
+  it("returns success with backend response on a successful submission", async () => {
+    mockCookieStore.get.mockReturnValue({ value: "test-token" });
+    mockPostJsonFn.mockResolvedValueOnce({
+      message: "Answers accepted",
+      status: "generating",
+      poem_source_id: 7
+    });
+
+    const result = await submitAnswersAction(7, answers);
+
+    expect(result).toEqual({
+      success: true,
+      data: {
+        message: "Answers accepted",
+        status: "generating",
+        poem_source_id: 7
+      }
+    });
+    expect(mockPost).toHaveBeenCalledWith(
+      `${TEST_API_URL}/api/v1/poem-source/7/answers`,
+      expect.objectContaining({
+        json: { answers },
+        headers: { Authorization: "Bearer test-token" }
+      })
+    );
+  });
+
+  it("returns error detail from API on HTTPError", async () => {
+    mockCookieStore.get.mockReturnValue({ value: "test-token" });
+    const httpError = new HTTPError(new Response(), new Request(TEST_API_URL), {} as never);
+    Object.assign(httpError, {
+      response: {
+        json: () =>
+          Promise.resolve({ detail: "Answers must be provided for every follow-up question" })
+      }
+    });
+    mockPostJsonFn.mockRejectedValueOnce(httpError);
+
+    const result = await submitAnswersAction(7, answers);
+
+    expect(result).toEqual({
+      success: false,
+      error: "Answers must be provided for every follow-up question"
+    });
+  });
+
+  it("returns fallback error message when HTTPError has no detail", async () => {
+    mockCookieStore.get.mockReturnValue({ value: "test-token" });
+    const httpError = new HTTPError(new Response(), new Request(TEST_API_URL), {} as never);
+    Object.assign(httpError, {
+      response: { json: () => Promise.resolve({}) }
+    });
+    mockPostJsonFn.mockRejectedValueOnce(httpError);
+
+    const result = await submitAnswersAction(7, answers);
+
+    expect(result).toEqual({
+      success: false,
+      error: "Failed to submit answers"
+    });
+  });
+
+  it("returns generic error on non-HTTP exceptions", async () => {
+    mockCookieStore.get.mockReturnValue({ value: "test-token" });
+    mockPostJsonFn.mockRejectedValueOnce(new Error("Network failure"));
+
+    const result = await submitAnswersAction(7, answers);
+
+    expect(result).toEqual({
+      success: false,
+      error: "An error occurred while submitting answers"
+    });
+  });
+
+  it("redirects to signin when access token is missing", async () => {
+    mockCookieStore.get.mockReturnValue(undefined);
+
+    await submitAnswersAction(7, answers);
 
     expect(mockRedirect).toHaveBeenCalledWith("/signin");
   });
