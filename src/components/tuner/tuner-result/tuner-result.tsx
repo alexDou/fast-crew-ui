@@ -1,15 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "@/i18n/navigation";
+import { useState } from "react";
+
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+
 import { useProcessingStatusFetch, useResultFetch } from "@/hooks";
 
-import { Button } from "@/ui";
-
 import { PROCESSING_STATUS } from "@/constants/status";
-import { routesBook } from "@/lib/routes-book";
+
+import { PoemDisplay } from "@/widgets";
+
+import { Button } from "@/ui";
 
 import { submitAnswersAction } from "@/server/actions/tuner";
 
@@ -22,21 +24,18 @@ interface TunerResultPropsType {
 
 export function TunerResult({ sourceId, onReset }: TunerResultPropsType) {
   const t = useTranslations("Tuner");
-  const router = useRouter();
   const [isSubmittingAnswers, setIsSubmittingAnswers] = useState(false);
 
   const { status, questions, isRetryExhausted, isIndistinctContentFailure, resumePolling } =
     useProcessingStatusFetch(sourceId);
-  const { isError: resultError } = useResultFetch({
+  const {
+    poems,
+    isLoading: poemsLoading,
+    isError: resultError
+  } = useResultFetch({
     sourceId,
     status
   });
-
-  useEffect(() => {
-    if (status === PROCESSING_STATUS.COMPLETE) {
-      router.push(routesBook.poemDetail(sourceId));
-    }
-  }, [status, sourceId, router]);
 
   const handleSubmitAnswers = async (answers: Record<string, string>) => {
     setIsSubmittingAnswers(true);
@@ -101,7 +100,24 @@ export function TunerResult({ sourceId, onReset }: TunerResultPropsType) {
         );
       }
 
-      return null;
+      if (poemsLoading || poems.length === 0) {
+        return (
+          <div className="container flex flex-col items-center justify-center py-16">
+            <p className="font-bold text-xl text-bento-beige-text">
+              {t("workflow.generating.message")}
+            </p>
+          </div>
+        );
+      }
+
+      return (
+        <section className="container flex flex-col items-center justify-center gap-6 py-16">
+          <PoemDisplay title={t("workflow.complete.title")} poems={poems} />
+          <Button variant="outline" className="mt-6" onClick={onReset}>
+            {t("error.tryAgain")}
+          </Button>
+        </section>
+      );
     case PROCESSING_STATUS.ERROR:
       if (isRetryExhausted) {
         return (

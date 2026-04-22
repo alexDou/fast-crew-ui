@@ -11,6 +11,16 @@ interface PoemDisplayPropsType {
   poems: PoemType[];
 }
 
+function getPoemLabel(poem: PoemType, index: number, fallback: string): string {
+  if (poem.author_label && poem.author_label.trim()) {
+    return poem.author_label;
+  }
+  if (poem.variant_key && poem.variant_key.trim()) {
+    return poem.variant_key;
+  }
+  return `${fallback} ${index + 1}`;
+}
+
 export function PoemDisplay({ title, poems }: PoemDisplayPropsType) {
   const t = useTranslations("PoemDisplay");
   const [activePoemId, setActivePoemId] = useState<number | undefined>(poems[0]?.id);
@@ -48,7 +58,7 @@ export function PoemDisplay({ title, poems }: PoemDisplayPropsType) {
                     : "bg-bento-beige hover:bg-neutral-tertiary-medium text-black"
                 }`}
               >
-                {`${t("alternative")} ${idx + 1}`}
+                {getPoemLabel(poem, idx, t("alternative"))}
               </button>
             ))}
           </div>

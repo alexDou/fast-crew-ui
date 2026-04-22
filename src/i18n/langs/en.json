@@ -189,6 +189,9 @@
       },
       "generating": {
         "message": "The breath of winds put words together."
+      },
+      "complete": {
+        "title": "Your poems have arrived"
       }
     },
     "result": {

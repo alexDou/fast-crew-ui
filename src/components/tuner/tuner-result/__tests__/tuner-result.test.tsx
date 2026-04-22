@@ -1,12 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { mockPush, mockToastError } = vi.hoisted(() => ({
-  mockPush: vi.fn(),
+const { mockToastError } = vi.hoisted(() => ({
   mockToastError: vi.fn()
-}));
-
-vi.mock("@/i18n/navigation", () => ({
-  useRouter: () => ({ push: mockPush })
 }));
 
 vi.mock("next-intl", () => ({
@@ -36,6 +31,27 @@ vi.mock("@/hooks", () => ({
 
 vi.mock("@/server/actions/tuner", () => ({
   submitAnswersAction: mockSubmitAnswers
+}));
+
+vi.mock("@/widgets", () => ({
+  PoemDisplay: ({
+    title,
+    poems
+  }: {
+    title: string;
+    poems: Array<{ id: number; poem: string; author_label?: string | null }>;
+  }) => (
+    <div data-testid="poem-display">
+      <h1>{title}</h1>
+      <ul>
+        {poems.map((poem) => (
+          <li key={poem.id} data-label={poem.author_label ?? null}>
+            {poem.poem}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
 }));
 
 vi.mock("@/ui", () => ({
@@ -158,26 +174,38 @@ describe("TunerResult", () => {
     expect(screen.getByText("workflow.generating.message")).toBeInTheDocument();
   });
 
-  it("redirects to poem detail page on success", () => {
+  it("renders poems inline through PoemDisplay on complete", () => {
     mockProcessingStatus.mockReturnValue({
       status: "complete",
       isRetryExhausted: false
+    });
+    mockResultFetch.mockReturnValue({
+      poems: [
+        { id: 1, poem: "Modern verse", author_label: "Modern Poet" },
+        { id: 2, poem: "Classic verse", author_label: "Classic Poet" }
+      ],
+      isLoading: false,
+      isError: false
     });
 
     render(<TunerResult sourceId={42} onReset={onReset} />);
 
-    expect(mockPush).toHaveBeenCalledWith("/poems/42");
+    expect(screen.getByTestId("poem-display")).toBeInTheDocument();
+    expect(screen.getByText("workflow.complete.title")).toBeInTheDocument();
+    expect(screen.getByText("Modern verse")).toBeInTheDocument();
+    expect(screen.getByText("Classic verse")).toBeInTheDocument();
   });
 
-  it("does not render inline content on success", () => {
+  it("shows the generating fallback while poems are still loading on complete", () => {
     mockProcessingStatus.mockReturnValue({
       status: "complete",
       isRetryExhausted: false
     });
+    mockResultFetch.mockReturnValue({ poems: [], isLoading: true, isError: false });
 
-    const { container } = render(<TunerResult sourceId={1} onReset={onReset} />);
+    render(<TunerResult sourceId={42} onReset={onReset} />);
 
-    expect(container.textContent).toBe("");
+    expect(screen.getByText("workflow.generating.message")).toBeInTheDocument();
   });
 
   it("shows retry exhausted error with try again button", () => {
