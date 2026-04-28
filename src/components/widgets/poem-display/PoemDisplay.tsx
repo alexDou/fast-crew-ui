@@ -12,11 +12,8 @@ interface PoemDisplayPropsType {
 }
 
 function getPoemLabel(poem: PoemType, index: number, fallback: string): string {
-  if (poem.author_label && poem.author_label.trim()) {
-    return poem.author_label;
-  }
-  if (poem.variant_key && poem.variant_key.trim()) {
-    return poem.variant_key;
+  if (poem.poet_name && poem.poet_name.trim()) {
+    return poem.poet_name;
   }
   return `${fallback} ${index + 1}`;
 }

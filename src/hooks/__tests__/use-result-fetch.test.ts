@@ -69,8 +69,8 @@ describe("useResultFetch", () => {
 
   it("fetches poems when status is complete", async () => {
     const mockPoems = [
-      { id: 1, poem: "Roses are red" },
-      { id: 2, poem: "Violets are blue" }
+      { id: 1, poem: "Whitman verse", poet_id: 11, poet_name: "Walt Whitman" },
+      { id: 2, poem: "A free poem", poet_id: null }
     ];
     mockJsonFn.mockResolvedValue(mockPoems);
 
@@ -83,12 +83,17 @@ describe("useResultFetch", () => {
       expect(result.current.poems).toEqual(mockPoems);
     });
     expect(result.current.isError).toBe(false);
+    expect(result.current.poems[0]).toMatchObject({
+      poet_id: 11,
+      poet_name: "Walt Whitman"
+    });
+    expect(result.current.poems[1]).toMatchObject({ poet_id: null });
   });
 
   it("sets active poem to the first poem when poems are available", async () => {
     const mockPoems = [
-      { id: 1, poem: "Roses are red" },
-      { id: 2, poem: "Violets are blue" }
+      { id: 1, poem: "Roses are red", poet_id: null },
+      { id: 2, poem: "Violets are blue", poet_id: null }
     ];
     mockJsonFn.mockResolvedValue(mockPoems);
 
@@ -135,7 +140,7 @@ describe("useResultFetch", () => {
   });
 
   it("does not show toast on successful fetch", async () => {
-    mockJsonFn.mockResolvedValue([{ id: 1, poem: "Test" }]);
+    mockJsonFn.mockResolvedValue([{ id: 1, poem: "Test", poet_id: null }]);
 
     const { result } = renderHook(
       () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.COMPLETE }),

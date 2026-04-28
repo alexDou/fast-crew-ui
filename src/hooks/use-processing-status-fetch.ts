@@ -8,7 +8,9 @@ import { toast } from "sonner";
 import { BFF_ENDPOINTS, PROCESSING_FAILURE_REASONS } from "@/constants/api";
 import { QUERY_KEYS } from "@/constants/query-keys";
 import { normalizeProcessingStatus, PROCESSING_STATUS } from "@/constants/status";
-import type { PoemSourceStatusResponseType } from "@/types";
+import type { PoemSourceStatusResponseType, PoetCardType } from "@/types";
+
+const EMPTY_POET_CANDIDATES: PoetCardType[] = [];
 
 export function useProcessingStatusFetch(sourceId: number) {
   const t = useTranslations("Tuner");
@@ -75,6 +77,7 @@ export function useProcessingStatusFetch(sourceId: number) {
     status,
     poemSourceId: data?.poem_source_id ?? sourceId,
     questions: data?.questions ?? [],
+    poetCandidates: data?.poet_candidates ?? EMPTY_POET_CANDIDATES,
     isPollingEnabled,
     isLoading,
     isError: isError || status === PROCESSING_STATUS.ERROR,

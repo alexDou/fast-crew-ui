@@ -163,7 +163,7 @@ describe("uploadAction", () => {
 describe("submitAnswersAction", () => {
   const answers = { q1: "A summer night by the sea", q2: "Tender and nostalgic" };
 
-  it("returns success with backend response on a successful submission", async () => {
+  it("forwards poet_id alongside answers to the backend", async () => {
     mockCookieStore.get.mockReturnValue({ value: "test-token" });
     mockPostJsonFn.mockResolvedValueOnce({
       message: "Answers accepted",
@@ -171,7 +171,7 @@ describe("submitAnswersAction", () => {
       poem_source_id: 7
     });
 
-    const result = await submitAnswersAction(7, answers);
+    const result = await submitAnswersAction(7, { answers, poetId: 12 });
 
     expect(result).toEqual({
       success: true,
@@ -184,8 +184,26 @@ describe("submitAnswersAction", () => {
     expect(mockPost).toHaveBeenCalledWith(
       `${TEST_API_URL}/api/v1/poem-source/7/answers`,
       expect.objectContaining({
-        json: { answers },
+        json: { answers, poet_id: 12 },
         headers: { Authorization: "Bearer test-token" }
+      })
+    );
+  });
+
+  it("sends poet_id as null for the freestyle branch", async () => {
+    mockCookieStore.get.mockReturnValue({ value: "test-token" });
+    mockPostJsonFn.mockResolvedValueOnce({
+      message: "Answers accepted",
+      status: "generating",
+      poem_source_id: 7
+    });
+
+    await submitAnswersAction(7, { answers, poetId: null });
+
+    expect(mockPost).toHaveBeenCalledWith(
+      `${TEST_API_URL}/api/v1/poem-source/7/answers`,
+      expect.objectContaining({
+        json: { answers, poet_id: null }
       })
     );
   });
@@ -201,7 +219,7 @@ describe("submitAnswersAction", () => {
     });
     mockPostJsonFn.mockRejectedValueOnce(httpError);
 
-    const result = await submitAnswersAction(7, answers);
+    const result = await submitAnswersAction(7, { answers, poetId: null });
 
     expect(result).toEqual({
       success: false,
@@ -209,7 +227,7 @@ describe("submitAnswersAction", () => {
     });
   });
 
-  it("returns fallback error message when HTTPError has no detail", async () => {
+  it("returns generic generation-failed message when HTTPError has no detail", async () => {
     mockCookieStore.get.mockReturnValue({ value: "test-token" });
     const httpError = new HTTPError(new Response(), new Request(TEST_API_URL), {} as never);
     Object.assign(httpError, {
@@ -217,11 +235,11 @@ describe("submitAnswersAction", () => {
     });
     mockPostJsonFn.mockRejectedValueOnce(httpError);
 
-    const result = await submitAnswersAction(7, answers);
+    const result = await submitAnswersAction(7, { answers, poetId: null });
 
     expect(result).toEqual({
       success: false,
-      error: "Failed to submit answers"
+      error: "Generation failed"
     });
   });
 
@@ -229,18 +247,18 @@ describe("submitAnswersAction", () => {
     mockCookieStore.get.mockReturnValue({ value: "test-token" });
     mockPostJsonFn.mockRejectedValueOnce(new Error("Network failure"));
 
-    const result = await submitAnswersAction(7, answers);
+    const result = await submitAnswersAction(7, { answers, poetId: null });
 
     expect(result).toEqual({
       success: false,
-      error: "An error occurred while submitting answers"
+      error: "An error occurred while generating the poem"
     });
   });
 
   it("redirects to signin when access token is missing", async () => {
     mockCookieStore.get.mockReturnValue(undefined);
 
-    await submitAnswersAction(7, answers);
+    await submitAnswersAction(7, { answers, poetId: null });
 
     expect(mockRedirect).toHaveBeenCalledWith("/signin");
   });

@@ -28,3 +28,10 @@ export function tunerFormSchema(t: (key: string) => string) {
 }
 
 export type TunerFormValuesType = z.infer<ReturnType<typeof tunerFormSchema>>;
+
+export const tunerStage1Schema = z.object({
+  answers: z.record(z.string(), z.string().optional()).default({}),
+  poetId: z.number().int().positive().nullable().default(null)
+});
+
+export type TunerStage1ValuesType = z.infer<typeof tunerStage1Schema>;

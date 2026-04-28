@@ -32,8 +32,8 @@ export const ERROR_MESSAGES = {
   CAPTCHA_VALIDATION_FAILED: "Captcha validation failed",
   CHECK_STATUS_FAILED: "Failed to check status",
   INTERNAL_SERVER_ERROR: "Internal server error",
-  SUBMIT_ANSWERS_FAILED: "Failed to submit answers",
-  SUBMIT_ANSWERS_ERROR: "An error occurred while submitting answers"
+  GENERATION_FAILED: "Generation failed",
+  GENERATION_ERROR: "An error occurred while generating the poem"
 } as const;
 
 export const PROCESSING_FAILURE_REASONS = {

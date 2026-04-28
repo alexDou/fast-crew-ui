@@ -71,7 +71,7 @@ describe("useProcessingStatusFetch", () => {
     expect(result.current.questions).toEqual([]);
   });
 
-  it("exposes questions when backend reaches stage_1", async () => {
+  it("exposes questions and poet candidates when backend reaches stage_1", async () => {
     mockJsonFn.mockResolvedValue({
       ready: true,
       status: "stage_1",
@@ -79,6 +79,15 @@ describe("useProcessingStatusFetch", () => {
       questions: [
         { id: "q1", text: "What memory does this image wake up?" },
         { id: "q2", text: "What feeling should guide the poem?" }
+      ],
+      poet_candidates: [
+        {
+          id: 11,
+          name: "Walt Whitman",
+          era: "19th century",
+          known_for: "Free verse",
+          style_markers: ["long line"]
+        }
       ]
     });
 
@@ -94,7 +103,35 @@ describe("useProcessingStatusFetch", () => {
       { id: "q1", text: "What memory does this image wake up?" },
       { id: "q2", text: "What feeling should guide the poem?" }
     ]);
+    expect(result.current.poetCandidates).toEqual([
+      {
+        id: 11,
+        name: "Walt Whitman",
+        era: "19th century",
+        known_for: "Free verse",
+        style_markers: ["long line"]
+      }
+    ]);
     expect(result.current.isPollingEnabled).toBe(false);
+  });
+
+  it("defaults poetCandidates to an empty array when backend omits the field", async () => {
+    mockJsonFn.mockResolvedValue({
+      ready: true,
+      status: "stage_1",
+      poem_source_id: 1,
+      questions: []
+    });
+
+    const { result } = renderHook(() => useProcessingStatusFetch(1), {
+      wrapper: createWrapper()
+    });
+
+    await waitFor(() => {
+      expect(result.current.status).toBe("stage_1");
+    });
+
+    expect(result.current.poetCandidates).toEqual([]);
   });
 
   it("resumes polling after stage_1 when requested", async () => {

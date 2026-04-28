@@ -1,9 +1,10 @@
 import type { BackendProcessingStatusType } from "@/constants/status";
 
+import type { PoetCardType } from "./poet.type";
+
 export interface PoemSourceQuestionType {
   id: string;
   text: string;
-  kind?: string;
 }
 
 export interface PoemSourceStatusResponseType {
@@ -12,6 +13,12 @@ export interface PoemSourceStatusResponseType {
   poem_source_id: number;
   message?: string;
   questions?: PoemSourceQuestionType[];
+  poet_candidates?: PoetCardType[];
+}
+
+export interface PoemSourceAnswerSubmissionRequestType {
+  answers: Record<string, string>;
+  poet_id: number | null;
 }
 
 export interface PoemSourceAnswerSubmissionResponseType {

@@ -33,27 +33,6 @@ vi.mock("@/server/actions/tuner", () => ({
   submitAnswersAction: mockSubmitAnswers
 }));
 
-vi.mock("@/widgets", () => ({
-  PoemDisplay: ({
-    title,
-    poems
-  }: {
-    title: string;
-    poems: Array<{ id: number; poem: string; author_label?: string | null }>;
-  }) => (
-    <div data-testid="poem-display">
-      <h1>{title}</h1>
-      <ul>
-        {poems.map((poem) => (
-          <li key={poem.id} data-label={poem.author_label ?? null}>
-            {poem.poem}
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
-}));
-
 vi.mock("@/ui", () => ({
   Button: ({
     children,
@@ -100,6 +79,7 @@ describe("TunerResult", () => {
     mockProcessingStatus.mockReturnValue({
       status: "stage_1",
       questions: [{ id: "q1", text: "What memory does this image wake up?" }],
+      poetCandidates: [],
       isRetryExhausted: false,
       resumePolling: mockResumePolling
     });
@@ -114,6 +94,7 @@ describe("TunerResult", () => {
     mockProcessingStatus.mockReturnValue({
       status: "stage_1",
       questions: [{ id: "q1", text: "What memory does this image wake up?" }],
+      poetCandidates: [],
       isRetryExhausted: false,
       resumePolling: mockResumePolling
     });
@@ -126,11 +107,12 @@ describe("TunerResult", () => {
 
     const user = userEvent.setup();
     await user.type(screen.getByRole("textbox"), "A summer evening by the sea");
-    await user.click(screen.getByText("workflow.stage1.submit"));
+    await user.click(screen.getByText("form.submit"));
 
     await waitFor(() => {
       expect(mockSubmitAnswers).toHaveBeenCalledWith(42, {
-        q1: "A summer evening by the sea"
+        answers: { q1: "A summer evening by the sea" },
+        poetId: null
       });
     });
     await waitFor(() => {
@@ -143,6 +125,7 @@ describe("TunerResult", () => {
     mockProcessingStatus.mockReturnValue({
       status: "stage_1",
       questions: [{ id: "q1", text: "What memory does this image wake up?" }],
+      poetCandidates: [],
       isRetryExhausted: false,
       resumePolling: mockResumePolling
     });
@@ -152,7 +135,7 @@ describe("TunerResult", () => {
 
     const user = userEvent.setup();
     await user.type(screen.getByRole("textbox"), "something");
-    await user.click(screen.getByText("workflow.stage1.submit"));
+    await user.click(screen.getByText("form.submit"));
 
     await waitFor(() => {
       expect(mockToastError).toHaveBeenCalledWith("error.submitAnswersTitle", {
@@ -174,26 +157,39 @@ describe("TunerResult", () => {
     expect(screen.getByText("workflow.generating.message")).toBeInTheDocument();
   });
 
-  it("renders poems inline through PoemDisplay on complete", () => {
+  it("renders the single poem with the in-the-style-of label when a poet is set", () => {
     mockProcessingStatus.mockReturnValue({
       status: "complete",
       isRetryExhausted: false
     });
     mockResultFetch.mockReturnValue({
-      poems: [
-        { id: 1, poem: "Modern verse", author_label: "Modern Poet" },
-        { id: 2, poem: "Classic verse", author_label: "Classic Poet" }
-      ],
+      poems: [{ id: 1, poem: "Whitman verse", poet_id: 11, poet_name: "Walt Whitman" }],
       isLoading: false,
       isError: false
     });
 
     render(<TunerResult sourceId={42} onReset={onReset} />);
 
-    expect(screen.getByTestId("poem-display")).toBeInTheDocument();
     expect(screen.getByText("workflow.complete.title")).toBeInTheDocument();
-    expect(screen.getByText("Modern verse")).toBeInTheDocument();
-    expect(screen.getByText("Classic verse")).toBeInTheDocument();
+    expect(screen.getByText("result.styleOfPrefix Walt Whitman")).toBeInTheDocument();
+    expect(screen.getByText("Whitman verse")).toBeInTheDocument();
+  });
+
+  it("shows the freestyle label when poet_id is null", () => {
+    mockProcessingStatus.mockReturnValue({
+      status: "complete",
+      isRetryExhausted: false
+    });
+    mockResultFetch.mockReturnValue({
+      poems: [{ id: 2, poem: "A free poem", poet_id: null }],
+      isLoading: false,
+      isError: false
+    });
+
+    render(<TunerResult sourceId={42} onReset={onReset} />);
+
+    expect(screen.getByText("result.freestyle")).toBeInTheDocument();
+    expect(screen.getByText("A free poem")).toBeInTheDocument();
   });
 
   it("shows the generating fallback while poems are still loading on complete", () => {

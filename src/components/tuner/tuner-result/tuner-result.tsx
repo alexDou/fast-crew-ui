@@ -9,8 +9,6 @@ import { useProcessingStatusFetch, useResultFetch } from "@/hooks";
 
 import { PROCESSING_STATUS } from "@/constants/status";
 
-import { PoemDisplay } from "@/widgets";
-
 import { Button } from "@/ui";
 
 import { submitAnswersAction } from "@/server/actions/tuner";
@@ -26,8 +24,14 @@ export function TunerResult({ sourceId, onReset }: TunerResultPropsType) {
   const t = useTranslations("Tuner");
   const [isSubmittingAnswers, setIsSubmittingAnswers] = useState(false);
 
-  const { status, questions, isRetryExhausted, isIndistinctContentFailure, resumePolling } =
-    useProcessingStatusFetch(sourceId);
+  const {
+    status,
+    questions,
+    poetCandidates,
+    isRetryExhausted,
+    isIndistinctContentFailure,
+    resumePolling
+  } = useProcessingStatusFetch(sourceId);
   const {
     poems,
     isLoading: poemsLoading,
@@ -37,10 +41,16 @@ export function TunerResult({ sourceId, onReset }: TunerResultPropsType) {
     status
   });
 
-  const handleSubmitAnswers = async (answers: Record<string, string>) => {
+  const handleSubmitAnswers = async ({
+    answers,
+    poetId
+  }: {
+    answers: Record<string, string>;
+    poetId: number | null;
+  }) => {
     setIsSubmittingAnswers(true);
     try {
-      const result = await submitAnswersAction(sourceId, answers);
+      const result = await submitAnswersAction(sourceId, { answers, poetId });
       if (!result.success) {
         toast.error(t("error.submitAnswersTitle"), {
           description: t("error.submitAnswersMessage")
@@ -70,6 +80,7 @@ export function TunerResult({ sourceId, onReset }: TunerResultPropsType) {
       return (
         <TunerQuestionForm
           questions={questions}
+          poetCandidates={poetCandidates}
           onSubmit={handleSubmitAnswers}
           isSubmitting={isSubmittingAnswers}
         />
@@ -85,7 +96,7 @@ export function TunerResult({ sourceId, onReset }: TunerResultPropsType) {
           </p>
         </div>
       );
-    case PROCESSING_STATUS.COMPLETE:
+    case PROCESSING_STATUS.COMPLETE: {
       if (resultError) {
         return (
           <div className="container flex flex-col items-center justify-center py-16">
@@ -110,14 +121,29 @@ export function TunerResult({ sourceId, onReset }: TunerResultPropsType) {
         );
       }
 
+      const poem = poems[0];
+      const styleLabel =
+        poem.poet_id !== null && poem.poet_name?.trim()
+          ? `${t("result.styleOfPrefix")} ${poem.poet_name}`
+          : t("result.freestyle");
+
       return (
         <section className="container flex flex-col items-center justify-center gap-6 py-16">
-          <PoemDisplay title={t("workflow.complete.title")} poems={poems} />
+          <h1 className="font-[family-name:var(--font-playfair)] font-bold text-2xl text-bento-teal-text">
+            {t("workflow.complete.title")}
+          </h1>
+          <p className="font-medium text-base text-bento-beige-text">{styleLabel}</p>
+          <article className="rounded-base bg-neutral-secondary-medium p-6">
+            <pre className="whitespace-pre-wrap font-serif text-lg text-bento-teal-text">
+              {poem.poem.replace(/\snote:.*$/i, "")}
+            </pre>
+          </article>
           <Button variant="outline" className="mt-6" onClick={onReset}>
             {t("error.tryAgain")}
           </Button>
         </section>
       );
+    }
     case PROCESSING_STATUS.ERROR:
       if (isRetryExhausted) {
         return (

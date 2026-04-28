@@ -16,7 +16,7 @@
     "poetsCrew": {
       "badge": "Crew #1 · Aktiv",
       "title": "Dichter-Crew",
-      "description": "Ein Team von KI-Dichtern liest Ihr Bild und verfasst originelle Gedichte — modern, klassisch und mystisch. Ihr Foto wird in drei unterschiedlichen Stimmen zur Poesie.",
+      "description": "Ein Team von KI-Dichtern liest Ihr Bild und verfasst ein originelles Gedicht in der Stimme eines Dichters Ihrer Wahl — oder ganz frei. Ihr Foto wird zur Poesie.",
       "cta": "Gedicht erstellen"
     },
     "comingSoon": {
@@ -33,7 +33,7 @@
   },
   "Dashboard": {
     "crewTitle": "Dichter-Crew",
-    "crewDescription": "Laden Sie ein erzählerisches Bild hoch — ein Porträt, eine Landschaft, einen besonderen Moment — und ein Team von KI-Dichtern verfasst originelle Verse, inspiriert von dem, was sie sehen. Einer schreibt modern, einer klassisch, und ein dritter antwortet mit einem mystischen Gedicht. Ihr Foto wird zur Poesie.",
+    "crewDescription": "Laden Sie ein erzählerisches Bild hoch — ein Porträt, eine Landschaft, einen besonderen Moment — und KI-Dichter verfassen ein originelles Gedicht. Wählen Sie einen Dichter, dessen Stimme Sie kanalisieren möchten, oder lassen Sie die Crew frei schreiben. Ihr Foto wird zur Poesie.",
     "tunerLink": "Gedicht erstellen",
     "poemsLink": "Meine Gedichte"
   },
@@ -173,7 +173,14 @@
         "label": "Erweitern:",
         "placeholder": "Das Photo wurde.., Das Kind heißt.., Das ist ein Sommer 2026.."
       },
-      "submit": "Inhalt Abgeben"
+      "submit": "Gedicht erstellen"
+    },
+    "poetCards": {
+      "title": "Dichter wählen (optional)",
+      "freestyle": {
+        "title": "Frei schreiben",
+        "description": "Lassen Sie die KI ohne Nachahmung eines bestimmten Dichters schreiben."
+      }
     },
     "workflow": {
       "processing": {
@@ -183,29 +190,18 @@
         "title": "Wir haben noch ein paar Fragen, bevor das Gedicht ankommt.",
         "description": "Beantworten Sie die Fragen unten, damit das Gedicht Ihrer Erinnerung, Stimmung und den wichtigen Details folgen kann.",
         "questionLabel": "Frage {index}",
-        "answerPlaceholder": "Schreiben Sie Ihre Antwort hier",
-        "submit": "Antworten senden",
-        "submitting": "Antworten werden gesendet..."
+        "answerPlaceholder": "Schreiben Sie Ihre Antwort hier"
       },
       "generating": {
         "message": "Der Atem der Winde fügt Worte zusammen."
       },
       "complete": {
-        "title": "Ihre Gedichte sind da"
+        "title": "Ihr Gedicht ist da"
       }
     },
     "result": {
-      "processing": {
-        "title": "Wir bearbeiten Ihre Eingaben..",
-        "message": "Bitte, schliesen Sie nicht diese Seite während der Bearbeitung. Das muss nicht lange dauern"
-      },
-      "success": {
-        "title": "Bearbeitung wurde abgeschlossen!",
-        "message": "Wir haben erfolgreich einige nette Gedichte für Sie generiert"
-      },
-      "otherPoems": "Andere Gedichte",
-      "alternative": "Alternative",
-      "criticChoice": "Kritikerwahl"
+      "styleOfPrefix": "Im Stil von",
+      "freestyle": "Frei geschrieben"
     }
   }
 }

@@ -16,7 +16,7 @@
     "poetsCrew": {
       "badge": "Crew #1 · Active",
       "title": "Poets Crew",
-      "description": "A team of AI poets reads your image and writes original poems — modern, classical, and mystical. Your photo becomes poetry in three distinct voices.",
+      "description": "A team of AI poets reads your image and writes an original poem in the voice of a poet you choose — or in their own free style. Your photo becomes poetry.",
       "cta": "Create a Poem"
     },
     "comingSoon": {
@@ -33,7 +33,7 @@
   },
   "Dashboard": {
     "crewTitle": "Poets Crew",
-    "crewDescription": "Upload a story-telling image — a portrait, a landscape, a candid moment — and a team of AI poets will craft original verse inspired by what they see. One writes in a modern voice, one in a classical voice, and one answers with a mystical poem. Your photo becomes poetry.",
+    "crewDescription": "Upload a story-telling image — a portrait, a landscape, a candid moment — and AI poets will craft an original poem inspired by what they see. Pick a poet to channel, or let the crew write in free style. Your photo becomes poetry.",
     "tunerLink": "Create a poem",
     "poemsLink": "My poems"
   },
@@ -173,7 +173,14 @@
         "label": "Enhance:",
         "placeholder": "The photo was taken in.., The child name is.., This is a summer 2026.."
       },
-      "submit": "Submit the content"
+      "submit": "Generate poem"
+    },
+    "poetCards": {
+      "title": "Choose a poet (optional)",
+      "freestyle": {
+        "title": "Generate in free style",
+        "description": "Let the AI compose without imitating any specific poet."
+      }
     },
     "workflow": {
       "processing": {
@@ -183,29 +190,18 @@
         "title": "We have a few questions before the poem arrives.",
         "description": "Answer the questions below so the poem can follow the memory, mood, and details you want to keep.",
         "questionLabel": "Question {index}",
-        "answerPlaceholder": "Write your answer here",
-        "submit": "Send answers",
-        "submitting": "Sending answers..."
+        "answerPlaceholder": "Write your answer here"
       },
       "generating": {
         "message": "The breath of winds put words together."
       },
       "complete": {
-        "title": "Your poems have arrived"
+        "title": "Your poem has arrived"
       }
     },
     "result": {
-      "processing": {
-        "title": "We are processing your file..",
-        "message": "Please, do not close on navigate away from this page. That should not take long"
-      },
-      "success": {
-        "title": "Processing has been completed!",
-        "message": "We have successfully generated some nice poems for you"
-      },
-      "otherPoems": "Other poems",
-      "alternative": "Alternative",
-      "criticChoice": "Critic's choice"
+      "styleOfPrefix": "In the style of",
+      "freestyle": "Free style"
     }
   }
 }

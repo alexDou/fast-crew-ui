@@ -6,11 +6,19 @@ import { useTranslations } from "next-intl";
 
 import { Button } from "@/ui";
 
-import type { PoemSourceQuestionType } from "@/types";
+import type { PoemSourceQuestionType, PoetCardType } from "@/types";
+
+import { TunerPoetCards } from "../tuner-poet-cards";
+
+export interface TunerQuestionFormSubmitPayload {
+  answers: Record<string, string>;
+  poetId: number | null;
+}
 
 interface TunerQuestionFormPropsType {
   questions: PoemSourceQuestionType[];
-  onSubmit: (answers: Record<string, string>) => Promise<void> | void;
+  poetCandidates: PoetCardType[];
+  onSubmit: (payload: TunerQuestionFormSubmitPayload) => Promise<void> | void;
   isSubmitting?: boolean;
 }
 
@@ -20,6 +28,7 @@ function buildInitialAnswers(questions: PoemSourceQuestionType[]) {
 
 export function TunerQuestionForm({
   questions,
+  poetCandidates,
   onSubmit,
   isSubmitting = false
 }: TunerQuestionFormPropsType) {
@@ -27,12 +36,13 @@ export function TunerQuestionForm({
   const [answers, setAnswers] = useState<Record<string, string>>(() =>
     buildInitialAnswers(questions)
   );
+  const [poetId, setPoetId] = useState<number | null>(null);
 
   const orderedQuestions = useMemo(() => questions, [questions]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await onSubmit(answers);
+    await onSubmit({ answers, poetId });
   };
 
   return (
@@ -43,40 +53,43 @@ export function TunerQuestionForm({
           <p className="text-bento-beige-muted">{t("workflow.stage1.description")}</p>
         </div>
 
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          {orderedQuestions.map((question, index) => {
-            const answerId = `question-${question.id}`;
+        <form className="space-y-8" onSubmit={handleSubmit}>
+          <TunerPoetCards candidates={poetCandidates} value={poetId} onChange={setPoetId} />
 
-            return (
-              <div key={question.id} className="space-y-3">
-                <label
-                  htmlFor={answerId}
-                  className="block font-medium text-bento-beige-text text-sm"
-                >
-                  {t("workflow.stage1.questionLabel", { index: index + 1 })}
-                </label>
-                <p className="text-base text-bento-beige-text">{question.text}</p>
-                <textarea
-                  id={answerId}
-                  value={answers[question.id] ?? ""}
-                  onChange={(event) => {
-                    setAnswers((currentAnswers) => ({
-                      ...currentAnswers,
-                      [question.id]: event.target.value
-                    }));
-                  }}
-                  placeholder={t("workflow.stage1.answerPlaceholder")}
-                  className="min-h-32 w-full rounded-md border border-input bg-background px-3 py-3 text-base shadow-xs outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
-                  required
-                  disabled={isSubmitting}
-                />
-              </div>
-            );
-          })}
+          <div className="space-y-6">
+            {orderedQuestions.map((question, index) => {
+              const answerId = `question-${question.id}`;
+
+              return (
+                <div key={question.id} className="space-y-3">
+                  <label
+                    htmlFor={answerId}
+                    className="block font-medium text-bento-beige-text text-sm"
+                  >
+                    {t("workflow.stage1.questionLabel", { index: index + 1 })}
+                  </label>
+                  <p className="text-base text-bento-beige-text">{question.text}</p>
+                  <textarea
+                    id={answerId}
+                    value={answers[question.id] ?? ""}
+                    onChange={(event) => {
+                      setAnswers((currentAnswers) => ({
+                        ...currentAnswers,
+                        [question.id]: event.target.value
+                      }));
+                    }}
+                    placeholder={t("workflow.stage1.answerPlaceholder")}
+                    className="min-h-32 w-full rounded-md border border-input bg-background px-3 py-3 text-base shadow-xs outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled={isSubmitting}
+                  />
+                </div>
+              );
+            })}
+          </div>
 
           <div className="flex justify-center">
             <Button type="submit" disabled={isSubmitting} className="min-w-56">
-              {isSubmitting ? t("workflow.stage1.submitting") : t("workflow.stage1.submit")}
+              {t("form.submit")}
             </Button>
           </div>
         </form>
