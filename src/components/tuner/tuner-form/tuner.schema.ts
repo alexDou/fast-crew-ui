@@ -1,6 +1,6 @@
-import { file, string, z } from "zod";
+import { file, number, record, string, z } from "zod";
 
-export function tunerFormSchema(t: (key: string) => string) {
+export function tunerUploadSchema(t: (key: string) => string) {
   return z.object({
     file: file({ message: t("error.fileType") })
       .max(1e6, { message: t("error.fileSize") })
@@ -13,4 +13,19 @@ export function tunerFormSchema(t: (key: string) => string) {
   });
 }
 
-export type TunerFormValuesType = z.infer<ReturnType<typeof tunerFormSchema>>;
+export type TunerUploadValuesType = z.infer<ReturnType<typeof tunerUploadSchema>>;
+
+export function tunerStage1Schema() {
+  return z.object({
+    poetId: number().int().positive().nullable(),
+    answers: record(string(), string())
+  });
+}
+
+export type TunerStage1ValuesType = z.infer<ReturnType<typeof tunerStage1Schema>>;
+
+/** @deprecated Use tunerUploadSchema — kept for existing imports. */
+export const tunerFormSchema = tunerUploadSchema;
+
+/** @deprecated Use TunerUploadValuesType */
+export type TunerFormValuesType = TunerUploadValuesType;

@@ -45,8 +45,8 @@ describe("PoemDetailPage", () => {
 
   it("renders poems with PoemDisplay component", async () => {
     mockGetPoemsBySourceId.mockResolvedValue([
-      { id: 1, poem: "A poem", critic_choice: true },
-      { id: 2, poem: "Another poem", critic_choice: false }
+      { id: 1, poem: "A poem", poet_id: 11 },
+      { id: 2, poem: "Another poem", poet_id: null }
     ]);
 
     const page = await PoemDetailPage({ params });
@@ -57,7 +57,7 @@ describe("PoemDetailPage", () => {
   });
 
   it("renders back link to poems list", async () => {
-    mockGetPoemsBySourceId.mockResolvedValue([{ id: 1, poem: "A poem", critic_choice: true }]);
+    mockGetPoemsBySourceId.mockResolvedValue([{ id: 1, poem: "A poem", poet_id: null }]);
 
     const page = await PoemDetailPage({ params });
     render(page);

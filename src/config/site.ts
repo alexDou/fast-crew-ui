@@ -1,5 +1,3 @@
-import { de } from "date-fns/locale";
-
 import { DEFAULT_LOCALE } from "@/constants/i18n";
 import type { SiteConfigType } from "@/types/site-config.type";
 import { env } from "@/env";

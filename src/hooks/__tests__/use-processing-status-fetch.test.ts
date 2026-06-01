@@ -32,6 +32,8 @@ import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 
+import { POEM_SOURCE_STATUS } from "@/constants/status";
+
 import { useProcessingStatusFetch } from "@/hooks/use-processing-status-fetch";
 
 function createWrapper() {
@@ -54,75 +56,68 @@ beforeEach(() => {
 
 describe("useProcessingStatusFetch", () => {
   it("returns processing status while polling", async () => {
-    mockJsonFn.mockResolvedValue({ ready: false, status: "processing", poem_source_id: 1 });
+    mockJsonFn.mockResolvedValue({
+      ready: false,
+      status: POEM_SOURCE_STATUS.PROCESSING,
+      poem_source_id: 1,
+      questions: [],
+      poet_candidates: []
+    });
 
     const { result } = renderHook(() => useProcessingStatusFetch(1), {
       wrapper: createWrapper()
     });
 
     await waitFor(() => {
-      expect(result.current.status).toBe("processing");
+      expect(result.current.status).toBe(POEM_SOURCE_STATUS.PROCESSING);
     });
-    expect(result.current.isError).toBe(false);
-    expect(result.current.isRetryExhausted).toBe(false);
   });
 
-  it("returns success status and stops polling", async () => {
-    mockJsonFn.mockResolvedValue({ ready: true, status: "success", poem_source_id: 1 });
+  it("returns stage_1 questions and poet candidates", async () => {
+    mockJsonFn.mockResolvedValue({
+      ready: true,
+      status: POEM_SOURCE_STATUS.STAGE_1,
+      poem_source_id: 1,
+      questions: [{ id: "q1", text: "Mood?" }],
+      poet_candidates: [
+        {
+          id: 11,
+          name: "Walt Whitman",
+          era: "19th century",
+          known_for: "Free verse",
+          style_markers: ["long line"]
+        }
+      ]
+    });
 
     const { result } = renderHook(() => useProcessingStatusFetch(1), {
       wrapper: createWrapper()
     });
 
     await waitFor(() => {
-      expect(result.current.status).toBe("success");
+      expect(result.current.status).toBe(POEM_SOURCE_STATUS.STAGE_1);
+      expect(result.current.questions).toHaveLength(1);
+      expect(result.current.poetCandidates).toHaveLength(1);
     });
-    expect(result.current.isError).toBe(false);
   });
 
   it("returns error status when API reports error", async () => {
-    mockJsonFn.mockResolvedValue({ ready: true, status: "error", poem_source_id: 1 });
+    mockJsonFn.mockResolvedValue({
+      ready: true,
+      status: POEM_SOURCE_STATUS.ERROR,
+      poem_source_id: 1,
+      questions: [],
+      poet_candidates: [],
+      message: "indistinct content"
+    });
 
     const { result } = renderHook(() => useProcessingStatusFetch(1), {
       wrapper: createWrapper()
     });
 
     await waitFor(() => {
-      expect(result.current.status).toBe("error");
+      expect(result.current.status).toBe(POEM_SOURCE_STATUS.ERROR);
       expect(result.current.isError).toBe(true);
     });
-    expect(result.current.isRetryExhausted).toBe(false);
-  });
-
-  it("shows toast and sets error status when retries exhausted", async () => {
-    mockJsonFn.mockRejectedValue(new Error("Server error"));
-
-    const { result } = renderHook(() => useProcessingStatusFetch(1), {
-      wrapper: createWrapper()
-    });
-
-    await waitFor(() => {
-      expect(result.current.isError).toBe(true);
-    });
-
-    expect(result.current.status).toBe("error");
-    expect(result.current.isRetryExhausted).toBe(true);
-    expect(mockToastError).toHaveBeenCalledWith("error.retryExhaustedTitle", {
-      description: "error.retryExhaustedMessage"
-    });
-  });
-
-  it("does not show toast on successful response", async () => {
-    mockJsonFn.mockResolvedValue({ ready: true, status: "success", poem_source_id: 1 });
-
-    const { result } = renderHook(() => useProcessingStatusFetch(1), {
-      wrapper: createWrapper()
-    });
-
-    await waitFor(() => {
-      expect(result.current.status).toBe("success");
-    });
-
-    expect(mockToastError).not.toHaveBeenCalled();
   });
 });

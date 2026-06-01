@@ -88,8 +88,7 @@
   },
   "PoemDisplay": {
     "otherPoems": "Other poems",
-    "alternative": "Alternative",
-    "criticChoice": "Critic's choice"
+    "alternative": "Alternative"
   },
   "Tuner": {
     "title": "Tuner",
@@ -120,7 +119,18 @@
         "label": "Enhance:",
         "placeholder": "The photo was taken in.., The child name is.., This is a summer 2026.."
       },
-      "submit": "Submit the content"
+      "uploadSubmit": "Upload image",
+      "submit": "Generate poem"
+    },
+    "poetCards": {
+      "title": "Choose a poet (optional)",
+      "freestyle": {
+        "title": "Generate in free style",
+        "description": "Let the poem follow the scene without imitating a named poet."
+      }
+    },
+    "questions": {
+      "title": "A few optional questions"
     },
     "result": {
       "processing": {
@@ -128,12 +138,10 @@
         "message": "Please, do not close on navigate away from this page. That should not take long"
       },
       "success": {
-        "title": "Processing has been completed!",
-        "message": "We have successfully generated some nice poems for you"
+        "title": "Your poem is ready"
       },
-      "otherPoems": "Other poems",
-      "alternative": "Alternative",
-      "criticChoice": "Critic's choice"
+      "styleOfPrefix": "In the style of",
+      "freestyle": "Free style"
     }
   }
 }

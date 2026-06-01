@@ -7,7 +7,8 @@ export const API_ENDPOINTS = {
   POEM_SOURCE: "/api/v1/poem-source",
   POEM_SOURCES: "/api/v1/poem-sources",
   poems: (sourceId: number | string) => `/api/v1/poems/${sourceId}`,
-  poemSourceStatus: (sourceId: number | string) => `/api/v1/poem-source/${sourceId}/ready`
+  poemSourceStatus: (sourceId: number | string) => `/api/v1/poem-source/${sourceId}/ready`,
+  poemSourceAnswers: (sourceId: number | string) => `/api/v1/poem-source/${sourceId}/answers`
 } as const;
 
 export const BFF_ENDPOINTS = {

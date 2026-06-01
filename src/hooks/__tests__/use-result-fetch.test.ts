@@ -32,7 +32,7 @@ import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 
-import { PROCESSING_STATUS } from "@/constants/status";
+import { POEM_SOURCE_STATUS } from "@/constants/status";
 
 import { useResultFetch } from "@/hooks/use-result-fetch";
 
@@ -55,114 +55,46 @@ beforeEach(() => {
 });
 
 describe("useResultFetch", () => {
-  it("does not fetch when status is not success", async () => {
-    const { result } = renderHook(
-      () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.PROCESSING }),
+  it("does not fetch poems until status is complete", () => {
+    renderHook(
+      () =>
+        useResultFetch({
+          sourceId: 1,
+          status: POEM_SOURCE_STATUS.PROCESSING
+        }),
       { wrapper: createWrapper() }
     );
 
-    expect(result.current.poems).toEqual([]);
-    expect(result.current.isLoading).toBe(false);
-    expect(result.current.isError).toBe(false);
     expect(mockJsonFn).not.toHaveBeenCalled();
   });
 
-  it("fetches poems when status is success", async () => {
-    const mockPoems = [
-      { id: 1, poem: "Roses are red", critic_choice: false },
-      { id: 2, poem: "Violets are blue", critic_choice: true }
-    ];
-    mockJsonFn.mockResolvedValue(mockPoems);
+  it("returns a single poem with derived poet_name", async () => {
+    mockJsonFn.mockResolvedValue([
+      { id: 1, poem: "Roses are red", poet_id: 11 },
+      { id: 2, poem: "ignored", poet_id: null }
+    ]);
 
     const { result } = renderHook(
-      () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.SUCCESS }),
+      () =>
+        useResultFetch({
+          sourceId: 1,
+          status: POEM_SOURCE_STATUS.COMPLETE,
+          poetCandidates: [
+            {
+              id: 11,
+              name: "Walt Whitman",
+              era: "19th century",
+              known_for: "Free verse",
+              style_markers: []
+            }
+          ]
+        }),
       { wrapper: createWrapper() }
     );
 
     await waitFor(() => {
-      expect(result.current.poems).toEqual(mockPoems);
+      expect(result.current.poem?.poet_name).toBe("Walt Whitman");
+      expect(result.current.poem).not.toHaveProperty("kind");
     });
-    expect(result.current.isError).toBe(false);
-  });
-
-  it("sets active poem to critic's choice when available", async () => {
-    const mockPoems = [
-      { id: 1, poem: "Roses are red", critic_choice: false },
-      { id: 2, poem: "Violets are blue", critic_choice: true }
-    ];
-    mockJsonFn.mockResolvedValue(mockPoems);
-
-    const { result } = renderHook(
-      () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.SUCCESS }),
-      { wrapper: createWrapper() }
-    );
-
-    await waitFor(() => {
-      expect(result.current.activePoem).toEqual(mockPoems[1]);
-    });
-  });
-
-  it("falls back to first poem when no critic's choice", async () => {
-    const mockPoems = [
-      { id: 1, poem: "Roses are red", critic_choice: false },
-      { id: 2, poem: "Violets are blue", critic_choice: false }
-    ];
-    mockJsonFn.mockResolvedValue(mockPoems);
-
-    const { result } = renderHook(
-      () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.SUCCESS }),
-      { wrapper: createWrapper() }
-    );
-
-    await waitFor(() => {
-      expect(result.current.activePoem).toEqual(mockPoems[0]);
-    });
-  });
-
-  it("handles empty poems array", async () => {
-    mockJsonFn.mockResolvedValue([]);
-
-    const { result } = renderHook(
-      () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.SUCCESS }),
-      { wrapper: createWrapper() }
-    );
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
-    });
-    expect(result.current.poems).toEqual([]);
-    expect(result.current.activePoem).toBeNull();
-  });
-
-  it("shows toast and sets error when retries exhausted", async () => {
-    mockJsonFn.mockRejectedValue(new Error("Server error"));
-
-    const { result } = renderHook(
-      () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.SUCCESS }),
-      { wrapper: createWrapper() }
-    );
-
-    await waitFor(() => {
-      expect(result.current.isError).toBe(true);
-    });
-
-    expect(mockToastError).toHaveBeenCalledWith("error.retryExhaustedTitle", {
-      description: "error.retryExhaustedMessage"
-    });
-  });
-
-  it("does not show toast on successful fetch", async () => {
-    mockJsonFn.mockResolvedValue([{ id: 1, poem: "Test", critic_choice: false }]);
-
-    const { result } = renderHook(
-      () => useResultFetch({ sourceId: 1, status: PROCESSING_STATUS.SUCCESS }),
-      { wrapper: createWrapper() }
-    );
-
-    await waitFor(() => {
-      expect(result.current.poems.length).toBe(1);
-    });
-
-    expect(mockToastError).not.toHaveBeenCalled();
   });
 });

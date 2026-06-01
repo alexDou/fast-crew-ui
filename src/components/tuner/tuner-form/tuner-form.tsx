@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Image from "next/image";
 
 import { Upload } from "lucide-react";
@@ -9,7 +9,7 @@ import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { Balancer } from "react-wrap-balancer";
 
-import { PROCESSING_STATUS } from "@/constants/status";
+import { TUNER_UI_STATUS } from "@/constants/status";
 
 import { useSourceCreate } from "@/hooks";
 
@@ -26,16 +26,16 @@ import {
   Input
 } from "@/ui";
 
-import { type TunerFormValuesType, tunerFormSchema } from "./tuner.schema";
+import { tunerUploadSchema, type TunerUploadValuesType } from "./tuner.schema";
 
-export function TunerForm() {
+function TunerFormContent() {
   const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(null);
   const t = useTranslations("Tuner");
 
   const { sourceCreate, processing, sourceId } = useSourceCreate();
 
-  const form = useForm<TunerFormValuesType>({
-    resolver: zodResolver(tunerFormSchema(t)),
+  const form = useForm<TunerUploadValuesType>({
+    resolver: zodResolver(tunerUploadSchema(t)),
     defaultValues: { file: void 0, enhance: "" }
   });
   const { control, handleSubmit } = form;
@@ -43,6 +43,9 @@ export function TunerForm() {
   const onSubmit = handleSubmit(async ({ file, enhance }) => {
     await sourceCreate({ file, enhance });
   });
+
+  const showUploadForm = processing === TUNER_UI_STATUS.IDLE;
+  const showWorkflow = sourceId !== null && processing !== TUNER_UI_STATUS.IDLE;
 
   return (
     <div className="container flex flex-col items-center justify-center gap-6">
@@ -57,7 +60,7 @@ export function TunerForm() {
           />
         ) : null}
       </section>
-      {processing === PROCESSING_STATUS.IDLE && (
+      {showUploadForm && (
         <section className="t-16 lg:w-1/3">
           <Form {...form}>
             <form onSubmit={onSubmit} className="w-full space-y-5">
@@ -117,16 +120,22 @@ export function TunerForm() {
                 )}
               />
               <Button type="submit" className="w-full">
-                {t("form.submit")}
+                {t("form.uploadSubmit")}
               </Button>
             </form>
           </Form>
         </section>
       )}
-      {processing === PROCESSING_STATUS.PROCESSING && sourceId && (
-        <TunerResult sourceId={sourceId} />
-      )}
-      {processing === PROCESSING_STATUS.ERROR && <ErrorReport errorKey="file.network" />}
+      {showWorkflow && sourceId && <TunerResult sourceId={sourceId} />}
+      {processing === TUNER_UI_STATUS.ERROR && <ErrorReport errorKey="file.network" />}
     </div>
+  );
+}
+
+export function TunerForm() {
+  return (
+    <Suspense fallback={null}>
+      <TunerFormContent />
+    </Suspense>
   );
 }

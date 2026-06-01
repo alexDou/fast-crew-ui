@@ -1,34 +1,38 @@
 import { useEffect } from "react";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ky from "ky";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 import { BFF_ENDPOINTS } from "@/constants/api";
 import { QUERY_KEYS } from "@/constants/query-keys";
-import { PROCESSING_STATUS, type ProcessingStatusType } from "@/constants/status";
+import { POEM_SOURCE_STATUS } from "@/constants/status";
 
-interface StatusResponse {
-  ready: boolean;
-  status: ProcessingStatusType;
-  poem_source_id: number;
-}
+import type { PoemSourceStatusResponseType } from "@/types";
+
+const TERMINAL_STATUSES = new Set<string>([
+  POEM_SOURCE_STATUS.STAGE_1,
+  POEM_SOURCE_STATUS.COMPLETE,
+  POEM_SOURCE_STATUS.ERROR
+]);
 
 export function useProcessingStatusFetch(sourceId: number) {
   const t = useTranslations("Tuner");
+  const queryClient = useQueryClient();
 
-  const { data, isLoading, isError } = useQuery<StatusResponse>({
+  const { data, isLoading, isError } = useQuery<PoemSourceStatusResponseType>({
     queryKey: [QUERY_KEYS.POEM_SOURCE_STATUS, sourceId],
-    queryFn: () => ky.get(BFF_ENDPOINTS.tunerStatus(sourceId)).json<StatusResponse>(),
+    queryFn: () => ky.get(BFF_ENDPOINTS.tunerStatus(sourceId)).json<PoemSourceStatusResponseType>(),
     refetchInterval: (query) => {
-      // Stop polling if retries exhausted (query in error state)
-      if (query.state.status === "error") return false;
-      // Stop polling if status is success or error
+      if (query.state.status === "error") {
+        return false;
+      }
       const status = query.state.data?.status;
-      return status === PROCESSING_STATUS.SUCCESS || status === PROCESSING_STATUS.ERROR
-        ? false
-        : 5000;
+      if (!status || TERMINAL_STATUSES.has(status)) {
+        return false;
+      }
+      return 5000;
     },
     refetchIntervalInBackground: false,
     retry: 3
@@ -42,10 +46,21 @@ export function useProcessingStatusFetch(sourceId: number) {
     }
   }, [isError, t]);
 
+  const status = isError ? POEM_SOURCE_STATUS.ERROR : data?.status || POEM_SOURCE_STATUS.PROCESSING;
+
+  const invalidateStatus = () => {
+    void queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.POEM_SOURCE_STATUS, sourceId] });
+  };
+
   return {
-    status: isError ? PROCESSING_STATUS.ERROR : data?.status || PROCESSING_STATUS.PROCESSING,
+    status,
+    ready: data?.ready ?? false,
+    questions: data?.questions ?? [],
+    poetCandidates: data?.poet_candidates ?? [],
+    message: data?.message ?? null,
     isLoading,
-    isError: isError || data?.status === PROCESSING_STATUS.ERROR,
-    isRetryExhausted: isError
+    isError: isError || status === POEM_SOURCE_STATUS.ERROR,
+    isRetryExhausted: isError,
+    refetch: invalidateStatus
   };
 }

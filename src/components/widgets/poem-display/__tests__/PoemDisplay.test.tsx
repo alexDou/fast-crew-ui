@@ -1,57 +1,43 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+
+import { PoemDisplay } from "../PoemDisplay";
 
 vi.mock("next-intl", () => ({
   useTranslations: () => (key: string) => key
 }));
 
-import { PoemDisplay } from "../PoemDisplay";
-
 describe("PoemDisplay", () => {
-  const poems = [
-    { id: 1, poem: "Roses are red", critic_choice: false },
-    { id: 2, poem: "Violets are blue", critic_choice: true },
-    { id: 3, poem: "Sugar is sweet", critic_choice: false }
-  ];
+  it("renders a single poem without variant tabs", () => {
+    render(<PoemDisplay poems={[{ id: 1, poem: "A single poem", poet_id: null }]} />);
 
-  it("renders the critic's choice poem as active by default", () => {
-    render(<PoemDisplay poems={poems} />);
-
-    expect(screen.getByText("Violets are blue")).toBeInTheDocument();
-  });
-
-  it("renders first poem when no critic's choice", () => {
-    const noCritic = poems.map((p) => ({ ...p, critic_choice: false }));
-    render(<PoemDisplay poems={noCritic} />);
-
-    expect(screen.getByText("Roses are red")).toBeInTheDocument();
-  });
-
-  it("renders poem selector buttons when multiple poems", () => {
-    render(<PoemDisplay poems={poems} />);
-
-    expect(screen.getByText("criticChoice")).toBeInTheDocument();
-    expect(screen.getByText("alternative 1")).toBeInTheDocument();
-    expect(screen.getByText("alternative 3")).toBeInTheDocument();
-  });
-
-  it("switches active poem on button click", () => {
-    render(<PoemDisplay poems={poems} />);
-
-    fireEvent.click(screen.getByText("alternative 1"));
-    expect(screen.getByText("Roses are red")).toBeInTheDocument();
-  });
-
-  it("does not render selector when single poem", () => {
-    render(<PoemDisplay poems={[poems[0]]} />);
-
-    expect(screen.getByText("Roses are red")).toBeInTheDocument();
+    expect(screen.getByText("A single poem")).toBeInTheDocument();
     expect(screen.queryByText("otherPoems")).not.toBeInTheDocument();
   });
 
-  it("returns null for empty poems array", () => {
-    const { container } = render(<PoemDisplay poems={[]} />);
+  it("renders first poem when multiple poems exist", () => {
+    const poems = [
+      { id: 1, poem: "First poem", poet_id: null },
+      { id: 2, poem: "Second poem", poet_id: null }
+    ];
 
-    expect(container.innerHTML).toBe("");
+    render(<PoemDisplay poems={poems} />);
+
+    expect(screen.getByText("First poem")).toBeInTheDocument();
+    expect(screen.getByText("otherPoems")).toBeInTheDocument();
+  });
+
+  it("switches active poem on tab click", async () => {
+    const user = userEvent.setup();
+    const poems = [
+      { id: 1, poem: "First poem", poet_id: null },
+      { id: 2, poem: "Second poem", poet_id: null }
+    ];
+
+    render(<PoemDisplay poems={poems} />);
+
+    await user.click(screen.getByRole("button", { name: "alternative 2" }));
+    expect(screen.getByText("Second poem")).toBeInTheDocument();
   });
 });

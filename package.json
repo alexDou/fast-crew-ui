@@ -25,16 +25,12 @@
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "typecheck": "tsc --noEmit",
+    "check:all": "yarn typecheck && yarn lint:ci && yarn test:run",
     "commit": "cz"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "eslint --fix",
-      "biome format --write"
-    ],
-    "*.{css,md,json}": [
-      "biome format --write"
-    ]
+    "*.{ts,tsx,js,jsx}": ["eslint --fix", "biome format --write"],
+    "*.{css,md,json}": ["biome format --write"]
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -117,10 +113,6 @@
     "url": ""
   },
   "license": "MIT",
-  "keywords": [
-    "Ai image processing",
-    "AI image",
-    "crewai"
-  ],
+  "keywords": ["Ai image processing", "AI image", "crewai"],
   "packageManager": "yarn@4.12.0"
 }

@@ -1,5 +1,6 @@
 export interface PoemType {
   id: number;
   poem: string;
-  critic_choice: boolean;
+  poet_id: number | null;
+  poet_name?: string;
 }

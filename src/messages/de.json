@@ -88,8 +88,7 @@
   },
   "PoemDisplay": {
     "otherPoems": "Andere Gedichte",
-    "alternative": "Alternative",
-    "criticChoice": "Kritikerwahl"
+    "alternative": "Alternative"
   },
   "Tuner": {
     "title": "Tuner",
@@ -120,7 +119,18 @@
         "label": "Erweitern:",
         "placeholder": "Das Photo wurde.., Das Kind heißt.., Das ist ein Sommer 2026.."
       },
-      "submit": "Inhalt Abgeben"
+      "uploadSubmit": "Bild hochladen",
+      "submit": "Gedicht erstellen"
+    },
+    "poetCards": {
+      "title": "Dichter wählen (optional)",
+      "freestyle": {
+        "title": "Frei gestalten",
+        "description": "Das Gedicht folgt der Szene, ohne einen bestimmten Dichter nachzuahmen."
+      }
+    },
+    "questions": {
+      "title": "Ein paar optionale Fragen"
     },
     "result": {
       "processing": {
@@ -128,12 +138,10 @@
         "message": "Bitte, schliesen Sie nicht diese Seite während der Bearbeitung. Das muss nicht lange dauern"
       },
       "success": {
-        "title": "Bearbeitung wurde abgeschlossen!",
-        "message": "Wir haben erfolgreich einige nette Gedichte für Sie generiert"
+        "title": "Ihr Gedicht ist fertig"
       },
-      "otherPoems": "Andere Gedichte",
-      "alternative": "Alternative",
-      "criticChoice": "Kritikerwahl"
+      "styleOfPrefix": "Im Stil von",
+      "freestyle": "Freier Stil"
     }
   }
 }

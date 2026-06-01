@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 
 import { useQuery } from "@tanstack/react-query";
 import ky from "ky";
@@ -7,18 +7,18 @@ import { toast } from "sonner";
 
 import { BFF_ENDPOINTS } from "@/constants/api";
 import { QUERY_KEYS } from "@/constants/query-keys";
-import { PROCESSING_STATUS, type ProcessingStatusType } from "@/constants/status";
+import { POEM_SOURCE_STATUS } from "@/constants/status";
 
-import type { PoemType } from "@/types";
+import type { PoemType, PoetCardType } from "@/types";
 
 interface UseResultFetchProps {
   sourceId: number;
-  status: ProcessingStatusType;
+  status: string;
+  poetCandidates?: PoetCardType[];
 }
 
-export function useResultFetch({ sourceId, status }: UseResultFetchProps) {
+export function useResultFetch({ sourceId, status, poetCandidates = [] }: UseResultFetchProps) {
   const t = useTranslations("Tuner");
-  const [activePoemId, setActivePoemId] = useState<number | null>(null);
 
   const {
     data: poems = [],
@@ -27,7 +27,7 @@ export function useResultFetch({ sourceId, status }: UseResultFetchProps) {
   } = useQuery<PoemType[]>({
     queryKey: [QUERY_KEYS.POEMS, sourceId],
     queryFn: () => ky.get(BFF_ENDPOINTS.tunerPoems(sourceId)).json<PoemType[]>(),
-    enabled: status === PROCESSING_STATUS.SUCCESS,
+    enabled: status === POEM_SOURCE_STATUS.COMPLETE,
     retry: 4,
     staleTime: Infinity
   });
@@ -40,19 +40,29 @@ export function useResultFetch({ sourceId, status }: UseResultFetchProps) {
     }
   }, [isError, t]);
 
-  // Set initial active poem when poems are loaded
-  if (poems.length > 0 && activePoemId === null) {
-    // Find critic's choice or use first poem
-    const criticChoice = poems.find((p) => p.critic_choice);
-    setActivePoemId(criticChoice ? criticChoice.id : poems[0].id);
-  }
+  const poem = useMemo(() => {
+    const first = poems[0];
+    if (!first) {
+      return null;
+    }
 
-  const activePoem = poems.find((p) => p.id === activePoemId) || null;
+    if (first.poet_name) {
+      return first;
+    }
+
+    if (first.poet_id === null) {
+      return { ...first, poet_name: undefined };
+    }
+
+    const matchedPoet = poetCandidates.find((candidate) => candidate.id === first.poet_id);
+    return {
+      ...first,
+      poet_name: matchedPoet?.name
+    };
+  }, [poems, poetCandidates]);
 
   return {
-    poems,
-    activePoem,
-    setActivePoemId,
+    poem,
     isLoading,
     isError
   };

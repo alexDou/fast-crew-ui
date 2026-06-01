@@ -9,6 +9,8 @@ import { API_ENDPOINTS, ERROR_MESSAGES } from "@/constants/api";
 
 import { routesBook } from "@/lib/routes-book";
 
+import type { PoemSourceAnswerSubmissionType } from "@/types";
+
 export interface UploadActionResult {
   success: boolean;
   error?: string;
@@ -65,6 +67,62 @@ export async function uploadAction(data: {
     return {
       success: false,
       error: ERROR_MESSAGES.UPLOAD_ERROR
+    };
+  }
+}
+
+export interface SubmitAnswersActionResult {
+  success: boolean;
+  error?: string;
+  data?: {
+    message: string;
+    status: string;
+    poem_source_id: number;
+  };
+}
+
+export async function submitAnswersAction(
+  sourceId: number,
+  payload: PoemSourceAnswerSubmissionType
+): Promise<SubmitAnswersActionResult> {
+  try {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get("access_token")?.value;
+
+    if (!accessToken) {
+      return redirect(routesBook.signin);
+    }
+
+    const result = await ky
+      .post(`${process.env.NEXT_PUBLIC_API_URL}${API_ENDPOINTS.poemSourceAnswers(sourceId)}`, {
+        json: {
+          answers: payload.answers,
+          poet_id: payload.poet_id
+        },
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+      .json<{ message: string; status: string; poem_source_id: number }>();
+
+    return {
+      success: true,
+      data: result
+    };
+  } catch (error) {
+    if (error instanceof HTTPError) {
+      const errorBody = await error.response.json<{ detail?: string }>();
+      return {
+        success: false,
+        error: errorBody.detail || ERROR_MESSAGES.CHECK_STATUS_FAILED
+      };
+    }
+    if (process.env.NODE_ENV === "development") {
+      console.error("Submit answers action error:", error);
+    }
+    return {
+      success: false,
+      error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR
     };
   }
 }
