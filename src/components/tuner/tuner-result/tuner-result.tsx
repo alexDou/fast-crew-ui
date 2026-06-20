@@ -94,9 +94,9 @@ export function TunerResult({ sourceId }: TunerResultPropsType) {
 
   if (status === POEM_SOURCE_STATUS.COMPLETE && poem) {
     const styleLabel =
-      poem.poet_id !== null && poem.poet_name
-        ? `${t("result.styleOfPrefix")} ${poem.poet_name}`
-        : t("result.freestyle");
+      poem.poet_id === null
+        ? t("result.freestyle")
+        : `${t("result.styleOfPrefix")} ${poem.poet_name ?? t("result.selectedPoet")}`;
 
     return (
       <div className="container flex w-full max-w-3xl flex-col items-center py-16">

@@ -141,6 +141,7 @@
         "title": "Your poem is ready"
       },
       "styleOfPrefix": "In the style of",
+      "selectedPoet": "the selected poet",
       "freestyle": "Free style"
     }
   }

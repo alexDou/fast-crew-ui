@@ -141,6 +141,7 @@
         "title": "Ihr Gedicht ist fertig"
       },
       "styleOfPrefix": "Im Stil von",
+      "selectedPoet": "dem gewählten Dichter",
       "freestyle": "Freier Stil"
     }
   }
