@@ -1,5 +1,4 @@
 export interface SocialLinksType {
-  github: string;
   linkedin: string;
 }
 

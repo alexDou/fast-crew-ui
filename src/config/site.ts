@@ -14,7 +14,6 @@ export const siteConfig: SiteConfigType = {
   themeColor: "#ffffff",
   keywords: ["nextjs", "typescript", "aisee.art", "image processing", "AI", "crewai"],
   social: {
-    github: "https://github.com/alexDou",
     linkedin: "https://www.linkedin.com/in/a-doo"
   },
   ogImage: "/og.jpg",

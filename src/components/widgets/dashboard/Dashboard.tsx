@@ -29,9 +29,7 @@ export function Dashboard({ user }: DashboardProps) {
             <div className="mb-3 flex size-10 items-center justify-center border border-bento-beige-accent/20 bg-bento-beige-accent/8">
               <Palette className="size-5 text-bento-beige-accent" />
             </div>
-            <h3 className="font-[family-name:var(--font-playfair)] text-lg font-bold text-bento-beige-text">
-              {t("crewTitle")}
-            </h3>
+            <h3 className="font-serif text-lg font-bold text-bento-beige-text">{t("crewTitle")}</h3>
             <p className="mt-1 text-sm leading-relaxed text-bento-beige-muted">
               {t("crewDescription")}
             </p>

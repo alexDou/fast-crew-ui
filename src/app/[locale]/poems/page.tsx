@@ -19,9 +19,7 @@ export default async function PoemsPage() {
   } catch {
     return (
       <ContentArea className="items-center justify-center">
-        <h1 className="font-[family-name:var(--font-playfair)] font-bold text-2xl text-bento-teal-text">
-          {t("errorTitle")}
-        </h1>
+        <h1 className="font-serif font-bold text-2xl text-bento-teal-text">{t("errorTitle")}</h1>
         <p className="mt-4 text-bento-teal-muted">{t("errorMessage")}</p>
       </ContentArea>
     );
@@ -30,9 +28,7 @@ export default async function PoemsPage() {
   if (poemSources.length === 0) {
     return (
       <ContentArea className="items-center justify-center">
-        <h1 className="mb-4 font-[family-name:var(--font-playfair)] font-bold text-2xl text-bento-teal-text">
-          {t("title")}
-        </h1>
+        <h1 className="mb-4 font-serif font-bold text-2xl text-bento-teal-text">{t("title")}</h1>
         <p className="mb-6 text-bento-teal-muted">{t("empty")}</p>
         <Link href={routesBook.tuner}>
           <Button className="bg-bento-dark text-bento-beige hover:bg-bento-dark-lighter">
@@ -45,9 +41,7 @@ export default async function PoemsPage() {
 
   return (
     <ContentArea>
-      <h1 className="mb-8 font-[family-name:var(--font-playfair)] font-bold text-2xl text-bento-teal-text">
-        {t("title")}
-      </h1>
+      <h1 className="mb-8 font-serif font-bold text-2xl text-bento-teal-text">{t("title")}</h1>
       <ul className="flex flex-col gap-4">
         {poemSources?.map((source) => (
           <li

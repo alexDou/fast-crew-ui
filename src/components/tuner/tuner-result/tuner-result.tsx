@@ -129,12 +129,12 @@ export function TunerResult({ sourceId, onReset }: TunerResultPropsType) {
 
       return (
         <section className="container flex flex-col items-center justify-center gap-6 py-16">
-          <h1 className="font-[family-name:var(--font-playfair)] font-bold text-2xl text-bento-teal-text">
+          <h1 className="font-serif font-bold text-2xl text-bento-teal-text">
             {t("workflow.complete.title")}
           </h1>
           <p className="font-medium text-base text-bento-beige-text">{styleLabel}</p>
           <article className="rounded-base bg-neutral-secondary-medium p-6">
-            <pre className="whitespace-pre-wrap font-serif text-lg text-bento-teal-text">
+            <pre className="whitespace-pre-wrap font-mono text-lg text-bento-teal-text">
               {poem.poem.replace(/\snote:.*$/i, "")}
             </pre>
           </article>

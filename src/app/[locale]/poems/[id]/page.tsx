@@ -19,9 +19,7 @@ export default async function PoemDetailPage({ params }: { params: Promise<{ id:
   } catch {
     return (
       <ContentArea className="items-center justify-center">
-        <h1 className="font-[family-name:var(--font-playfair)] font-bold text-2xl text-bento-teal-text">
-          {t("errorTitle")}
-        </h1>
+        <h1 className="font-serif font-bold text-2xl text-bento-teal-text">{t("errorTitle")}</h1>
         <p className="mt-4 text-bento-teal-muted">{t("errorMessage")}</p>
         <Link
           href={routesBook.poems}
@@ -37,7 +35,7 @@ export default async function PoemDetailPage({ params }: { params: Promise<{ id:
   if (!poems.length) {
     return (
       <ContentArea className="items-center justify-center">
-        <h1 className="mb-4 font-[family-name:var(--font-playfair)] font-bold text-2xl text-bento-teal-text">
+        <h1 className="mb-4 font-serif font-bold text-2xl text-bento-teal-text">
           {t("notFoundTitle")}
         </h1>
         <p className="mb-6 text-bento-teal-muted">{t("notFoundMessage")}</p>

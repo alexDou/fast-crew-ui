@@ -2,9 +2,7 @@
   "Landing": {
     "overview": {
       "badge": "Platform",
-      "title": "Where AI",
-      "titleAccent": "sees",
-      "titleEnd": "art",
+      "title": "AI sees Art",
       "description": "A creative platform where artificial intelligence meets human imagination. Upload your world — an image, a moment, a feeling — and watch AI crews transform it into unexpected forms of art. Each crew brings a unique lens, a different voice, a fresh interpretation.",
       "statusLabel": "Status",
       "statusValue": "Live · Beta",
@@ -20,6 +18,7 @@
       "cta": "Create a Poem"
     },
     "comingSoon": {
+      "badge": "Crew #2 · Preview",
       "title": "To be introduced…",
       "subtitle": "New crew in the works"
     }

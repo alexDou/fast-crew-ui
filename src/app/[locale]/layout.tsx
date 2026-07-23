@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google";
 import { notFound } from "next/navigation";
 
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -18,19 +18,22 @@ import { Providers } from "@/providers";
 
 import "@/tailwind";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"]
+const plexSans = IBM_Plex_Sans({
+  variable: "--font-plex-sans",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"]
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"]
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"]
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"]
+const plexSerif = IBM_Plex_Serif({
+  variable: "--font-plex-serif",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"]
 });
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -64,7 +67,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} flex min-h-screen w-full flex-col antialiased`}
+        className={`${plexSans.variable} ${plexMono.variable} ${plexSerif.variable} font-sans flex min-h-screen w-full flex-col antialiased`}
       >
         <Providers messages={messages} locale={locale}>
           <Header />

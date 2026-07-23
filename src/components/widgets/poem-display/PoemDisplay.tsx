@@ -30,12 +30,10 @@ export function PoemDisplay({ title, poems }: PoemDisplayPropsType) {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <h1 className="mb-8 font-[family-name:var(--font-playfair)] font-bold text-2xl text-bento-teal-text">
-        {title}
-      </h1>
+      <h1 className="mb-8 font-serif font-bold text-2xl text-bento-teal-text">{title}</h1>
       {activePoem?.poem && (
         <div className="mb-8 rounded-base bg-neutral-secondary-medium p-6">
-          <pre className="whitespace-pre-wrap font-serif text-lg text-bento-teal-text">
+          <pre className="whitespace-pre-wrap font-mono text-lg text-bento-teal-text">
             {activePoem.poem.replace(/\snote:.*$/i, "")}
           </pre>
         </div>

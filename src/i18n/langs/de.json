@@ -2,9 +2,7 @@
   "Landing": {
     "overview": {
       "badge": "Plattform",
-      "title": "Wo KI",
-      "titleAccent": "sieht",
-      "titleEnd": "Kunst",
+      "title": "KI sieht Kunst",
       "description": "Eine kreative Plattform, auf der künstliche Intelligenz auf menschliche Vorstellungskraft trifft. Laden Sie Ihre Welt hoch — ein Bild, einen Moment, ein Gefühl — und beobachten Sie, wie KI-Crews es in unerwartete Kunstformen verwandeln. Jede Crew bringt eine einzigartige Perspektive, eine andere Stimme, eine frische Interpretation.",
       "statusLabel": "Status",
       "statusValue": "Live · Beta",
@@ -20,6 +18,7 @@
       "cta": "Gedicht erstellen"
     },
     "comingSoon": {
+      "badge": "Crew #2 · Vorschau",
       "title": "Wird noch vorgestellt…",
       "subtitle": "Neue Crew in Arbeit"
     }

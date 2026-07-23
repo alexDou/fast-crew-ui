@@ -22,7 +22,7 @@ export function HeaderNav({ isAuthenticated }: HeaderNavProps) {
       {/* Brand */}
       <Link
         href={routesBook.main}
-        className="font-[family-name:var(--font-geist-sans)] text-[22px] font-bold tracking-tight text-foreground"
+        className="font-sans text-[22px] font-bold tracking-tight text-foreground"
       >
         aisee<span className="text-bento-teal-muted">{"\u002E"}</span>art
       </Link>
